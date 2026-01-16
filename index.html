@@ -1,0 +1,763 @@
+<!doctype html>
+<html lang="el">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>ΧρονοΣυναίσθημα 24</title>
+  <style>
+    :root{
+      --bg:#0b1020;
+      --card:#111a33;
+      --card2:#0f1730;
+      --text:#eaf0ff;
+      --muted:#b8c3e6;
+      --border:rgba(255,255,255,.12);
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius:18px;
+      --btn:#1a2a55;
+      --btn2:#20356b;
+      --good:#22c55e;
+      --bad:#ef4444;
+      --warn:#f59e0b;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+      background: radial-gradient(1000px 600px at 20% 10%, rgba(90,120,255,.25), transparent 55%),
+                  radial-gradient(900px 600px at 80% 20%, rgba(255,120,210,.18), transparent 55%),
+                  radial-gradient(900px 600px at 60% 90%, rgba(0,255,200,.12), transparent 55%),
+                  var(--bg);
+      color:var(--text);
+    }
+    header{
+      padding:18px 18px 10px;
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+    }
+    .brand{
+      display:flex;align-items:center;gap:12px;
+    }
+    .logo{
+      width:42px;height:42px;border-radius:14px;
+      background: conic-gradient(from 180deg,
+        #ffd400, #ff8a00, #ff4fd8, #22c55e, #5ad7ff, #a78bfa,
+        #d1d5db, #6b7280, #1f3b88, #a16207, #ef4444, #111827, #7c3aed, #ffffff);
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(255,255,255,.18);
+    }
+    h1{font-size:18px;margin:0}
+    .sub{color:var(--muted);font-size:12px;margin-top:2px}
+    .wrap{max-width:1180px;margin:0 auto;padding:0 18px 22px}
+
+    .grid{
+      display:grid;
+      grid-template-columns: 340px 1fr;
+      gap:14px;
+    }
+    @media (max-width: 980px){
+      .grid{grid-template-columns: 1fr;}
+    }
+
+    .card{
+      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      border:1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+    }
+    .card .hd{
+      padding:14px 14px 10px;
+      border-bottom:1px solid var(--border);
+      background: rgba(0,0,0,.12);
+      display:flex;align-items:center;justify-content:space-between;gap:10px;
+    }
+    .card .bd{padding:14px}
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
+    input[type="text"], input[type="number"], select{
+      width:100%;
+      padding:10px 12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      outline:none;
+    }
+    input[type="number"]{appearance:textfield}
+    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+    .pillbar{display:flex;flex-wrap:wrap;gap:8px}
+    .pill{
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.20);
+      color:var(--text);
+      padding:8px 10px;
+      border-radius:999px;
+      cursor:pointer;
+      font-size:12px;
+      user-select:none;
+      transition:.15s transform,.15s background;
+    }
+    .pill:hover{transform:translateY(-1px); background: rgba(255,255,255,.08);}
+    .pill.active{outline:2px solid rgba(255,255,255,.45); background: rgba(255,255,255,.10);}
+    .btnbar{display:flex;flex-wrap:wrap;gap:8px}
+    button{
+      border:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
+      cursor:pointer;
+      font-size:13px;
+      transition:.15s transform,.15s background;
+    }
+    button:hover{transform:translateY(-1px); background: rgba(255,255,255,.10);}
+    button.primary{background: linear-gradient(180deg, rgba(90,120,255,.35), rgba(90,120,255,.12));}
+    button.good{background: linear-gradient(180deg, rgba(34,197,94,.35), rgba(34,197,94,.12));}
+    button.bad{background: linear-gradient(180deg, rgba(239,68,68,.35), rgba(239,68,68,.12));}
+    button:disabled{opacity:.55;cursor:not-allowed;transform:none}
+
+    .hours{
+      display:grid;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap:8px;
+      padding:14px;
+    }
+    @media (max-width: 980px){
+      .hours{grid-template-columns: repeat(4, minmax(0, 1fr));}
+    }
+    .hour{
+      border:1px solid var(--border);
+      border-radius:16px;
+      padding:10px 10px 9px;
+      background: rgba(0,0,0,.18);
+      cursor:pointer;
+      position:relative;
+      min-height:64px;
+    }
+    .hour.sel{outline:2px solid rgba(255,255,255,.55);}
+    .hour .t{font-weight:650;font-size:12px}
+    .hour .mini{margin-top:6px;font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+    .dot{width:10px;height:10px;border-radius:999px;border:1px solid rgba(255,255,255,.35);display:inline-block}
+    .tag{
+      font-size:10px;
+      padding:3px 7px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+    }
+    .tag.safe{border-color: rgba(34,197,94,.55);}
+    .tag.risk{border-color: rgba(239,68,68,.55);}
+    .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    .small{font-size:12px;color:var(--muted)}
+    .divider{height:1px;background:var(--border);margin:12px 0}
+
+    .palette{
+      display:grid;
+      grid-template-columns: repeat(7, minmax(0, 1fr));
+      gap:8px;
+    }
+    @media (max-width: 980px){
+      .palette{grid-template-columns: repeat(5, minmax(0, 1fr));}
+    }
+    .sw{
+      border-radius:16px;
+      padding:10px 8px;
+      border:1px solid var(--border);
+      cursor:pointer;
+      text-align:center;
+      user-select:none;
+      font-size:11px;
+      min-height:56px;
+      display:flex;flex-direction:column;justify-content:center;gap:6px;
+    }
+    .sw .c{width:18px;height:18px;border-radius:8px;margin:0 auto;border:1px solid rgba(0,0,0,.25)}
+    .sw.active{outline:2px solid rgba(255,255,255,.55);}
+    .hint{
+      background: rgba(255,255,255,.06);
+      border:1px dashed rgba(255,255,255,.18);
+      padding:10px 12px;border-radius:16px;
+      font-size:12px;color:var(--muted);
+    }
+  </style>
+</head>
+<body>
+  <header class="wrap">
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>ΧρονοΣυναίσθημα 24</h1>
+        <div class="sub">Γρήγορη χαρτογράφηση συναισθήματος – σχέσεων – γεγονότων σε 24 ώρες</div>
+      </div>
+    </div>
+    <div class="btnbar">
+      <button id="btnSleep" class="primary" title="Γέμισε γρήγορα ώρες ύπνου">🌙 Sleep block</button>
+      <button id="btnCopyPrev" title="Αντέγραψε την προηγούμενη ώρα">⏪ Copy prev</button>
+      <button id="btnApplyRange" title="Εφάρμοσε σε εύρος ωρών">🧩 Apply range</button>
+      <button id="btnExportJSON" class="good">⬇ Export JSON</button>
+      <button id="btnExportCSV" class="good">⬇ Export CSV</button>
+      <button id="btnReset" class="bad">🧹 Reset</button>
+    </div>
+  </header>
+
+  <div class="wrap grid">
+    <!-- LEFT: Participant + editor -->
+    <section class="card">
+      <div class="hd">
+        <div>
+          <div style="font-weight:700">Στοιχεία</div>
+          <div class="small">Συμπλήρωσε γρήγορα, γίνεται autosave.</div>
+        </div>
+        <div class="small" id="saveStatus">● saved</div>
+      </div>
+      <div class="bd">
+        <div class="row">
+          <div>
+            <label for="name">Όνομα *</label>
+            <input id="name" type="text" placeholder="π.χ. Μαρία" />
+          </div>
+          <div>
+            <label for="age">Ηλικία *</label>
+            <input id="age" type="number" min="1" max="18" placeholder="π.χ. 9" />
+          </div>
+        </div>
+
+        <label>Φύλο</label>
+        <div class="pillbar" id="sexPills">
+          <div class="pill" data-sex="Αγόρι">👦 Αγόρι</div>
+          <div class="pill" data-sex="Κορίτσι">👧 Κορίτσι</div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="hint">
+          ✅ Tip: Πάτα μία ώρα δεξιά και συμπλήρωσε μόνο τα βασικά.  
+          Χρησιμοποίησε <b>Copy prev</b> ή <b>Apply range</b> για να τελειώσεις πολύ γρήγορα.
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="flex">
+          <div>
+            <div class="small">Επιλεγμένη ώρα</div>
+            <div style="font-size:20px;font-weight:800" id="selectedHourLabel">00:00</div>
+          </div>
+          <div class="btnbar" style="margin-left:auto">
+            <button id="btnSafeMost" class="good" title="Σημείωσε την ώρα που νιώθεις ΠΙΟ ασφαλής">✅ Most safe</button>
+            <button id="btnSafeLeast" class="bad" title="Σημείωσε την ώρα που νιώθεις ΛΙΓΟΤΕΡΟ ασφαλής">❌ Least safe</button>
+          </div>
+        </div>
+
+        <label>Συναίσθημα (χρώμα)</label>
+        <div class="palette" id="palette"></div>
+
+        <label>Πόσο πολύ;</label>
+        <div class="pillbar" id="intensityPills"></div>
+
+        <label for="withWhom">Με ποιον είσαι κυρίως;</label>
+        <select id="withWhom"></select>
+
+        <label for="events">Τι συμβαίνει κυρίως; (πολλά)</label>
+        <select id="events" multiple size="8"></select>
+        <div class="small">Κράτα πατημένο Ctrl/Command για πολλαπλή επιλογή.</div>
+
+        <label for="location">Πού βρίσκεσαι;</label>
+        <select id="location"></select>
+
+        <label for="frequency">Αυτό που έβαλες συμβαίνει…</label>
+        <select id="frequency"></select>
+
+        <div class="divider"></div>
+
+        <button id="btnValidate" class="primary" style="width:100%">🔎 Έλεγχος (validation)</button>
+        <div id="validationMsg" class="small" style="margin-top:10px"></div>
+      </div>
+    </section>
+
+    <!-- RIGHT: 24h grid -->
+    <section class="card">
+      <div class="hd">
+        <div>
+          <div style="font-weight:700">24ωρη Γραμμή</div>
+          <div class="small">Πάτα ώρα → συμπλήρωσε αριστερά.</div>
+        </div>
+        <div class="small">Στόχος: <b>&lt; 5 λεπτά</b></div>
+      </div>
+      <div class="hours" id="hoursGrid"></div>
+    </section>
+  </div>
+
+<script>
+  // ------- Data model -------
+  const HOURS = Array.from({length:24}, (_,i)=>String(i).padStart(2,'0') + ":00");
+
+  const EMOTIONS = [
+    {key:"yellow",  color:"#FFD400", label:"Χαρά / Ευτυχία"},
+    {key:"orange",  color:"#FF8A00", label:"Ενθουσιασμός / Ενέργεια"},
+    {key:"pink",    color:"#FF4FD8", label:"Αγάπη / Τρυφερότητα"},
+    {key:"green",   color:"#22C55E", label:"Ηρεμία / Ασφάλεια"},
+    {key:"lblue",   color:"#5AD7FF", label:"Γαλήνη / Χαλάρωση"},
+    {key:"lpurple", color:"#A78BFA", label:"Περιέργεια / Ενδιαφέρον"},
+    {key:"lgray",   color:"#D1D5DB", label:"Πλήξη / Αδιαφορία"},
+    {key:"dgray",   color:"#6B7280", label:"Θλίψη / Στεναχώρια"},
+    {key:"dblue",   color:"#1F3B88", label:"Μοναξιά / Απομόνωση"},
+    {key:"brown",   color:"#A16207", label:"Σύγχυση / Αμηχανία"},
+    {key:"red",     color:"#EF4444", label:"Θυμός / Εκνευρισμός"},
+    {key:"black",   color:"#111827", label:"Φόβος / Τρόμος"},
+    {key:"dpurple", color:"#7C3AED", label:"Ντροπή / Ενοχή"},
+    {key:"white",   color:"#FFFFFF", label:"Τίποτα / Δεν νιώθω τίποτα"},
+  ];
+
+  const INTENSITIES = ["Λίγο","Μέτρια","Αρκετά","Πολύ","Πάρα πολύ"];
+
+  const WITH_WHOM = [
+    "Μητέρα","Πατέρας","Αδερφός/Αδερφή (μεγαλύτερος/η)","Αδερφός/Αδερφή (μικρότερος/η)",
+    "Παππούς (πατρικός)","Γιαγιά (πατρική)","Παππούς (μητρικός)","Γιαγιά (μητρική)",
+    "Θείος","Θεία","Ξάδερφος/Ξαδέρφη","Πατριός/Μητριά","Σύντροφος μητέρας/πατέρα",
+    "Δάσκαλος/Δασκάλα","Φίλος/Φίλη (συνομήλικος)","Γείτονας/Γειτόνισσα",
+    "Προπονητής/Προπονήτρια","Νταντά/Babysitter","Άγνωστο άτομο","Μόνος μου / Κανείς"
+  ];
+
+  const EVENTS = [
+    "Χαμόγελα","Αγκαλιές/Χάδια","Παιχνίδι","Διάβασμα/Μάθηση","Φαγητό μαζί","Συζήτηση/Κουβέντα",
+    "Τραγούδι/Μουσική","Αθλητισμός","Ύπνος/Ξεκούραση","Τηλεόραση/Tablet","Μόνος/η στο δωμάτιο",
+    "Δουλειές/Καθήκοντα","Μετακίνηση","Φωνές/Τσακωμός","Χτυπήματα","Κλάματα","Φόβος/Τρομάρα",
+    "Τιμωρία","Απειλές","Παρακολούθηση/Έλεγχος","Μυστικά/Να μην πω","Αδιαφορία/Παραμέληση","Ντροπή/Εξευτελισμός"
+  ];
+
+  const LOCATIONS = [
+    "Σπίτι μου","Υπνοδωμάτιό μου","Κουζίνα/Τραπεζαρία","Σαλόνι","Μπάνιο","Αυλή/Μπαλκόνι",
+    "Σπίτι παππού-γιαγιάς","Σπίτι φίλου","Σχολείο (τάξη)","Σχολείο (διάλειμμα/αυλή)",
+    "Γήπεδο/Γυμναστήριο","Φροντιστήριο/Δραστηριότητες","Πάρκο/Παιδική χαρά",
+    "Μαγαζί/Σούπερ μάρκετ","Αυτοκίνητο","Γιατρός/Νοσοκομείο","Εκκλησία","Άγνωστο μέρος"
+  ];
+
+  const FREQUENCY = [
+    "Κάθε μέρα",
+    "Συχνά (3-4 φορές/εβδομάδα)",
+    "Μερικές φορές (1-2 φορές/εβδομάδα)",
+    "Σπάνια"
+  ];
+
+  const DEFAULT_ENTRY = () => ({
+    emotionKey: null,
+    intensity: null,
+    withWhom: "",
+    events: [],
+    location: "",
+    frequency: ""
+  });
+
+  const STORAGE_KEY = "chronofeel24_v1";
+
+  let state = {
+    participant: { name:"", age:"", sex:"" },
+    safeMostHour: null,
+    safeLeastHour: null,
+    entries: Object.fromEntries(HOURS.map(h=>[h, DEFAULT_ENTRY()])),
+    selectedHour: "00:00"
+  };
+
+  // ------- Helpers -------
+  const $ = (id) => document.getElementById(id);
+  const saveStatus = $("saveStatus");
+
+  function setSaved(flag){
+    saveStatus.textContent = flag ? "● saved" : "● saving…";
+    saveStatus.style.color = flag ? "var(--muted)" : "var(--warn)";
+  }
+
+  function deepCopy(obj){ return JSON.parse(JSON.stringify(obj)); }
+
+  function autosave(){
+    setSaved(false);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    setTimeout(()=>setSaved(true), 120);
+  }
+
+  function load(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    try{
+      const s = JSON.parse(raw);
+      if(s && s.entries) state = s;
+    }catch(e){}
+  }
+
+  function hourIndex(h){ return HOURS.indexOf(h); }
+
+  function selectedEntry(){ return state.entries[state.selectedHour]; }
+
+  function emotionByKey(key){ return EMOTIONS.find(e=>e.key===key) || null; }
+
+  function setSelectedHour(h){
+    state.selectedHour = h;
+    $("selectedHourLabel").textContent = h;
+    renderHours();
+    renderEditor();
+    autosave();
+  }
+
+  // ------- UI build -------
+  function buildPalette(){
+    const wrap = $("palette");
+    wrap.innerHTML = "";
+    EMOTIONS.forEach(e=>{
+      const d = document.createElement("div");
+      d.className = "sw";
+      d.setAttribute("role","button");
+      d.setAttribute("tabindex","0");
+      d.dataset.key = e.key;
+      d.innerHTML = `<div class="c" style="background:${e.color}"></div><div>${e.label}</div>`;
+      d.addEventListener("click", ()=> {
+        selectedEntry().emotionKey = e.key;
+        autosave();
+        renderEditor();
+        renderHours();
+      });
+      wrap.appendChild(d);
+    });
+  }
+
+  function buildIntensity(){
+    const wrap = $("intensityPills");
+    wrap.innerHTML = "";
+    INTENSITIES.forEach(label=>{
+      const p = document.createElement("div");
+      p.className="pill";
+      p.textContent = label;
+      p.addEventListener("click", ()=>{
+        selectedEntry().intensity = label;
+        autosave();
+        renderEditor();
+        renderHours();
+      });
+      wrap.appendChild(p);
+    });
+  }
+
+  function fillSelect(sel, options, placeholder){
+    sel.innerHTML = "";
+    if(placeholder){
+      const o = document.createElement("option");
+      o.value = "";
+      o.textContent = placeholder;
+      sel.appendChild(o);
+    }
+    options.forEach(v=>{
+      const o = document.createElement("option");
+      o.value = v;
+      o.textContent = v;
+      sel.appendChild(o);
+    });
+  }
+
+  function buildHours(){
+    const grid = $("hoursGrid");
+    grid.innerHTML = "";
+    HOURS.forEach(h=>{
+      const el = document.createElement("div");
+      el.className = "hour";
+      el.dataset.hour = h;
+      el.addEventListener("click", ()=> setSelectedHour(h));
+      grid.appendChild(el);
+    });
+  }
+
+  function renderHours(){
+    document.querySelectorAll(".hour").forEach(el=>{
+      const h = el.dataset.hour;
+      const entry = state.entries[h];
+      const emo = emotionByKey(entry.emotionKey);
+      const dotColor = emo ? emo.color : "transparent";
+
+      el.classList.toggle("sel", h===state.selectedHour);
+
+      const tags = [];
+      if(state.safeMostHour === h) tags.push(`<span class="tag safe">✅ ασφαλής</span>`);
+      if(state.safeLeastHour === h) tags.push(`<span class="tag risk">❌ όχι ασφαλής</span>`);
+
+      const withMini = entry.withWhom ? `👥 ${shorten(entry.withWhom, 16)}` : "";
+      const locMini  = entry.location ? `📍 ${shorten(entry.location, 16)}` : "";
+      const intMini  = entry.intensity ? `⚡ ${shorten(entry.intensity, 10)}` : "";
+
+      el.innerHTML = `
+        <div class="t">${h}</div>
+        <div class="mini">
+          <span class="dot" style="background:${dotColor}"></span>
+          ${intMini ? `<span>${intMini}</span>` : `<span class="small">—</span>`}
+          ${withMini ? `<span>${withMini}</span>` : ``}
+          ${locMini ? `<span>${locMini}</span>` : ``}
+        </div>
+        <div class="mini" style="margin-top:8px;gap:6px">
+          ${tags.join("")}
+        </div>
+      `;
+    });
+  }
+
+  function shorten(s, n){
+    if(!s) return "";
+    return s.length<=n ? s : s.slice(0,n-1) + "…";
+  }
+
+  function renderEditor(){
+    // sex pills
+    document.querySelectorAll("#sexPills .pill").forEach(p=>{
+      p.classList.toggle("active", p.dataset.sex === state.participant.sex);
+    });
+
+    // palette
+    document.querySelectorAll("#palette .sw").forEach(sw=>{
+      sw.classList.toggle("active", sw.dataset.key === selectedEntry().emotionKey);
+    });
+
+    // intensity
+    document.querySelectorAll("#intensityPills .pill").forEach((p, idx)=>{
+      p.classList.toggle("active", INTENSITIES[idx] === selectedEntry().intensity);
+    });
+
+    // selects
+    $("withWhom").value = selectedEntry().withWhom || "";
+    $("location").value = selectedEntry().location || "";
+    $("frequency").value = selectedEntry().frequency || "";
+
+    // events multi
+    const evSel = $("events");
+    Array.from(evSel.options).forEach(opt=>{
+      opt.selected = selectedEntry().events.includes(opt.value);
+    });
+
+    // participant
+    $("name").value = state.participant.name || "";
+    $("age").value = state.participant.age || "";
+  }
+
+  function hookInputs(){
+    $("name").addEventListener("input", e=>{
+      state.participant.name = e.target.value.trim();
+      autosave();
+    });
+    $("age").addEventListener("input", e=>{
+      state.participant.age = e.target.value;
+      autosave();
+    });
+
+    document.querySelectorAll("#sexPills .pill").forEach(p=>{
+      p.addEventListener("click", ()=>{
+        state.participant.sex = p.dataset.sex;
+        autosave();
+        renderEditor();
+      });
+    });
+
+    $("withWhom").addEventListener("change", e=>{
+      selectedEntry().withWhom = e.target.value;
+      autosave(); renderHours();
+    });
+    $("location").addEventListener("change", e=>{
+      selectedEntry().location = e.target.value;
+      autosave(); renderHours();
+    });
+    $("frequency").addEventListener("change", e=>{
+      selectedEntry().frequency = e.target.value;
+      autosave(); renderHours();
+    });
+
+    $("events").addEventListener("change", e=>{
+      const vals = Array.from(e.target.selectedOptions).map(o=>o.value);
+      selectedEntry().events = vals;
+      autosave(); renderHours();
+    });
+
+    $("btnSafeMost").addEventListener("click", ()=>{
+      state.safeMostHour = state.selectedHour;
+      if(state.safeLeastHour === state.safeMostHour) state.safeLeastHour = null;
+      autosave(); renderHours();
+    });
+
+    $("btnSafeLeast").addEventListener("click", ()=>{
+      state.safeLeastHour = state.selectedHour;
+      if(state.safeMostHour === state.safeLeastHour) state.safeMostHour = null;
+      autosave(); renderHours();
+    });
+
+    $("btnCopyPrev").addEventListener("click", ()=>{
+      const i = hourIndex(state.selectedHour);
+      if(i<=0) return;
+      const prev = HOURS[i-1];
+      state.entries[state.selectedHour] = deepCopy(state.entries[prev]);
+      autosave(); renderEditor(); renderHours();
+    });
+
+    $("btnApplyRange").addEventListener("click", ()=>{
+      const from = prompt("Από ποια ώρα; (π.χ. 08:00)", state.selectedHour) || "";
+      const to   = prompt("Έως ποια ώρα; (π.χ. 12:00)", state.selectedHour) || "";
+      if(!HOURS.includes(from) || !HOURS.includes(to)) { alert("Λάθος ώρες."); return; }
+      const a = hourIndex(from), b = hourIndex(to);
+      const lo = Math.min(a,b), hi = Math.max(a,b);
+      const src = deepCopy(state.entries[state.selectedHour]);
+      for(let k=lo;k<=hi;k++){
+        state.entries[HOURS[k]] = deepCopy(src);
+      }
+      autosave(); renderEditor(); renderHours();
+    });
+
+    $("btnSleep").addEventListener("click", ()=>{
+      const start = prompt("Ώρα έναρξης ύπνου; (π.χ. 23:00)", "23:00") || "";
+      const end   = prompt("Ώρα λήξης ύπνου; (π.χ. 07:00)", "07:00") || "";
+      if(!HOURS.includes(start) || !HOURS.includes(end)) { alert("Λάθος ώρες."); return; }
+
+      // apply across midnight: [start..23] + [00..end]
+      const fill = {
+        emotionKey: "green",
+        intensity: "Μέτρια",
+        withWhom: "Μόνος μου / Κανείς",
+        events: ["Ύπνος/Ξεκούραση"],
+        location: "Υπνοδωμάτιό μου",
+        frequency: "Κάθε μέρα"
+      };
+
+      const si = hourIndex(start);
+      const ei = hourIndex(end);
+      if(si <= ei){
+        for(let k=si;k<=ei;k++) state.entries[HOURS[k]] = deepCopy(fill);
+      }else{
+        for(let k=si;k<24;k++) state.entries[HOURS[k]] = deepCopy(fill);
+        for(let k=0;k<=ei;k++) state.entries[HOURS[k]] = deepCopy(fill);
+      }
+      autosave(); renderEditor(); renderHours();
+    });
+
+    $("btnExportJSON").addEventListener("click", ()=>{
+      const out = buildExportObject();
+      downloadFile("chronosynaisthima24.json", JSON.stringify(out, null, 2), "application/json");
+    });
+
+    $("btnExportCSV").addEventListener("click", ()=>{
+      const csv = buildCSV();
+      downloadFile("chronosynaisthima24.csv", csv, "text/csv;charset=utf-8");
+    });
+
+    $("btnReset").addEventListener("click", ()=>{
+      if(!confirm("Σίγουρα reset; Θα χαθούν τα δεδομένα.")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = {
+        participant: { name:"", age:"", sex:"" },
+        safeMostHour: null,
+        safeLeastHour: null,
+        entries: Object.fromEntries(HOURS.map(h=>[h, DEFAULT_ENTRY()])),
+        selectedHour: "00:00"
+      };
+      renderEditor(); renderHours();
+      autosave();
+    });
+
+    $("btnValidate").addEventListener("click", ()=>{
+      const msg = validate();
+      $("validationMsg").textContent = msg.ok ? "✅ ΟΚ! Έτοιμο για export." : "⚠ " + msg.error;
+      $("validationMsg").style.color = msg.ok ? "var(--good)" : "var(--warn)";
+    });
+  }
+
+  function validate(){
+    if(!state.participant.name) return {ok:false, error:"Λείπει Όνομα."};
+    if(!state.participant.age) return {ok:false, error:"Λείπει Ηλικία."};
+    if(!state.safeMostHour) return {ok:false, error:"Διάλεξε ώρα ΠΙΟ ασφαλής (✅ Most safe)."};
+    if(!state.safeLeastHour) return {ok:false, error:"Διάλεξε ώρα ΛΙΓΟΤΕΡΟ ασφαλής (❌ Least safe)."};
+    if(state.safeMostHour === state.safeLeastHour) return {ok:false, error:"Η ίδια ώρα δεν μπορεί να είναι και most & least safe."};
+    return {ok:true};
+  }
+
+  function buildExportObject(){
+    return {
+      tool: "ΧρονοΣυναίσθημα 24",
+      version: "1.0",
+      participant: deepCopy(state.participant),
+      safeMostHour: state.safeMostHour,
+      safeLeastHour: state.safeLeastHour,
+      hours: HOURS.map(h => ({
+        hour: h,
+        ...deepCopy(state.entries[h]),
+        emotionLabel: emotionByKey(state.entries[h].emotionKey)?.label || ""
+      }))
+    };
+  }
+
+  function csvEscape(v){
+    const s = (v ?? "").toString();
+    if(/[",\n]/.test(s)) return `"${s.replaceAll('"','""')}"`;
+    return s;
+  }
+
+  function buildCSV(){
+    const header = [
+      "name","age","sex","hour",
+      "emotion_color","emotion_label",
+      "intensity","with_whom","events","location","frequency",
+      "safe_most","safe_least"
+    ].join(",");
+
+    const rows = HOURS.map(h=>{
+      const e = state.entries[h];
+      const emo = emotionByKey(e.emotionKey);
+      const events = (e.events || []).join("|");
+      const safeMost = (state.safeMostHour===h) ? "1":"0";
+      const safeLeast = (state.safeLeastHour===h) ? "1":"0";
+      return [
+        state.participant.name,
+        state.participant.age,
+        state.participant.sex,
+        h,
+        emo?.color || "",
+        emo?.label || "",
+        e.intensity || "",
+        e.withWhom || "",
+        events,
+        e.location || "",
+        e.frequency || "",
+        safeMost,
+        safeLeast
+      ].map(csvEscape).join(",");
+    });
+
+    return [header, ...rows].join("\n");
+  }
+
+  function downloadFile(filename, content, mime){
+    const blob = new Blob([content], {type:mime});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 800);
+  }
+
+  // ------- Init -------
+  function init(){
+    load();
+
+    buildPalette();
+    buildIntensity();
+    fillSelect($("withWhom"), WITH_WHOM, "Διάλεξε…");
+    fillSelect($("location"), LOCATIONS, "Διάλεξε…");
+    fillSelect($("frequency"), FREQUENCY, "Διάλεξε…");
+    fillSelect($("events"), EVENTS, null);
+
+    buildHours();
+    hookInputs();
+
+    renderHours();
+    renderEditor();
+    setSaved(true);
+  }
+
+  init();
+</script>
+</body>
+</html>
