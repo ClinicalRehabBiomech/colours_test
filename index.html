@@ -84,6 +84,10 @@
       color: var(--text);
       outline:none;
     }
+    select option{
+      background: #000000;
+      color: var(--text);
+    }
     input[type="number"]{appearance:textfield}
     .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
     .pillbar{display:flex;flex-wrap:wrap;gap:8px}
@@ -270,6 +274,9 @@
         <label for="frequency">Αυτό που έβαλες συμβαίνει…</label>
         <select id="frequency"></select>
 
+        <label for="when_started">Πότε ένιωσες ετσί;</label>
+        <select id="when_started"></select>
+
         <div class="divider"></div>
 
         <button id="btnValidate" class="primary" style="width:100%">🔎 Έλεγχος (validation)</button>
@@ -342,13 +349,23 @@
     "Σπάνια"
   ];
 
+  const WHEN_STARTED = [
+    "Πριν μερικές μέρες",
+    "Πριν μια εβδομάδα",
+    "Πριν έναν μήνα",
+    "πριν μερικούς μήνες",
+    "Πριν ένα χρόνο",
+    "Παλαιώτερα από ένα χρόνο"
+  ];
+
   const DEFAULT_ENTRY = () => ({
     emotionKey: null,
     intensity: null,
     withWhom: "",
     events: [],
     location: "",
-    frequency: ""
+    frequency: "",
+    when_started: ""
   });
 
   const STORAGE_KEY = "chronofeel24_v1";
@@ -538,6 +555,7 @@
     $("withWhom").value = selectedEntry().withWhom || "";
     $("location").value = selectedEntry().location || "";
     $("frequency").value = selectedEntry().frequency || "";
+    $("when_started").value = selectedEntry().when_started || "";
 
     // events multi
     const evSel = $("events");
@@ -578,6 +596,11 @@
     });
     $("frequency").addEventListener("change", e=>{
       selectedEntry().frequency = e.target.value;
+      autosave(); renderHours();
+    });
+
+    $("when_started").addEventListener("change", e=>{
+      selectedEntry().when_started = e.target.value;
       autosave(); renderHours();
     });
 
@@ -712,7 +735,7 @@
     const header = [
       "name","age","sex","hour",
       "emotion_color","emotion_label",
-      "intensity","with_whom","events","location","frequency",
+      "intensity","with_whom","events","location","frequency","when_started",
       "safe_most","safe_least"
     ].join(",");
 
@@ -734,6 +757,7 @@
         events,
         e.location || "",
         e.frequency || "",
+        e.when_started || "",
         safeMost,
         safeLeast
       ].map(csvEscape).join(",");
@@ -762,6 +786,7 @@
     fillSelect($("withWhom"), WITH_WHOM, "Διάλεξε…");
     fillSelect($("location"), LOCATIONS, "Διάλεξε…");
     fillSelect($("frequency"), FREQUENCY, "Διάλεξε…");
+    fillSelect($("when_started"), WHEN_STARTED, "Διάλεξε…");
     fillSelect($("events"), EVENTS, null);
 
     buildHours();
