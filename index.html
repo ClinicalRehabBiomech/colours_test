@@ -302,20 +302,20 @@
   const HOURS = Array.from({length:24}, (_,i)=>String(i).padStart(2,'0') + ":00");
 
   const EMOTIONS = [
-    {key:"yellow",  color:"#FFD400", label:"Χαρά / Ευτυχία"},
-    {key:"orange",  color:"#FF8A00", label:"Ενθουσιασμός / Ενέργεια"},
-    {key:"pink",    color:"#FF4FD8", label:"Αγάπη / Τρυφερότητα"},
-    {key:"green",   color:"#22C55E", label:"Ηρεμία / Ασφάλεια"},
-    {key:"lblue",   color:"#5AD7FF", label:"Γαλήνη / Χαλάρωση"},
-    {key:"lpurple", color:"#A78BFA", label:"Περιέργεια / Ενδιαφέρον"},
-    {key:"lgray",   color:"#D1D5DB", label:"Πλήξη / Αδιαφορία"},
-    {key:"dgray",   color:"#6B7280", label:"Θλίψη / Στεναχώρια"},
-    {key:"dblue",   color:"#1F3B88", label:"Μοναξιά / Απομόνωση"},
-    {key:"brown",   color:"#A16207", label:"Σύγχυση / Αμηχανία"},
-    {key:"red",     color:"#EF4444", label:"Θυμός / Εκνευρισμός"},
-    {key:"black",   color:"#111827", label:"Φόβος / Τρόμος"},
-    {key:"dpurple", color:"#7C3AED", label:"Ντροπή / Ενοχή"},
-    {key:"white",   color:"#FFFFFF", label:"Τίποτα / Δεν νιώθω τίποτα"},
+    {key:"yellow",  color:"#FFD400", label:"Χαρά / Ευτυχία", shades:["#FFD400", "#FFC200", "#FFB000"]},
+    {key:"orange",  color:"#FF8A00", label:"Ενθουσιασμός / Ενέργεια", shades:["#FF8A00", "#FF7700", "#FF6600"]},
+    {key:"pink",    color:"#FF4FD8", label:"Αγάπη / Τρυφερότητα", shades:["#FF4FD8", "#FF30C0", "#FF10A8"]},
+    {key:"green",   color:"#22C55E", label:"Ηρεμία / Ασφάλεια", shades:["#22C55E", "#16A34A", "#15803D"]},
+    {key:"lblue",   color:"#5AD7FF", label:"Γαλήνη / Χαλάρωση", shades:["#5AD7FF", "#38BDF8", "#0EA5E9"]},
+    {key:"lpurple", color:"#A78BFA", label:"Περιέργεια / Ενδιαφέρον", shades:["#A78BFA", "#C4B5FD", "#DDD6FE"]},
+    {key:"lgray",   color:"#D1D5DB", label:"Πλήξη / Αδιαφορία", shades:["#D1D5DB", "#E5E7EB", "#F3F4F6"]},
+    {key:"dgray",   color:"#6B7280", label:"Θλίψη / Στεναχώρια", shades:["#6B7280", "#4B5563", "#374151"]},
+    {key:"dblue",   color:"#1F3B88", label:"Μοναξιά / Απομόνωση", shades:["#1F3B88", "#1E3A8A", "#1E40AF"]},
+    {key:"brown",   color:"#A16207", label:"Σύγχυση / Αμηχανία", shades:["#A16207", "#92400E", "#78350F"]},
+    {key:"red",     color:"#EF4444", label:"Θυμός / Εκνευρισμός", shades:["#EF4444", "#DC2626", "#B91C1C"]},
+    {key:"black",   color:"#111827", label:"Φόβος / Τρόμος", shades:["#111827", "#1F2937", "#374151"]},
+    {key:"dpurple", color:"#7C3AED", label:"Ντροπή / Ενοχή", shades:["#7C3AED", "#6D28D9", "#5B21B6"]},
+    {key:"white",   color:"#FFFFFF", label:"Τίποτα / Δεν νιώθω τίποτα", shades:["#FFFFFF", "#F3F4F6", "#E5E7EB"]},
   ];
 
   const INTENSITIES = ["Λίγο","Μέτρια","Αρκετά","Πολύ","Πάρα πολύ"];
@@ -360,6 +360,7 @@
 
   const DEFAULT_ENTRY = () => ({
     emotionKey: null,
+    emotionShade: null,
     intensity: null,
     withWhom: "",
     events: [],
@@ -419,20 +420,52 @@
     EMOTIONS.forEach(e=>{
       const d = document.createElement("div");
       d.className = "sw";
-      d.setAttribute("role","button");
-      d.setAttribute("tabindex","0");
       d.dataset.key = e.key;
-      // Show ONLY the color (no label text)
-      d.innerHTML = `<div class="c" style="background:${e.color}"></div>`;
-      d.title = "Επίλεξε χρώμα";
-      d.setAttribute("aria-label", "Επίλεξε χρώμα");
-      d.addEventListener("click", ()=> {
+      
+      // Color circle
+      const colorDiv = document.createElement("div");
+      colorDiv.className = "c";
+      colorDiv.style.background = e.color;
+      colorDiv.style.cursor = "pointer";
+      colorDiv.addEventListener("click", ()=> {
         selectedEntry().emotionKey = e.key;
-        // keep intensity as is (do not erase); user controls it
+        selectedEntry().emotionShade = e.shades[0];
         autosave();
         renderEditor();
         renderHours();
       });
+      
+      // Shade dropdown
+      const shadeSelect = document.createElement("select");
+      shadeSelect.className = "shadeSelect";
+      shadeSelect.style.width = "100%";
+      shadeSelect.style.padding = "4px";
+      shadeSelect.style.borderRadius = "8px";
+      shadeSelect.style.border = "1px solid var(--border)";
+      shadeSelect.style.background = "rgba(0,0,0,.22)";
+      shadeSelect.style.color = "var(--text)";
+      shadeSelect.style.fontSize = "11px";
+      shadeSelect.style.cursor = "pointer";
+      shadeSelect.style.outline = "none";
+      
+      e.shades.forEach((shade, idx) => {
+        const opt = document.createElement("option");
+        opt.value = shade;
+        opt.textContent = idx === 0 ? "Light" : idx === 1 ? "Medium" : "Dark";
+        opt.style.background = shade;
+        shadeSelect.appendChild(opt);
+      });
+      
+      shadeSelect.addEventListener("change", ()=> {
+        selectedEntry().emotionKey = e.key;
+        selectedEntry().emotionShade = shadeSelect.value;
+        autosave();
+        renderEditor();
+        renderHours();
+      });
+      
+      d.appendChild(colorDiv);
+      d.appendChild(shadeSelect);
       wrap.appendChild(d);
     });
   }
@@ -505,7 +538,7 @@
       const h = el.dataset.hour;
       const entry = state.entries[h];
       const emo = emotionByKey(entry.emotionKey);
-      const dotColor = emo ? emo.color : "transparent";
+      const dotColor = entry.emotionShade ? entry.emotionShade : (emo ? emo.color : "transparent");
 
       el.classList.toggle("sel", h===state.selectedHour);
 
@@ -538,9 +571,13 @@
       p.classList.toggle("active", p.dataset.sex === state.participant.sex);
     });
 
-    // palette active
+    // palette active + shade selection
     document.querySelectorAll("#palette .sw").forEach(sw=>{
       sw.classList.toggle("active", sw.dataset.key === selectedEntry().emotionKey);
+      const shadeSelect = sw.querySelector(".shadeSelect");
+      if(shadeSelect && sw.dataset.key === selectedEntry().emotionKey && selectedEntry().emotionShade){
+        shadeSelect.value = selectedEntry().emotionShade;
+      }
     });
 
     // intensity active + enable/disable logic
@@ -734,7 +771,7 @@
   function buildCSV(){
     const header = [
       "name","age","sex","hour",
-      "emotion_color","emotion_label",
+      "emotion_color","emotion_label","emotion_shade",
       "intensity","with_whom","events","location","frequency","when_started",
       "safe_most","safe_least"
     ].join(",");
@@ -752,6 +789,7 @@
         h,
         emo?.color || "",
         emo?.label || "",
+        e.emotionShade || "",
         e.intensity || "",
         e.withWhom || "",
         events,
