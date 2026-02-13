@@ -3,20 +3,19 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ΧρονοΣυναίσθημα – Παιχνίδι 4 Ζωνών</title>
+  <title>ΧρονοΣυναίσθημα 24 – Φάση Α</title>
   <style>
     :root{
       --bg:#0b1020;
-      --card:#111a33;
       --text:#eaf0ff;
       --muted:#b8c3e6;
       --border:rgba(255,255,255,.14);
-      --shadow: 0 14px 40px rgba(0,0,0,.42);
+      --shadow:0 14px 40px rgba(0,0,0,.42);
       --radius:22px;
-      --good:#22c55e;
-      --bad:#ef4444;
       --warn:#f59e0b;
+      --good:#22c55e;
       --accent:#5a78ff;
+      --card:rgba(255,255,255,.05);
     }
     *{box-sizing:border-box}
     body{
@@ -29,7 +28,7 @@
         var(--bg);
       color:var(--text);
     }
-    .wrap{max-width:1100px;margin:0 auto;padding:18px}
+    .wrap{max-width:1180px;margin:0 auto;padding:18px}
     header{
       display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
       margin-bottom:14px;
@@ -38,15 +37,15 @@
     .logo{
       width:46px;height:46px;border-radius:16px;
       background: conic-gradient(from 180deg,
-        #FFD400, #FF8A00, #FF4FD8, #22C55E, #5AD7FF, #A78BFA,
-        #D1D5DB, #6B7280, #1F3B88, #A16207, #EF4444, #111827, #7C3AED, #FFFFFF);
+        #EF4444, #1F3B88, #FFD400, #22C55E, #111827, #FFFFFF, #7C3AED, #A16207);
       box-shadow: var(--shadow);
       border: 1px solid rgba(255,255,255,.18);
     }
     h1{font-size:18px;margin:0}
     .sub{color:var(--muted);font-size:12px;margin-top:2px;line-height:1.3}
+
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
       border:1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
@@ -59,7 +58,8 @@
       display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
     .bd{padding:14px}
-    .small{font-size:12px;color:var(--muted)}
+    .small{font-size:12px;color:var(--muted);line-height:1.35}
+    .status{font-size:12px;color:var(--muted);font-weight:800}
     .btnbar{display:flex;flex-wrap:wrap;gap:8px}
     button{
       border:1px solid var(--border);
@@ -73,19 +73,21 @@
       user-select:none;
     }
     button:hover{transform:translateY(-1px); background: rgba(255,255,255,.10);}
-    button.primary{background: linear-gradient(180deg, rgba(90,120,255,.35), rgba(90,120,255,.12));}
     button.good{background: linear-gradient(180deg, rgba(34,197,94,.35), rgba(34,197,94,.12));}
     button.bad{background: linear-gradient(180deg, rgba(239,68,68,.35), rgba(239,68,68,.12));}
+    button.primary{background: linear-gradient(180deg, rgba(90,120,255,.35), rgba(90,120,255,.12));}
 
-    /* Zones */
+    /* 9 zones */
     .zones{
       display:grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(3, 1fr);
       gap:10px;
-      margin-bottom:12px;
     }
-    @media (max-width: 900px){
+    @media (max-width: 980px){
       .zones{grid-template-columns: repeat(2, 1fr);}
+    }
+    @media (max-width: 620px){
+      .zones{grid-template-columns: 1fr;}
     }
     .zone{
       border:1px solid var(--border);
@@ -95,62 +97,57 @@
       cursor:pointer;
       transition:.15s transform,.15s background;
       position:relative;
-      min-height:86px;
+      min-height:96px;
     }
     .zone:hover{transform:translateY(-2px); background: rgba(255,255,255,.07);}
     .zone.active{outline:3px solid rgba(90,120,255,.55);}
-    .zone-title{font-weight:900;font-size:16px}
-    .zone-time{font-size:12px;color:var(--muted);margin-top:3px}
-    .zone-mini{
-      margin-top:10px;
-      display:flex;align-items:center;gap:8px;flex-wrap:wrap;
-      font-size:12px;color:var(--muted);
-    }
+    .zone-title{font-weight:1000;font-size:15px}
+    .zone-time{font-size:12px;color:var(--muted);margin-top:3px;font-family: ui-monospace, SFMono-Regular, Menlo, monospace;}
+    .zone-mini{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
     .chip{
-      display:inline-flex;align-items:center;gap:7px;
+      display:inline-flex;align-items:center;gap:8px;
       border:1px solid var(--border);
       background: rgba(0,0,0,.18);
-      padding:6px 10px;
-      border-radius:999px;
-      font-weight:700;
-      color:var(--text);
+      padding:6px 10px;border-radius:999px;
+      font-weight:900;font-size:12px;
     }
-    .dot{width:14px;height:14px;border-radius:999px;border:1px solid rgba(255,255,255,.40)}
+    .dot{width:14px;height:14px;border-radius:999px;border:1px solid rgba(255,255,255,.35)}
+    .tag{
+      font-size:11px;color:var(--muted);
+      border:1px dashed rgba(255,255,255,.18);
+      padding:6px 10px;border-radius:999px;
+      background: rgba(255,255,255,.05);
+      font-weight:800;
+    }
 
-    /* Game layout */
-    .game{
+    /* layout */
+    .grid{
       display:grid;
-      grid-template-columns: 1.1fr .9fr;
+      grid-template-columns: 1.15fr .85fr;
       gap:12px;
     }
     @media (max-width: 980px){
-      .game{grid-template-columns:1fr}
+      .grid{grid-template-columns:1fr}
     }
 
-    /* Wheel (pie) */
-    .wheel-wrap{
-      display:grid;
-      grid-template-columns: 1fr;
-      gap:10px;
-    }
-    .wheel-card{
+    /* color "pie" + shade choices */
+    .wheelWrap{
       border:1px solid var(--border);
       border-radius:22px;
       background: rgba(0,0,0,.18);
       padding:14px;
     }
-    .wheel-row{
+    .wheelRow{
       display:grid;
-      grid-template-columns: 280px 1fr;
+      grid-template-columns: 300px 1fr;
       gap:14px;
-      align-items:center;
+      align-items:start;
     }
     @media (max-width: 760px){
-      .wheel-row{grid-template-columns:1fr}
+      .wheelRow{grid-template-columns:1fr}
     }
-
     .wheel{
-      width:280px;height:280px;border-radius:50%;
+      width:300px;height:300px;border-radius:50%;
       border:2px solid rgba(255,255,255,.18);
       box-shadow: var(--shadow);
       position:relative;
@@ -158,20 +155,15 @@
       overflow:hidden;
       background:
         conic-gradient(
-          #FFD400 0deg 25deg,
-          #FF8A00 25deg 50deg,
-          #FF4FD8 50deg 75deg,
-          #22C55E 75deg 100deg,
-          #5AD7FF 100deg 125deg,
-          #A78BFA 125deg 150deg,
-          #D1D5DB 150deg 175deg,
-          #6B7280 175deg 200deg,
-          #1F3B88 200deg 225deg,
-          #A16207 225deg 250deg,
-          #EF4444 250deg 275deg,
-          #111827 275deg 300deg,
-          #7C3AED 300deg 325deg,
-          #FFFFFF 325deg 360deg
+          /* 8 βασικά χρώματα όπως στο doc */
+          #EF4444 0deg 45deg,   /* Κόκκινο */
+          #1F3B88 45deg 90deg,  /* Μπλε */
+          #FFD400 90deg 135deg, /* Κίτρινο */
+          #22C55E 135deg 180deg,/* Πράσινο */
+          #111827 180deg 225deg,/* Μαύρο */
+          #FFFFFF 225deg 270deg,/* Άσπρο */
+          #7C3AED 270deg 315deg,/* Μωβ */
+          #A16207 315deg 360deg /* Καφέ */
         );
     }
     .wheel::after{
@@ -180,31 +172,18 @@
       background: radial-gradient(circle at center, rgba(0,0,0,.0) 0 62%, rgba(0,0,0,.35) 64% 100%);
       pointer-events:none;
     }
-    .wheel-center{
+    .wheelCenter{
       position:absolute; left:50%; top:50%;
       transform:translate(-50%,-50%);
-      width:150px;height:150px;border-radius:50%;
+      width:165px;height:165px;border-radius:50%;
       background: rgba(10,16,32,.92);
       border:2px solid rgba(255,255,255,.16);
       display:flex;flex-direction:column;align-items:center;justify-content:center;
-      text-align:center;
-      padding:10px;
+      text-align:center;padding:12px;
     }
-    .center-label{
-      font-size:12px;color:var(--muted);
-      font-weight:800;
-      margin-bottom:6px;
-    }
-    .center-emotion{
-      font-size:16px;
-      font-weight:1000;
-      line-height:1.15;
-    }
-    .center-sub{
-      margin-top:8px;
-      font-size:12px;color:var(--muted);
-      font-weight:700;
-    }
+    .centerLabel{font-size:12px;color:var(--muted);font-weight:1000;margin-bottom:6px}
+    .centerMain{font-size:16px;font-weight:1100;line-height:1.15}
+    .centerSub{margin-top:8px;font-size:12px;color:var(--muted);font-weight:900}
     .pointer{
       position:absolute; top:-10px; left:50%;
       transform:translateX(-50%);
@@ -215,65 +194,38 @@
       filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
     }
 
-    /* Big, kid-friendly emotion buttons */
-    .emo-list{
+    /* shade buttons (4 levels) */
+    .shadeBox{
+      margin-top:10px;
       display:grid;
       grid-template-columns: repeat(2, minmax(0,1fr));
       gap:10px;
     }
-    @media (max-width: 560px){
-      .emo-list{grid-template-columns:1fr}
-    }
-    .emo-btn{
-      display:flex;align-items:center;gap:10px;
-      border:2px solid rgba(255,255,255,.18);
-      background: rgba(0,0,0,.18);
-      padding:12px;
-      border-radius:18px;
-      cursor:pointer;
-      transition:.15s transform,.15s background,.15s outline;
-      user-select:none;
-      min-height:60px;
-    }
-    .emo-btn:hover{transform:translateY(-2px); background: rgba(255,255,255,.06);}
-    .emo-btn.active{outline:3px solid rgba(90,120,255,.55);}
-    .emo-color{
-      width:42px;height:42px;border-radius:16px;border:2px solid rgba(0,0,0,.25);
-      flex:0 0 auto;
-    }
-    .emo-text{
-      display:flex;flex-direction:column;gap:2px;
-      min-width:0;
-    }
-    .emo-name{
-      font-weight:1000;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-    }
-    .emo-hint{font-size:12px;color:var(--muted);font-weight:700}
-
-    /* Intensity: emoji scale */
-    .intensity{
-      display:flex;gap:10px;flex-wrap:wrap;
-      margin-top:10px;
-    }
-    .star{
-      flex:1 1 auto;
-      min-width:110px;
-      border:2px solid rgba(255,255,255,.14);
+    .shadeBtn{
+      border:2px solid rgba(255,255,255,.16);
       border-radius:18px;
       background: rgba(0,0,0,.16);
       padding:12px;
-      text-align:center;
       cursor:pointer;
-      user-select:none;
       transition:.15s transform,.15s background,.15s outline;
+      user-select:none;
+      display:flex;align-items:center;gap:10px;
+      min-height:60px;
       font-weight:1000;
     }
-    .star:hover{transform:translateY(-2px); background: rgba(255,255,255,.06);}
-    .star.active{outline:3px solid rgba(90,120,255,.55);}
+    .shadeBtn:hover{transform:translateY(-2px); background: rgba(255,255,255,.06);}
+    .shadeBtn.active{outline:3px solid rgba(90,120,255,.55);}
+    .shadeSwatch{
+      width:44px;height:44px;border-radius:16px;border:2px solid rgba(0,0,0,.25);
+      flex:0 0 auto;
+    }
+    .shadeText{display:flex;flex-direction:column;gap:2px;min-width:0}
+    .shadeTop{font-size:14px}
+    .shadeHint{font-size:12px;color:var(--muted);font-weight:900}
 
-    /* Simple selects */
-    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px;font-weight:900}
-    select, input{
+    /* right panel (Phase A questions) */
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px;font-weight:1000}
+    select{
       width:100%;
       padding:12px 12px;
       border-radius:16px;
@@ -290,156 +242,240 @@
       padding:10px 12px;border-radius:16px;
       font-size:12px;color:var(--muted);
       line-height:1.4;
+      margin-bottom:10px;
     }
-
-    .status{font-size:12px;color:var(--muted);font-weight:800}
+    .ok{
+      color: var(--good);
+      font-weight:1000;
+      font-size:12px;
+      margin-top:10px;
+    }
+    .warn{
+      color: var(--warn);
+      font-weight:1000;
+      font-size:12px;
+      margin-top:10px;
+    }
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <h1>ΧρονοΣυναίσθημα – Παιχνίδι 4 Ζωνών</h1>
-          <div class="sub">Διάλεξε ζώνη (Πρωί/Μεσημέρι/Απόγευμα/Βράδυ) → διάλεξε συναίσθημα από την “πίτα” → έτοιμο!</div>
-        </div>
+<div class="wrap">
+  <header>
+    <div class="brand">
+      <div class="logo" aria-hidden="true"></div>
+      <div>
+        <h1>ΧρονοΣυναίσθημα 24 – Φάση Α</h1>
+        <div class="sub">Παιχνίδι χρώματος για παιδιά δημοτικού: διάλεξε ζώνη → διάλεξε χρώμα → διάλεξε «πόσο» (απόχρωση) → απάντησε 3 μικρές ερωτήσεις.</div>
       </div>
-      <div class="btnbar">
-        <button id="btnExportJSON" class="good">⬇ Εξαγωγή JSON</button>
-        <button id="btnExportCSV" class="good">⬇ Εξαγωγή CSV</button>
-        <button id="btnReset" class="bad">🧹 Καθαρισμός</button>
+    </div>
+    <div class="btnbar">
+      <button id="btnExportJSON" class="good">⬇ Εξαγωγή JSON</button>
+      <button id="btnExportCSV" class="good">⬇ Εξαγωγή CSV</button>
+      <button id="btnReset" class="bad">🧹 Καθαρισμός</button>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="hd">
+      <div>
+        <div style="font-weight:1100">1) Διάλεξε μέρος της ημέρας</div>
+        <div class="small">Οι ζώνες καλύπτουν το 24ωρο χωρίς κενά/επικαλύψεις.</div>
       </div>
-    </header>
+      <div class="status" id="saveStatus">● αποθηκεύτηκε</div>
+    </div>
+    <div class="bd">
+      <div class="zones" id="zones"></div>
+    </div>
+  </section>
 
-    <section class="card">
-      <div class="hd">
-        <div>
-          <div style="font-weight:1000">1) Διάλεξε τη ζώνη της ημέρας</div>
-          <div class="small">Πάτα σε μία κάρτα. Μετά διάλεξε συναίσθημα από την πίτα.</div>
-        </div>
-        <div class="status" id="saveStatus">● αποθηκεύτηκε</div>
+  <div style="height:12px"></div>
+
+  <section class="card">
+    <div class="hd">
+      <div>
+        <div style="font-weight:1100">2) Διάλεξε χρώμα (και πόσο έντονο)</div>
+        <div class="small">Το παιδί επιλέγει πρώτα συμβολικά (χρώμα), μετά βλέπει/διαβάζει τη λέξη του συναισθήματος.</div>
       </div>
-      <div class="bd">
-        <div class="zones" id="zones"></div>
-      </div>
-    </section>
+      <div class="small">Ζώνη: <b id="zoneLabel">—</b></div>
+    </div>
 
-    <div style="height:12px"></div>
+    <div class="bd grid">
+      <!-- LEFT: color pie + 4 shades -->
+      <div class="wheelWrap">
+        <div class="wheelRow">
+          <div class="wheel" id="wheel" role="button" aria-label="Πίτα χρωμάτων">
+            <div class="pointer" aria-hidden="true"></div>
+            <div class="wheelCenter">
+              <div class="centerLabel">Διάλεξες:</div>
+              <div class="centerMain" id="centerMain">—</div>
+              <div class="centerSub" id="centerSub">Πάτα ένα χρώμα</div>
+            </div>
+          </div>
 
-    <section class="card">
-      <div class="hd">
-        <div>
-          <div style="font-weight:1000">2) Παιχνίδι Συναισθήματος</div>
-          <div class="small">Πάτα ένα μεγάλο κουμπί συναισθήματος ή γύρνα την πίτα (τυχαία επιλογή).</div>
-        </div>
-        <div class="small">Ζώνη: <b id="zoneLabel">Πρωί</b></div>
-      </div>
+          <div>
+            <div class="hint">
+              🎮 <b>Παιχνίδι:</b> Πάτα στην “πίτα” για να διαλέξεις χρώμα.<br>
+              Μετά διάλεξε «πόσο» (απόχρωση) → <b>Λίγο / Αρκετά / Πολύ / Πάρα πολύ</b> (με φατσούλες).
+            </div>
 
-      <div class="bd game">
-        <!-- LEFT: Wheel + emotion big list -->
-        <div class="wheel-wrap">
-          <div class="wheel-card">
-            <div class="wheel-row">
-              <div class="wheel" id="wheel" role="button" aria-label="Πίτα συναισθήματος">
-                <div class="pointer" aria-hidden="true"></div>
-                <div class="wheel-center" id="wheelCenter">
-                  <div class="center-label">Διάλεξες:</div>
-                  <div class="center-emotion" id="centerEmotion">—</div>
-                  <div class="center-sub" id="centerSub">Πάτα ένα συναίσθημα</div>
-                </div>
-              </div>
+            <div id="shadeTitle" class="small" style="font-weight:1100;margin-top:6px">Απόχρωση (πόσο το νιώθεις;)</div>
+            <div class="shadeBox" id="shadeBox"></div>
 
-              <div>
-                <div class="hint">
-                  🎮 <b>Παιχνίδι:</b> Πάτα πάνω στην “πίτα” για <b>τυχαίο</b> συναίσθημα!<br/>
-                  Ή πάτα ένα από τα μεγάλα κουμπιά δεξιά για να διαλέξεις εσύ.
-                </div>
-
-                <div class="intensity" id="intensity"></div>
-
-                <div class="emo-list" id="emoList" style="margin-top:12px"></div>
-              </div>
+            <div class="small" style="margin-top:10px">
+              <b>Σημείωση:</b> Η επιλογή χρώματος είναι ένας ασφαλής τρόπος έκφρασης για παιδιά δημοτικού (πρώτα συμβολικά, μετά με λέξεις).  [oai_citation:1‡Επισημάνσεις ΓΙΑ ΤΕΣΤ ΑΝΙΧΝΕΥΣΗΣ ΚΑΚΟΠΟΙΗΣΗΣ.docx](sediment://file_0000000058207246af9f22b19710eff5)
             </div>
           </div>
         </div>
-
-        <!-- RIGHT: Simple context (kid-friendly) -->
-        <div class="wheel-card">
-          <div style="font-weight:1000;margin-bottom:6px">3) Μόνο 3 μικρές ερωτήσεις</div>
-          <div class="small">Για να μπορεί να το κάνει παιδί μόνο του.</div>
-
-          <label for="withWhom">Με ποιον είσαι;</label>
-          <select id="withWhom"></select>
-
-          <label for="where">Πού είσαι;</label>
-          <select id="where"></select>
-
-          <label for="what">Τι έγινε;</label>
-          <select id="what"></select>
-
-          <div style="height:10px"></div>
-          <button id="btnDone" class="primary" style="width:100%">✅ ΤΕΛΟΣ για αυτή τη ζώνη</button>
-          <div id="doneMsg" class="small" style="margin-top:10px"></div>
-        </div>
       </div>
-    </section>
-  </div>
+
+      <!-- RIGHT: Phase A questions (frequency + when started + trigger) -->
+      <div class="wheelWrap">
+        <div style="font-weight:1100;margin-bottom:6px">3) 3 μικρές ερωτήσεις (Φάση Α)</div>
+        <div class="small">Σταματάμε εδώ. Χώρος/πρόσωπα θα μπουν στη Φάση Β.</div>
+
+        <label for="frequency">Αυτό συμβαίνει…</label>
+        <select id="frequency"></select>
+
+        <label for="whenStarted">Πότε ένιωσες έτσι για πρώτη φορά;</label>
+        <select id="whenStarted"></select>
+
+        <label for="trigger">Τι το προκάλεσε; (διάλεξε ένα)</label>
+        <select id="trigger"></select>
+
+        <button id="btnDone" class="primary" style="width:100%;margin-top:12px">✅ ΤΕΛΟΣ για αυτή τη ζώνη</button>
+        <div id="doneMsg" class="small" style="margin-top:10px"></div>
+      </div>
+    </div>
+  </section>
+</div>
 
 <script>
-  // ---------------- Data ----------------
-  const STORAGE_KEY = "chronofeel_game_4zones_v1";
+  // =======================
+  //  ΑΚΡΙΒΕΙΣ ΑΠΑΙΤΗΣΕΙΣ ΠΕΛΑΤΗ (Φάση Α)
+  //  - 9 ζώνες (24ωρο, χωρίς overlap)
+  //  - Χρώμα -> συναίσθημα (ονομασία εμφανίζεται αλλά δεν είναι το πρώτο βήμα)
+  //  - Ένταση μέσω απόχρωσης (4 επίπεδα: λίγο/αρκετά/πολύ/πάρα πολύ + φατσούλες)
+  //  - Συχνότητα + χρόνος έναρξης
+  //  - Αιτία/εκλυτικός παράγοντας (λίστες συμπεριφορών)
+  //  - ΣΤΑΜΑΤΑΜΕ εδώ (όχι χώρος/πρόσωπα ακόμα)
+  // =======================
 
+  const STORAGE_KEY = "chronosynaisthima24_phaseA_v1";
+
+  // 9 ΖΩΝΕΣ όπως στο doc (00:00–24:00, χωρίς επικαλύψεις)
   const ZONES = [
-    { key:"morning", label:"Πρωί",     time:"06:00 – 12:00", emoji:"🌞" },
-    { key:"noon",    label:"Μεσημέρι", time:"12:00 – 16:00", emoji:"🍽️" },
-    { key:"aft",     label:"Απόγευμα", time:"16:00 – 20:00", emoji:"🎮" },
-    { key:"night",   label:"Βράδυ",    time:"20:00 – 06:00", emoji:"🌙" }
+    { key:"z00_05", label:"🌙 Μεσάνυχτα – Νύχτα", time:"00:00 – 05:00", context:"Βαθύς ύπνος" },
+    { key:"z05_06", label:"🌅 Ξημέρωμα", time:"05:00 – 06:00", context:"Ύπνος / σταδιακή αφύπνιση" },
+    { key:"z06_09", label:"🌞 Πρωί", time:"06:00 – 09:00", context:"Ξύπνημα, ετοιμασία, μετάβαση & αρχή σχολείου" },
+    { key:"z09_12", label:"📚 Αργά το πρωί", time:"09:00 – 12:00", context:"Σχολείο (μαθήματα, διάλειμμα)" },
+    { key:"z12_14", label:"🏠 Μεσημέρι (μετάβαση)", time:"12:00 – 14:00", context:"Σχολείο → σχόλασμα → επιστροφή στο σπίτι" },
+    { key:"z14_16", label:"🍽️ Νωρίς το απόγευμα", time:"14:00 – 16:00", context:"Φαγητό, ξεκούραση" },
+    { key:"z16_18", label:"🎮 Αργά το απόγευμα", time:"16:00 – 18:00", context:"Παιχνίδι, δραστηριότητες" },
+    { key:"z18_21", label:"👨‍👩‍👧‍👦 Νωρίς το βράδυ", time:"18:00 – 21:00", context:"Οικογενειακός χρόνος" },
+    { key:"z21_24", label:"🛏️ Βράδυ", time:"21:00 – 24:00", context:"Προετοιμασία για ύπνο, ύπνος" },
   ];
 
-  // Μεγάλα, ξεκάθαρα ελληνικά ονόματα
-  const EMOTIONS = [
-    {key:"yellow",  color:"#FFD400", name:"Χαρά",        hint:"Νιώθω καλά 😊"},
-    {key:"orange",  color:"#FF8A00", name:"Ενθουσιασμός",hint:"Θέλω δράση! 🤩"},
-    {key:"pink",    color:"#FF4FD8", name:"Αγάπη",       hint:"Τρυφερότητα 💗"},
-    {key:"green",   color:"#22C55E", name:"Ασφάλεια",    hint:"Ήρεμος/η 😌"},
-    {key:"lblue",   color:"#5AD7FF", name:"Χαλάρωση",    hint:"Ξεκουράζομαι 🧘"},
-    {key:"lpurple", color:"#A78BFA", name:"Περιέργεια",  hint:"Θέλω να μάθω 🧐"},
-    {key:"lgray",   color:"#D1D5DB", name:"Πλήξη",       hint:"Δεν έχω τι να κάνω 😑"},
-    {key:"dgray",   color:"#6B7280", name:"Στεναχώρια",  hint:"Κάτι με βαραίνει 😔"},
-    {key:"dblue",   color:"#1F3B88", name:"Μοναξιά",     hint:"Νιώθω μόνος/η 🥺"},
-    {key:"brown",   color:"#A16207", name:"Σύγχυση",     hint:"Δεν καταλαβαίνω 😵"},
-    {key:"red",     color:"#EF4444", name:"Θυμός",       hint:"Εκνευρίστηκα 😡"},
-    {key:"black",   color:"#111827", name:"Φόβος",       hint:"Φοβάμαι 😨"},
-    {key:"dpurple", color:"#7C3AED", name:"Ντροπή/Ενοχή",hint:"Ντρέπομαι 😳"},
-    {key:"white",   color:"#FFFFFF", name:"Τίποτα",      hint:"Δεν νιώθω κάτι 😐"},
+  // Βασικά χρώματα που τονίζει ο πελάτης + ονομασίες (εμφανίζονται μετά την επιλογή χρώματος)
+  // ΣΗΜΕΙΩΣΗ: Δεν τα αντιμετωπίζουμε ως “απόλυτες” αντιστοιχίσεις—είναι λειτουργικές συνδηλώσεις, όπως γράφει το doc.
+  const COLORS = [
+    { key:"red",   base:"#EF4444", name:"Κόκκινο",  emotions:"Θυμός / Ένταση / Αναστάτωση", shade: ["#FCA5A5","#EF4444","#DC2626","#991B1B"] },
+    { key:"blue",  base:"#1F3B88", name:"Μπλε",     emotions:"Λύπη / Μοναξιά / Απόσυρση",   shade: ["#93C5FD","#3B82F6","#1D4ED8","#1E3A8A"] },
+    { key:"yellow",base:"#FFD400", name:"Κίτρινο",  emotions:"Χαρά / Ελπίδα / Περιέργεια",  shade: ["#FEF08A","#FFD400","#F59E0B","#B45309"] },
+    { key:"green", base:"#22C55E", name:"Πράσινο",  emotions:"Ηρεμία / Ασφάλεια",           shade: ["#BBF7D0","#22C55E","#16A34A","#14532D"] },
+    { key:"black", base:"#111827", name:"Μαύρο",    emotions:"Φόβος / Απειλή / Απόσυρση",   shade: ["#6B7280","#374151","#1F2937","#111827"] },
+    { key:"white", base:"#FFFFFF", name:"Άσπρο",    emotions:"Κενό / Μούδιασμα / Απόσταση", shade: ["#FFFFFF","#F3F4F6","#E5E7EB","#D1D5DB"] },
+    { key:"purple",base:"#7C3AED", name:"Μωβ",      emotions:"Σύγχυση / Εσωτερική ένταση",  shade: ["#DDD6FE","#A78BFA","#7C3AED","#4C1D95"] },
+    { key:"brown", base:"#A16207", name:"Καφέ",     emotions:"Ανασφάλεια / Έλλειψη φροντίδας", shade: ["#FED7AA","#F59E0B","#A16207","#78350F"] },
   ];
 
+  // 4-βάθμια ένταση (όπως ζητάει) + φατσούλες
   const INTENSITY = [
-    { key:"λίγο", label:"🙂 Λίγο" },
-    { key:"μέτρια", label:"😀 Μέτρια" },
-    { key:"πολύ", label:"😃 Πολύ" },
-    { key:"πάρα πολύ", label:"🤯 Πάρα πολύ" },
+    { key:"λίγο",       label:"🙂 Λίγο" },
+    { key:"αρκετά",     label:"😀 Αρκετά" },
+    { key:"πολύ",       label:"😟 Πολύ" },
+    { key:"πάρα πολύ",  label:"😱 Πάρα πολύ" },
   ];
 
-  const WITH_WHOM = ["Μόνος/η","Μαμά","Μπαμπάς","Αδερφός/Αδερφή","Παππούς/Γιαγιά","Φίλος/Φίλη","Δάσκαλος/Δασκάλα"];
-  const WHERE = ["Σπίτι","Σχολείο","Δωμάτιό μου","Αυλή/Πάρκο","Δραστηριότητα/Σπορ","Αυτοκίνητο"];
-  const WHAT = ["Παιχνίδι","Μάθημα/Διάβασμα","Φαγητό","Καυγάς/Φωνές","Μουσική/Χορός","Ύπνος/Ξεκούραση","Κάτι άλλο"];
+  const FREQUENCY = [
+    "Κάθε μέρα",
+    "Περισσότερο από μία μέρα την εβδομάδα",
+    "Περισσότερο από μία μέρα το μήνα",
+    "Περισσότερο από 1 φορά το χρόνο",
+    "Μόνο μία φορά"
+  ];
+
+  const WHEN_STARTED = [
+    "Πριν λίγες μέρες",
+    "Πριν έναν μήνα",
+    "Πριν κάποιους μήνες",
+    "Πριν ένα χρόνο",
+    "Παλαιότερα από ένα χρόνο"
+  ];
+
+  // Εκλυτικοί παράγοντες / συμπεριφορές (όπως στο doc: αρνητικές + προστατευτικές)
+  // (Στη Φάση Α ζητά “αιτία/πράξη” — εδώ το κάνουμε 1 επιλογή για να παραμείνει παιδικό.
+  //  Αν θες πολλαπλή επιλογή, το κάνουμε multi-select.)
+  const TRIGGERS = [
+    { group:"Συμπεριφορές στο σπίτι (δύσκολα)", items:[
+      "Υπάρχουν συχνά φωνές στο σπίτι.",
+      "Οι μεγάλοι μαλώνουν έντονα μπροστά μου.",
+      "Μένω μόνος/η στο σπίτι για πολλές ώρες.",
+      "Οι γονείς λείπουν συχνά χωρίς να υπάρχει φροντίδα.",
+      "Οι μεγάλοι πίνουν αλκοόλ μέσα στο σπίτι.",
+      "Υπάρχουν χτυπήματα ή σπρωξίματα στο σπίτι.",
+      "Με τιμωρούν με φωνές, απειλές ή χτυπήματα.",
+      "Δεν μου μιλούν ή με αγνοούν για μεγάλο διάστημα."
+    ]},
+    { group:"Φροντίδα & βασικές ανάγκες (δύσκολα)", items:[
+      "Δεν υπάρχει πάντα φαγητό στο σπίτι.",
+      "Πηγαίνω σχολείο χωρίς πρωινό.",
+      "Το σπίτι είναι κρύο τον χειμώνα.",
+      "Δεν έχω καθαρά ρούχα ή παπούτσια.",
+      "Δεν υπάρχει φροντίδα όταν αρρωσταίνω.",
+      "Δεν υπάρχουν σχολικά είδη όταν τα χρειάζομαι."
+    ]},
+    { group:"Σχολείο & εκπαίδευση (δύσκολα)", items:[
+      "Ο/Η δάσκαλος/α φωνάζει συχνά στην τάξη.",
+      "Με βάζουν τιμωρία μπροστά στους άλλους.",
+      "Δεν μου εξηγούν όταν δεν καταλαβαίνω το μάθημα.",
+      "Υπάρχουν κοροϊδίες ή χτυπήματα από άλλα παιδιά.",
+      "Κανείς δεν βοηθά στη μελέτη στο σπίτι.",
+      "Με χαρακτηρίζουν «τεμπέλη» ή «κακό μαθητή»."
+    ]},
+    { group:"Σχέση γονέων – παιδιού (δύσκολα)", items:[
+      "Δεν μιλάμε καθημερινά στο σπίτι.",
+      "Δεν περνάμε χρόνο μαζί.",
+      "Δεν υπάρχει κοινή μελέτη ή δραστηριότητες.",
+      "Οι γονείς δεν έρχονται σε συναντήσεις σχολείου.",
+      "Δεν με ρωτούν πώς πήγε το σχολείο."
+    ]},
+    { group:"Προστατευτικές συμπεριφορές (καλά)", items:[
+      "Υπάρχει ήρεμη συζήτηση στο σπίτι.",
+      "Υπάρχει φαγητό σε καθημερινή βάση.",
+      "Οι γονείς μελετούν μαζί μου.",
+      "Οι μεγάλοι παίζουν ή γελούν μαζί μου.",
+      "Οι γονείς συνεργάζονται με το σχολείο.",
+      "Υπάρχει χιούμορ και κοινός χρόνος.",
+      "Με επιβραβεύουν για την προσπάθεια."
+    ]},
+  ];
 
   const DEFAULT_ZONE = () => ({
-    emotionKey:null,
-    intensityKey:null,
-    withWhom:"",
-    where:"",
-    what:"",
+    colorKey: null,
+    shadeIndex: null,     // 0..3 -> map to intensity
+    intensityKey: null,   // "λίγο/αρκετά/πολύ/πάρα πολύ"
+    frequency: "",
+    whenStarted: "",
+    trigger: ""
   });
 
   let state = {
-    selectedZoneKey: "morning",
+    selectedZoneKey: ZONES[0].key,
     zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE()])),
+    selectedColorKey: null
   };
 
-  // ---------------- Helpers ----------------
+  // ---------- helpers ----------
   const $ = (id) => document.getElementById(id);
 
   function setSaved(flag){
@@ -460,84 +496,10 @@
       if(s && s.zones) state = s;
     }catch(e){}
   }
-  function zoneEntry(){
-    return state.zones[state.selectedZoneKey];
-  }
-  function emoByKey(k){ return EMOTIONS.find(e=>e.key===k) || null; }
+
+  function zoneEntry(){ return state.zones[state.selectedZoneKey]; }
   function zoneByKey(k){ return ZONES.find(z=>z.key===k) || ZONES[0]; }
-
-  // ---------------- UI build ----------------
-  function buildZones(){
-    const wrap = $("zones");
-    wrap.innerHTML = "";
-    ZONES.forEach(z=>{
-      const d = document.createElement("div");
-      d.className = "zone";
-      d.dataset.key = z.key;
-
-      const entry = state.zones[z.key];
-      const emo = emoByKey(entry.emotionKey);
-
-      d.innerHTML = `
-        <div class="zone-title">${z.emoji} ${z.label}</div>
-        <div class="zone-time">${z.time}</div>
-        <div class="zone-mini">
-          ${emo ? `<span class="chip"><span class="dot" style="background:${emo.color}"></span>${emo.name}</span>` : `<span class="small">Διάλεξε συναίσθημα…</span>`}
-        </div>
-      `;
-
-      d.addEventListener("click", ()=>{
-        state.selectedZoneKey = z.key;
-        render();
-        autosave();
-      });
-
-      wrap.appendChild(d);
-    });
-  }
-
-  function buildIntensity(){
-    const wrap = $("intensity");
-    wrap.innerHTML = "";
-    INTENSITY.forEach(it=>{
-      const b = document.createElement("div");
-      b.className = "star";
-      b.textContent = it.label;
-      b.dataset.key = it.key;
-      b.addEventListener("click", ()=>{
-        if(!zoneEntry().emotionKey) return;
-        zoneEntry().intensityKey = it.key;
-        autosave();
-        render();
-      });
-      wrap.appendChild(b);
-    });
-  }
-
-  function buildEmoList(){
-    const wrap = $("emoList");
-    wrap.innerHTML = "";
-    EMOTIONS.forEach(e=>{
-      const b = document.createElement("div");
-      b.className = "emo-btn";
-      b.dataset.key = e.key;
-      b.innerHTML = `
-        <div class="emo-color" style="background:${e.color}"></div>
-        <div class="emo-text">
-          <div class="emo-name">${e.name}</div>
-          <div class="emo-hint">${e.hint}</div>
-        </div>
-      `;
-      b.addEventListener("click", ()=>{
-        zoneEntry().emotionKey = e.key;
-        // αν αλλάξει συναίσθημα, καθάρισε ένταση
-        zoneEntry().intensityKey = null;
-        autosave();
-        render();
-      });
-      wrap.appendChild(b);
-    });
-  }
+  function colorByKey(k){ return COLORS.find(c=>c.key===k) || null; }
 
   function fillSelect(id, options, placeholder){
     const sel = $(id);
@@ -554,73 +516,232 @@
     });
   }
 
-  // ---------------- Wheel "game" ----------------
-  function pickRandomEmotion(){
-    const idx = Math.floor(Math.random() * EMOTIONS.length);
-    const e = EMOTIONS[idx];
-    zoneEntry().emotionKey = e.key;
+  function fillTriggerSelect(){
+    const sel = $("trigger");
+    sel.innerHTML = "";
+    const o = document.createElement("option");
+    o.value = "";
+    o.textContent = "Διάλεξε…";
+    sel.appendChild(o);
+
+    TRIGGERS.forEach(g=>{
+      const og = document.createElement("optgroup");
+      og.label = g.group;
+      g.items.forEach(item=>{
+        const opt = document.createElement("option");
+        opt.value = item;
+        opt.textContent = item;
+        og.appendChild(opt);
+      });
+      sel.appendChild(og);
+    });
+  }
+
+  // ---------- build zones ----------
+  function buildZones(){
+    const wrap = $("zones");
+    wrap.innerHTML = "";
+    ZONES.forEach(z=>{
+      const entry = state.zones[z.key];
+      const col = colorByKey(entry.colorKey);
+
+      const d = document.createElement("div");
+      d.className = "zone";
+      d.dataset.key = z.key;
+
+      const chip = col
+        ? `<span class="chip"><span class="dot" style="background:${col.base}"></span>${col.name}</span>`
+        : `<span class="tag">Διάλεξε χρώμα…</span>`;
+
+      const intensityTag = entry.intensityKey
+        ? `<span class="chip">Ένταση: ${entry.intensityKey}</span>`
+        : "";
+
+      d.innerHTML = `
+        <div class="zone-title">${z.label}</div>
+        <div class="zone-time">${z.time}</div>
+        <div class="small" style="margin-top:6px">${z.context}</div>
+        <div class="zone-mini">${chip} ${intensityTag}</div>
+      `;
+
+      d.addEventListener("click", ()=>{
+        state.selectedZoneKey = z.key;
+        // αν το zone έχει ήδη χρώμα, το κρατάμε ως “τρέχον χρώμα” για να δείχνει σωστά οι αποχρώσεις
+        state.selectedColorKey = state.zones[z.key].colorKey || null;
+        render();
+        autosave();
+      });
+
+      wrap.appendChild(d);
+    });
+
+    document.querySelectorAll(".zone").forEach(el=>{
+      el.classList.toggle("active", el.dataset.key === state.selectedZoneKey);
+    });
+
+    $("zoneLabel").textContent = `${zoneByKey(state.selectedZoneKey).label} (${zoneByKey(state.selectedZoneKey).time})`;
+  }
+
+  // ---------- color picking from wheel ----------
+  function pickColorFromWheelClick(ev){
+    const wheel = ev.currentTarget;
+    const rect = wheel.getBoundingClientRect();
+    const cx = rect.left + rect.width/2;
+    const cy = rect.top + rect.height/2;
+    const x = ev.clientX - cx;
+    const y = ev.clientY - cy;
+
+    // angle from -pi..pi; convert to 0..360 with 0 at top
+    let angle = Math.atan2(y, x) * (180/Math.PI); // -180..180, 0 at right
+    angle = (angle + 360 + 90) % 360; // rotate so 0 at top
+
+    // 8 slices of 45deg
+    const idx = Math.floor(angle / 45) % 8;
+    const map = ["red","blue","yellow","green","black","white","purple","brown"];
+    const key = map[idx];
+
+    // set selected color but not intensity yet
+    state.selectedColorKey = key;
+    zoneEntry().colorKey = key;
+    zoneEntry().shadeIndex = null;
     zoneEntry().intensityKey = null;
+
     autosave();
-    render();
+    renderCenter();
+    buildShades();
+    highlightShades();
   }
 
-  // ---------------- Render ----------------
-  function render(){
-    buildZones();
-
-    // active zone styling
-    document.querySelectorAll(".zone").forEach(z=>{
-      z.classList.toggle("active", z.dataset.key === state.selectedZoneKey);
-    });
-
-    const z = zoneByKey(state.selectedZoneKey);
-    $("zoneLabel").textContent = z.label;
-
-    // center emotion
+  function renderCenter(){
+    const col = colorByKey(state.selectedColorKey);
     const entry = zoneEntry();
-    const emo = emoByKey(entry.emotionKey);
-    $("centerEmotion").textContent = emo ? emo.name : "—";
-    $("centerSub").textContent = emo
-      ? (entry.intensityKey ? `Ένταση: ${entry.intensityKey.toUpperCase()}` : "Διάλεξε ένταση ↓")
-      : "Πάτα ένα συναίσθημα";
 
-    // highlight emo buttons
-    document.querySelectorAll(".emo-btn").forEach(b=>{
-      b.classList.toggle("active", b.dataset.key === entry.emotionKey);
-    });
+    if(!col){
+      $("centerMain").textContent = "—";
+      $("centerSub").textContent = "Πάτα ένα χρώμα";
+      return;
+    }
 
-    // intensity enable + active
-    document.querySelectorAll(".star").forEach(s=>{
-      const k = s.dataset.key;
-      const enabled = !!entry.emotionKey;
-      s.style.opacity = enabled ? "1" : "0.45";
-      s.style.pointerEvents = enabled ? "auto" : "none";
-      s.classList.toggle("active", k === entry.intensityKey);
-    });
-
-    // selects
-    $("withWhom").value = entry.withWhom || "";
-    $("where").value = entry.where || "";
-    $("what").value = entry.what || "";
+    // δείχνουμε λέξη συναισθήματος ΑΦΟΥ διαλέξει χρώμα, όπως ζητά
+    $("centerMain").textContent = `${col.name}`;
+    if(entry.intensityKey){
+      $("centerSub").textContent = `Συναίσθημα: ${col.emotions} • Ένταση: ${entry.intensityKey}`;
+    }else{
+      $("centerSub").textContent = `Συναίσθημα: ${col.emotions} • Διάλεξε «πόσο» (απόχρωση)`;
+    }
   }
 
-  // ---------------- Export ----------------
+  // ---------- shades ----------
+  function buildShades(){
+    const box = $("shadeBox");
+    box.innerHTML = "";
+
+    const col = colorByKey(state.selectedColorKey);
+    if(!col){
+      // placeholder buttons disabled
+      INTENSITY.forEach((it, i)=>{
+        const b = document.createElement("div");
+        b.className = "shadeBtn";
+        b.style.opacity = "0.45";
+        b.style.pointerEvents = "none";
+        b.innerHTML = `
+          <div class="shadeSwatch" style="background:rgba(255,255,255,.15)"></div>
+          <div class="shadeText">
+            <div class="shadeTop">${it.label}</div>
+            <div class="shadeHint">Διάλεξε πρώτα χρώμα</div>
+          </div>
+        `;
+        box.appendChild(b);
+      });
+      return;
+    }
+
+    // 4 αποχρώσεις -> αντιστοιχούν 1-1 με τα 4 επίπεδα έντασης
+    for(let i=0;i<4;i++){
+      const it = INTENSITY[i];
+      const shade = col.shade[i];
+
+      const b = document.createElement("div");
+      b.className = "shadeBtn";
+      b.dataset.idx = String(i);
+
+      b.innerHTML = `
+        <div class="shadeSwatch" style="background:${shade}"></div>
+        <div class="shadeText">
+          <div class="shadeTop">${it.label}</div>
+          <div class="shadeHint">${col.emotions}</div>
+        </div>
+      `;
+
+      b.addEventListener("click", ()=>{
+        zoneEntry().shadeIndex = i;
+        zoneEntry().intensityKey = it.key;
+        autosave();
+        renderCenter();
+        highlightShades();
+        buildZones(); // update chips on zones
+      });
+
+      box.appendChild(b);
+    }
+  }
+
+  function highlightShades(){
+    document.querySelectorAll(".shadeBtn").forEach(btn=>{
+      const i = parseInt(btn.dataset.idx || "-1", 10);
+      btn.classList.toggle("active", i === zoneEntry().shadeIndex);
+    });
+  }
+
+  // ---------- right panel hooks ----------
+  function hookRightPanel(){
+    $("frequency").addEventListener("change", e=>{
+      zoneEntry().frequency = e.target.value;
+      autosave();
+    });
+    $("whenStarted").addEventListener("change", e=>{
+      zoneEntry().whenStarted = e.target.value;
+      autosave();
+    });
+    $("trigger").addEventListener("change", e=>{
+      zoneEntry().trigger = e.target.value;
+      autosave();
+    });
+
+    $("btnDone").addEventListener("click", ()=>{
+      const e = zoneEntry();
+      const ok = !!e.colorKey && !!e.intensityKey && !!e.frequency && !!e.whenStarted && !!e.trigger;
+      const msg = ok
+        ? "✅ Τέλεια! Πάτα επόμενο μέρος της ημέρας (πάνω) ή κάνε εξαγωγή."
+        : "⚠ Χρειάζεται: χρώμα + ένταση + συχνότητα + πότε ξεκίνησε + τι το προκάλεσε.";
+      $("doneMsg").textContent = msg;
+      $("doneMsg").className = ok ? "ok" : "warn";
+      buildZones();
+    });
+  }
+
+  // ---------- export ----------
   function buildExport(){
     return {
-      εργαλείο: "ΧρονοΣυναίσθημα – 4 Ζώνες",
+      εργαλείο: "ΧρονοΣυναίσθημα 24",
+      φάση: "Α",
       έκδοση: "1.0",
       ζώνες: ZONES.map(z=>{
         const e = state.zones[z.key];
-        const emo = emoByKey(e.emotionKey);
+        const c = colorByKey(e.colorKey);
+        const shadeHex = (c && e.shadeIndex != null) ? c.shade[e.shadeIndex] : "";
         return {
           ζώνη: z.label,
-          διάστημα: z.time,
-          συναίσθημα: emo ? emo.name : "",
-          χρώμα: emo ? emo.color : "",
+          ώρες: z.time,
+          πλαίσιο: z.context,
+          χρώμα: c ? c.name : "",
+          χρώμα_hex: c ? c.base : "",
+          απόχρωση_hex: shadeHex,
+          συναίσθημα_έννοια: c ? c.emotions : "",
           ένταση: e.intensityKey || "",
-          με_ποιον: e.withWhom || "",
-          πού: e.where || "",
-          τι_έγινε: e.what || ""
+          συχνότητα: e.frequency || "",
+          έναρξη: e.whenStarted || "",
+          εκλυτικός_παράγοντας: e.trigger || ""
         };
       })
     };
@@ -633,21 +754,29 @@
   }
 
   function buildCSV(){
-    const header = ["ζώνη","διάστημα","συναίσθημα","χρώμα","ένταση","με_ποιον","πού","τι_έγινε"].join(",");
+    const header = [
+      "ζώνη","ώρες","πλαίσιο",
+      "χρώμα","χρώμα_hex","απόχρωση_hex","συναίσθημα_έννοια","ένταση",
+      "συχνότητα","έναρξη","εκλυτικός_παράγοντας"
+    ].join(",");
+
     const rows = ZONES.map(z=>{
       const e = state.zones[z.key];
-      const emo = emoByKey(e.emotionKey);
+      const c = colorByKey(e.colorKey);
+      const shadeHex = (c && e.shadeIndex != null) ? c.shade[e.shadeIndex] : "";
       return [
-        z.label,
-        z.time,
-        emo?.name || "",
-        emo?.color || "",
+        z.label, z.time, z.context,
+        c ? c.name : "",
+        c ? c.base : "",
+        shadeHex,
+        c ? c.emotions : "",
         e.intensityKey || "",
-        e.withWhom || "",
-        e.where || "",
-        e.what || ""
+        e.frequency || "",
+        e.whenStarted || "",
+        e.trigger || ""
       ].map(csvEscape).join(",");
     });
+
     return [header, ...rows].join("\n");
   }
 
@@ -662,52 +791,67 @@
     setTimeout(()=>URL.revokeObjectURL(a.href), 800);
   }
 
-  // ---------------- Init ----------------
+  // ---------- reset ----------
+  function resetAll(){
+    if(!confirm("Σίγουρα; Θα χαθούν τα δεδομένα.")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    state = {
+      selectedZoneKey: ZONES[0].key,
+      zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE()])),
+      selectedColorKey: null
+    };
+    autosave();
+    render();
+    $("doneMsg").textContent = "";
+  }
+
+  // ---------- render ----------
+  function render(){
+    buildZones();
+
+    // active zone style
+    document.querySelectorAll(".zone").forEach(el=>{
+      el.classList.toggle("active", el.dataset.key === state.selectedZoneKey);
+    });
+
+    // center and shades
+    renderCenter();
+    buildShades();
+    highlightShades();
+
+    // fill selects
+    fillSelect("frequency", FREQUENCY, "Διάλεξε…");
+    fillSelect("whenStarted", WHEN_STARTED, "Διάλεξε…");
+    fillTriggerSelect();
+
+    // set current select values for zone
+    const e = zoneEntry();
+    $("frequency").value = e.frequency || "";
+    $("whenStarted").value = e.whenStarted || "";
+    $("trigger").value = e.trigger || "";
+  }
+
+  // ---------- init ----------
   function init(){
     load();
 
-    buildIntensity();
-    buildEmoList();
-    fillSelect("withWhom", WITH_WHOM, "Διάλεξε…");
-    fillSelect("where", WHERE, "Διάλεξε…");
-    fillSelect("what", WHAT, "Διάλεξε…");
+    // ensure selectedColorKey follows selected zone
+    state.selectedColorKey = zoneEntry().colorKey || null;
 
-    // hook selects
-    $("withWhom").addEventListener("change", e=>{ zoneEntry().withWhom = e.target.value; autosave(); });
-    $("where").addEventListener("change", e=>{ zoneEntry().where = e.target.value; autosave(); });
-    $("what").addEventListener("change", e=>{ zoneEntry().what = e.target.value; autosave(); });
+    // wheel click
+    $("wheel").addEventListener("click", pickColorFromWheelClick);
 
-    // wheel click = random game
-    $("wheel").addEventListener("click", pickRandomEmotion);
+    // right panel
+    hookRightPanel();
 
-    // done message
-    $("btnDone").addEventListener("click", ()=>{
-      const entry = zoneEntry();
-      const ok = !!entry.emotionKey && !!entry.intensityKey;
-      const msg = ok
-        ? "✅ Τέλεια! Πήγαινε σε άλλη ζώνη ή κάνε εξαγωγή."
-        : "⚠ Διάλεξε πρώτα συναίσθημα ΚΑΙ ένταση.";
-      $("doneMsg").textContent = msg;
-      $("doneMsg").style.color = ok ? "var(--good)" : "var(--warn)";
-    });
-
-    // export
+    // export buttons
     $("btnExportJSON").addEventListener("click", ()=>{
-      downloadFile("chronosynaisthima_4zones.json", JSON.stringify(buildExport(), null, 2), "application/json");
+      downloadFile("chronosynaisthima24_phaseA.json", JSON.stringify(buildExport(), null, 2), "application/json");
     });
     $("btnExportCSV").addEventListener("click", ()=>{
-      downloadFile("chronosynaisthima_4zones.csv", buildCSV(), "text/csv;charset=utf-8");
+      downloadFile("chronosynaisthima24_phaseA.csv", buildCSV(), "text/csv;charset=utf-8");
     });
-
-    // reset
-    $("btnReset").addEventListener("click", ()=>{
-      if(!confirm("Σίγουρα; Θα χαθούν τα δεδομένα.")) return;
-      localStorage.removeItem("chronofeel_game_4zones_v1");
-      state = { selectedZoneKey:"morning", zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE()])) };
-      autosave();
-      render();
-      $("doneMsg").textContent = "";
-    });
+    $("btnReset").addEventListener("click", resetAll);
 
     render();
     setSaved(true);
