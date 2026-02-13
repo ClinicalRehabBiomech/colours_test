@@ -315,7 +315,7 @@
     {key:"red",     color:"#EF4444", label:"Θυμός / Εκνευρισμός", shades:["#EF4444", "#DC2626", "#B91C1C"]},
     {key:"black",   color:"#111827", label:"Φόβος / Τρόμος", shades:["#111827", "#1F2937", "#374151"]},
     {key:"dpurple", color:"#7C3AED", label:"Ντροπή / Ενοχή", shades:["#7C3AED", "#6D28D9", "#5B21B6"]},
-    {key:"white",   color:"#FFFFFF", label:"Τίποτα / Δεν νιώθω τίποτα", shades:["#FFFFFF", "#F3F4F6", "#E5E7EB"]},
+    {key:"white",   color:"#FFFFFF", label:"Τίποτα / Δεν νιώθω τίποτα", shades:["#FFFFFF", "#BABDC2", "#E5E7EB"]},
   ];
 
   const INTENSITIES = ["Λίγο","Μέτρια","Αρκετά","Πολύ","Πάρα πολύ"];
@@ -421,6 +421,7 @@
       const d = document.createElement("div");
       d.className = "sw";
       d.dataset.key = e.key;
+      d.title = e.label; // Tooltip on hover
       
       // Color circle
       const colorDiv = document.createElement("div");
