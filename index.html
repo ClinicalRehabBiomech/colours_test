@@ -3,63 +3,48 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ΧρονοΣυναίσθημα 24</title>
+  <title>ΧρονοΣυναίσθημα – Παιχνίδι 4 Ζωνών</title>
   <style>
     :root{
       --bg:#0b1020;
       --card:#111a33;
-      --card2:#0f1730;
       --text:#eaf0ff;
       --muted:#b8c3e6;
-      --border:rgba(255,255,255,.12);
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius:18px;
-      --btn:#1a2a55;
-      --btn2:#20356b;
+      --border:rgba(255,255,255,.14);
+      --shadow: 0 14px 40px rgba(0,0,0,.42);
+      --radius:22px;
       --good:#22c55e;
       --bad:#ef4444;
       --warn:#f59e0b;
+      --accent:#5a78ff;
     }
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: radial-gradient(1000px 600px at 20% 10%, rgba(90,120,255,.25), transparent 55%),
-                  radial-gradient(900px 600px at 80% 20%, rgba(255,120,210,.18), transparent 55%),
-                  radial-gradient(900px 600px at 60% 90%, rgba(0,255,200,.12), transparent 55%),
-                  var(--bg);
+      background:
+        radial-gradient(1100px 700px at 20% 10%, rgba(90,120,255,.25), transparent 55%),
+        radial-gradient(900px 700px at 80% 20%, rgba(255,120,210,.18), transparent 55%),
+        radial-gradient(900px 700px at 60% 90%, rgba(0,255,200,.12), transparent 55%),
+        var(--bg);
       color:var(--text);
     }
+    .wrap{max-width:1100px;margin:0 auto;padding:18px}
     header{
-      padding:18px 18px 10px;
-      display:flex;
-      gap:14px;
-      align-items:center;
-      justify-content:space-between;
-      flex-wrap:wrap;
+      display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;
+      margin-bottom:14px;
     }
-    .brand{display:flex;align-items:center;gap:12px;}
+    .brand{display:flex;align-items:center;gap:12px}
     .logo{
-      width:42px;height:42px;border-radius:14px;
+      width:46px;height:46px;border-radius:16px;
       background: conic-gradient(from 180deg,
-        #ffd400, #ff8a00, #ff4fd8, #22c55e, #5ad7ff, #a78bfa,
-        #d1d5db, #6b7280, #1f3b88, #a16207, #ef4444, #111827, #7c3aed, #ffffff);
+        #FFD400, #FF8A00, #FF4FD8, #22C55E, #5AD7FF, #A78BFA,
+        #D1D5DB, #6B7280, #1F3B88, #A16207, #EF4444, #111827, #7C3AED, #FFFFFF);
       box-shadow: var(--shadow);
       border: 1px solid rgba(255,255,255,.18);
     }
     h1{font-size:18px;margin:0}
-    .sub{color:var(--muted);font-size:12px;margin-top:2px}
-    .wrap{max-width:1180px;margin:0 auto;padding:0 18px 22px}
-
-    .grid{
-      display:grid;
-      grid-template-columns: 340px 1fr;
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns: 1fr;}
-    }
-
+    .sub{color:var(--muted);font-size:12px;margin-top:2px;line-height:1.3}
     .card{
       background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
       border:1px solid var(--border);
@@ -67,44 +52,14 @@
       box-shadow: var(--shadow);
       overflow:hidden;
     }
-    .card .hd{
+    .hd{
       padding:14px 14px 10px;
       border-bottom:1px solid var(--border);
       background: rgba(0,0,0,.12);
       display:flex;align-items:center;justify-content:space-between;gap:10px;
     }
-    .card .bd{padding:14px}
-    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px}
-    input[type="text"], input[type="number"], select{
-      width:100%;
-      padding:10px 12px;
-      border-radius:14px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-      outline:none;
-    }
-    select option{
-      background: #000000;
-      color: var(--text);
-    }
-    input[type="number"]{appearance:textfield}
-    .row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .pillbar{display:flex;flex-wrap:wrap;gap:8px}
-    .pill{
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.20);
-      color:var(--text);
-      padding:8px 10px;
-      border-radius:999px;
-      cursor:pointer;
-      font-size:12px;
-      user-select:none;
-      transition:.15s transform,.15s background, .15s opacity;
-    }
-    .pill:hover{transform:translateY(-1px); background: rgba(255,255,255,.08);}
-    .pill.active{outline:2px solid rgba(255,255,255,.45); background: rgba(255,255,255,.10);}
-
+    .bd{padding:14px}
+    .small{font-size:12px;color:var(--muted)}
     .btnbar{display:flex;flex-wrap:wrap;gap:8px}
     button{
       border:1px solid var(--border);
@@ -115,419 +70,383 @@
       cursor:pointer;
       font-size:13px;
       transition:.15s transform,.15s background;
+      user-select:none;
     }
     button:hover{transform:translateY(-1px); background: rgba(255,255,255,.10);}
     button.primary{background: linear-gradient(180deg, rgba(90,120,255,.35), rgba(90,120,255,.12));}
     button.good{background: linear-gradient(180deg, rgba(34,197,94,.35), rgba(34,197,94,.12));}
     button.bad{background: linear-gradient(180deg, rgba(239,68,68,.35), rgba(239,68,68,.12));}
 
-    .hours{
+    /* Zones */
+    .zones{
       display:grid;
-      grid-template-columns: repeat(6, minmax(0, 1fr));
-      gap:8px;
+      grid-template-columns: repeat(4, 1fr);
+      gap:10px;
+      margin-bottom:12px;
+    }
+    @media (max-width: 900px){
+      .zones{grid-template-columns: repeat(2, 1fr);}
+    }
+    .zone{
+      border:1px solid var(--border);
+      border-radius:18px;
+      padding:12px;
+      background: rgba(0,0,0,.18);
+      cursor:pointer;
+      transition:.15s transform,.15s background;
+      position:relative;
+      min-height:86px;
+    }
+    .zone:hover{transform:translateY(-2px); background: rgba(255,255,255,.07);}
+    .zone.active{outline:3px solid rgba(90,120,255,.55);}
+    .zone-title{font-weight:900;font-size:16px}
+    .zone-time{font-size:12px;color:var(--muted);margin-top:3px}
+    .zone-mini{
+      margin-top:10px;
+      display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+      font-size:12px;color:var(--muted);
+    }
+    .chip{
+      display:inline-flex;align-items:center;gap:7px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.18);
+      padding:6px 10px;
+      border-radius:999px;
+      font-weight:700;
+      color:var(--text);
+    }
+    .dot{width:14px;height:14px;border-radius:999px;border:1px solid rgba(255,255,255,.40)}
+
+    /* Game layout */
+    .game{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:12px;
+    }
+    @media (max-width: 980px){
+      .game{grid-template-columns:1fr}
+    }
+
+    /* Wheel (pie) */
+    .wheel-wrap{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap:10px;
+    }
+    .wheel-card{
+      border:1px solid var(--border);
+      border-radius:22px;
+      background: rgba(0,0,0,.18);
       padding:14px;
     }
-    @media (max-width: 980px){
-      .hours{grid-template-columns: repeat(4, minmax(0, 1fr));}
-    }
-    .hour{
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:10px 10px 9px;
-      background: rgba(0,0,0,.18);
-      cursor:pointer;
-      position:relative;
-      min-height:64px;
-    }
-    .hour.sel{outline:2px solid rgba(255,255,255,.55);}
-    .hour .t{font-weight:650;font-size:12px}
-    .hour .mini{margin-top:6px;font-size:11px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
-    .dot{width:10px;height:10px;border-radius:999px;border:1px solid rgba(255,255,255,.35);display:inline-block}
-    .tag{
-      font-size:10px;
-      padding:3px 7px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.18);
-    }
-    .tag.safe{border-color: rgba(34,197,94,.55);}
-    .tag.risk{border-color: rgba(239,68,68,.55);}
-    .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-    .small{font-size:12px;color:var(--muted)}
-    .divider{height:1px;background:var(--border);margin:12px 0}
-
-    .palette{
+    .wheel-row{
       display:grid;
-      grid-template-columns: repeat(7, minmax(0, 1fr));
-      gap:8px;
+      grid-template-columns: 280px 1fr;
+      gap:14px;
+      align-items:center;
     }
-    @media (max-width: 980px){
-      .palette{grid-template-columns: repeat(5, minmax(0, 1fr));}
+    @media (max-width: 760px){
+      .wheel-row{grid-template-columns:1fr}
     }
-    .sw{
-      border-radius:16px;
-      padding:12px 8px;
-      border:1px solid var(--border);
-      cursor:pointer;
+
+    .wheel{
+      width:280px;height:280px;border-radius:50%;
+      border:2px solid rgba(255,255,255,.18);
+      box-shadow: var(--shadow);
+      position:relative;
+      margin:0 auto;
+      overflow:hidden;
+      background:
+        conic-gradient(
+          #FFD400 0deg 25deg,
+          #FF8A00 25deg 50deg,
+          #FF4FD8 50deg 75deg,
+          #22C55E 75deg 100deg,
+          #5AD7FF 100deg 125deg,
+          #A78BFA 125deg 150deg,
+          #D1D5DB 150deg 175deg,
+          #6B7280 175deg 200deg,
+          #1F3B88 200deg 225deg,
+          #A16207 225deg 250deg,
+          #EF4444 250deg 275deg,
+          #111827 275deg 300deg,
+          #7C3AED 300deg 325deg,
+          #FFFFFF 325deg 360deg
+        );
+    }
+    .wheel::after{
+      content:"";
+      position:absolute; inset:0;
+      background: radial-gradient(circle at center, rgba(0,0,0,.0) 0 62%, rgba(0,0,0,.35) 64% 100%);
+      pointer-events:none;
+    }
+    .wheel-center{
+      position:absolute; left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      width:150px;height:150px;border-radius:50%;
+      background: rgba(10,16,32,.92);
+      border:2px solid rgba(255,255,255,.16);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
       text-align:center;
-      user-select:none;
-      min-height:56px;
-      display:flex;flex-direction:column;justify-content:center;gap:6px;
-      background: rgba(0,0,0,.08);
-      transition:.15s transform,.15s background;
+      padding:10px;
     }
-    .sw:hover{transform:translateY(-1px); background: rgba(255,255,255,.06);}
-    .sw .c{width:24px;height:24px;border-radius:10px;margin:0 auto;border:1px solid rgba(0,0,0,.25)}
-    .sw.active{outline:2px solid rgba(255,255,255,.55);}
+    .center-label{
+      font-size:12px;color:var(--muted);
+      font-weight:800;
+      margin-bottom:6px;
+    }
+    .center-emotion{
+      font-size:16px;
+      font-weight:1000;
+      line-height:1.15;
+    }
+    .center-sub{
+      margin-top:8px;
+      font-size:12px;color:var(--muted);
+      font-weight:700;
+    }
+    .pointer{
+      position:absolute; top:-10px; left:50%;
+      transform:translateX(-50%);
+      width:0;height:0;
+      border-left:14px solid transparent;
+      border-right:14px solid transparent;
+      border-bottom:20px solid rgba(255,255,255,.85);
+      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
+    }
+
+    /* Big, kid-friendly emotion buttons */
+    .emo-list{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    @media (max-width: 560px){
+      .emo-list{grid-template-columns:1fr}
+    }
+    .emo-btn{
+      display:flex;align-items:center;gap:10px;
+      border:2px solid rgba(255,255,255,.18);
+      background: rgba(0,0,0,.18);
+      padding:12px;
+      border-radius:18px;
+      cursor:pointer;
+      transition:.15s transform,.15s background,.15s outline;
+      user-select:none;
+      min-height:60px;
+    }
+    .emo-btn:hover{transform:translateY(-2px); background: rgba(255,255,255,.06);}
+    .emo-btn.active{outline:3px solid rgba(90,120,255,.55);}
+    .emo-color{
+      width:42px;height:42px;border-radius:16px;border:2px solid rgba(0,0,0,.25);
+      flex:0 0 auto;
+    }
+    .emo-text{
+      display:flex;flex-direction:column;gap:2px;
+      min-width:0;
+    }
+    .emo-name{
+      font-weight:1000;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+    }
+    .emo-hint{font-size:12px;color:var(--muted);font-weight:700}
+
+    /* Intensity: emoji scale */
+    .intensity{
+      display:flex;gap:10px;flex-wrap:wrap;
+      margin-top:10px;
+    }
+    .star{
+      flex:1 1 auto;
+      min-width:110px;
+      border:2px solid rgba(255,255,255,.14);
+      border-radius:18px;
+      background: rgba(0,0,0,.16);
+      padding:12px;
+      text-align:center;
+      cursor:pointer;
+      user-select:none;
+      transition:.15s transform,.15s background,.15s outline;
+      font-weight:1000;
+    }
+    .star:hover{transform:translateY(-2px); background: rgba(255,255,255,.06);}
+    .star.active{outline:3px solid rgba(90,120,255,.55);}
+
+    /* Simple selects */
+    label{display:block;font-size:12px;color:var(--muted);margin:10px 0 6px;font-weight:900}
+    select, input{
+      width:100%;
+      padding:12px 12px;
+      border-radius:16px;
+      border:1px solid var(--border);
+      background: rgba(0,0,0,.22);
+      color: var(--text);
+      outline:none;
+      font-size:14px;
+    }
+    select option{background:#000;color:var(--text)}
     .hint{
       background: rgba(255,255,255,.06);
       border:1px dashed rgba(255,255,255,.18);
       padding:10px 12px;border-radius:16px;
       font-size:12px;color:var(--muted);
-    }
-    .timeblocks{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:12px;
-      padding:14px;
-    }
-    @media (max-width: 1280px){
-      .timeblocks{grid-template-columns: repeat(2, 1fr);}
-    }
-    @media (max-width: 768px){
-      .timeblocks{grid-template-columns: 1fr;}
-    }
-    .timeblock{
-      border:1px solid var(--border);
-      border-radius:16px;
-      padding:14px;
-      background: linear-gradient(135deg, rgba(255,255,255,.04), rgba(255,255,255,.02));
-      transition:.2s background,.2s transform;
-    }
-    .timeblock:hover{
-      background: linear-gradient(135deg, rgba(255,255,255,.08), rgba(255,255,255,.05));
-      transform:translateY(-2px);
-    }
-    .timeblock .period-name{
-      font-weight:700;
-      font-size:13px;
-      color: var(--text);
-      margin-bottom:6px;
-    }
-    .timeblock .time-range{
-      font-size:11px;
-      color: var(--muted);
-      margin-bottom:8px;
-      font-family: monospace;
-    }
-    .timeblock .description{
-      font-size:12px;
-      color: var(--text);
       line-height:1.4;
-      margin-bottom:10px;
     }
-    .block-hours{
-      display:flex;
-      flex-wrap:wrap;
-      gap:6px;
-    }
-    .block-hour{
-      flex:0 0 auto;
-      padding:6px 10px;
-      border-radius:10px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.25);
-      color: var(--text);
-      font-size:11px;
-      font-weight:600;
-      cursor:pointer;
-      transition:.15s background,.15s border-color;
-    }
-    .block-hour:hover{
-      background: rgba(255,255,255,.10);
-      border-color: rgba(255,255,255,.35);
-    }
-    .block-hour.active{
-      background: rgba(90,120,255,.35);
-      border-color: rgba(90,120,255,.65);
-    }
+
+    .status{font-size:12px;color:var(--muted);font-weight:800}
   </style>
 </head>
 <body>
-  <header class="wrap">
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1>ΧρονοΣυναίσθημα 24</h1>
-        <div class="sub">Γρήγορη χαρτογράφηση συναισθήματος – σχέσεων – γεγονότων σε 24 ώρες</div>
+  <div class="wrap">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>ΧρονοΣυναίσθημα – Παιχνίδι 4 Ζωνών</h1>
+          <div class="sub">Διάλεξε ζώνη (Πρωί/Μεσημέρι/Απόγευμα/Βράδυ) → διάλεξε συναίσθημα από την “πίτα” → έτοιμο!</div>
+        </div>
       </div>
-    </div>
-    <div class="btnbar">
-      <button id="btnSleep" class="primary" title="Γέμισε γρήγορα ώρες ύπνου">🌙 Sleep block</button>
-      <button id="btnCopyPrev" title="Αντέγραψε την προηγούμενη ώρα">⏪ Copy prev</button>
-      <button id="btnApplyRange" title="Εφάρμοσε σε εύρος ωρών">🧩 Apply range</button>
-      <button id="btnExportJSON" class="good">⬇ Export JSON</button>
-      <button id="btnExportCSV" class="good">⬇ Export CSV</button>
-      <button id="btnReset" class="bad">🧹 Reset</button>
-    </div>
-  </header>
+      <div class="btnbar">
+        <button id="btnExportJSON" class="good">⬇ Εξαγωγή JSON</button>
+        <button id="btnExportCSV" class="good">⬇ Εξαγωγή CSV</button>
+        <button id="btnReset" class="bad">🧹 Καθαρισμός</button>
+      </div>
+    </header>
 
-  <div class="wrap grid">
-    <!-- LEFT: Participant + editor -->
     <section class="card">
       <div class="hd">
         <div>
-          <div style="font-weight:700">Στοιχεία</div>
-          <div class="small">Συμπλήρωσε γρήγορα, γίνεται autosave.</div>
+          <div style="font-weight:1000">1) Διάλεξε τη ζώνη της ημέρας</div>
+          <div class="small">Πάτα σε μία κάρτα. Μετά διάλεξε συναίσθημα από την πίτα.</div>
         </div>
-        <div class="small" id="saveStatus">● saved</div>
+        <div class="status" id="saveStatus">● αποθηκεύτηκε</div>
       </div>
       <div class="bd">
-        <div class="row">
-          <div>
-            <label for="name">Όνομα *</label>
-            <input id="name" type="text" placeholder="π.χ. Μαρία" />
-          </div>
-          <div>
-            <label for="age">Ηλικία *</label>
-            <input id="age" type="number" min="1" max="18" placeholder="π.χ. 9" />
-          </div>
-        </div>
-
-        <label>Φύλο</label>
-        <div class="pillbar" id="sexPills">
-          <div class="pill" data-sex="Αγόρι">👦 Αγόρι</div>
-          <div class="pill" data-sex="Κορίτσι">👧 Κορίτσι</div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="hint">
-          ✅ Tip: Πάτα μία ώρα δεξιά και συμπλήρωσε μόνο τα βασικά.  
-          Χρησιμοποίησε <b>Copy prev</b> ή <b>Apply range</b> για να τελειώσεις πολύ γρήγορα.
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="flex">
-          <div>
-            <div class="small">Επιλεγμένη ώρα</div>
-            <div style="font-size:20px;font-weight:800" id="selectedHourLabel">00:00</div>
-          </div>
-          <div class="btnbar" style="margin-left:auto">
-            <button id="btnSafeMost" class="good" title="Σημείωσε την ώρα που νιώθεις ΠΙΟ ασφαλής">✅ Most safe</button>
-            <button id="btnSafeLeast" class="bad" title="Σημείωσε την ώρα που νιώθεις ΛΙΓΟΤΕΡΟ ασφαλής">❌ Least safe</button>
-          </div>
-        </div>
-
-        <label>Συναίσθημα (χρώμα)</label>
-        <div class="palette" id="palette"></div>
-
-        <label>Πόσο δυνατό είναι αυτό που νιώθεις;</label>
-        <div class="pillbar" id="intensityPills"></div>
-        <div class="small" id="intensityHint" style="margin-top:6px">Διάλεξε πρώτα χρώμα.</div>
-
-        <label for="withWhom">Με ποιον είσαι κυρίως;</label>
-        <select id="withWhom"></select>
-
-        <label for="events">Τι συμβαίνει κυρίως; (πολλά)</label>
-        <select id="events" multiple size="8"></select>
-        <div class="small">Κράτα πατημένο Ctrl/Command για πολλαπλή επιλογή.</div>
-
-        <label for="location">Πού βρίσκεσαι;</label>
-        <select id="location"></select>
-
-        <label for="frequency">Αυτό που έβαλες συμβαίνει…</label>
-        <select id="frequency"></select>
-
-        <label for="when_started">Πότε ένιωσες ετσί;</label>
-        <select id="when_started"></select>
-
-        <div class="divider"></div>
-
-        <button id="btnValidate" class="primary" style="width:100%">🔎 Έλεγχος (validation)</button>
-        <div id="validationMsg" class="small" style="margin-top:10px"></div>
+        <div class="zones" id="zones"></div>
       </div>
     </section>
 
-    <!-- RIGHT: 24h grid -->
+    <div style="height:12px"></div>
+
     <section class="card">
       <div class="hd">
         <div>
-          <div style="font-weight:700">24ωρη Γραμμή</div>
-          <div class="small">Πάτα ώρα → συμπλήρωσε αριστερά.</div>
+          <div style="font-weight:1000">2) Παιχνίδι Συναισθήματος</div>
+          <div class="small">Πάτα ένα μεγάλο κουμπί συναισθήματος ή γύρνα την πίτα (τυχαία επιλογή).</div>
         </div>
-        <div class="small">Στόχος: <b>&lt; 5 λεπτά</b></div>
+        <div class="small">Ζώνη: <b id="zoneLabel">Πρωί</b></div>
       </div>
-      
-      <!-- Timeblocks with hours inside -->
-      <div class="timeblocks">
-        <!-- Block 1 -->
-        <div class="timeblock">
-          <div class="period-name">🌙 Μεσάνυχτα – Νύχτα</div>
-          <div class="time-range">00:00 – 05:00</div>
-          <div class="description">Βαθύς ύπνος</div>
-          <div class="block-hours" data-start="0" data-end="5"></div>
+
+      <div class="bd game">
+        <!-- LEFT: Wheel + emotion big list -->
+        <div class="wheel-wrap">
+          <div class="wheel-card">
+            <div class="wheel-row">
+              <div class="wheel" id="wheel" role="button" aria-label="Πίτα συναισθήματος">
+                <div class="pointer" aria-hidden="true"></div>
+                <div class="wheel-center" id="wheelCenter">
+                  <div class="center-label">Διάλεξες:</div>
+                  <div class="center-emotion" id="centerEmotion">—</div>
+                  <div class="center-sub" id="centerSub">Πάτα ένα συναίσθημα</div>
+                </div>
+              </div>
+
+              <div>
+                <div class="hint">
+                  🎮 <b>Παιχνίδι:</b> Πάτα πάνω στην “πίτα” για <b>τυχαίο</b> συναίσθημα!<br/>
+                  Ή πάτα ένα από τα μεγάλα κουμπιά δεξιά για να διαλέξεις εσύ.
+                </div>
+
+                <div class="intensity" id="intensity"></div>
+
+                <div class="emo-list" id="emoList" style="margin-top:12px"></div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <!-- Block 2 -->
-        <div class="timeblock">
-          <div class="period-name">🌅 Ξημέρωμα</div>
-          <div class="time-range">05:01 – 06:00</div>
-          <div class="description">Ύπνος / σταδιακή αφύπνιση</div>
-          <div class="block-hours" data-start="5" data-end="6"></div>
-        </div>
+        <!-- RIGHT: Simple context (kid-friendly) -->
+        <div class="wheel-card">
+          <div style="font-weight:1000;margin-bottom:6px">3) Μόνο 3 μικρές ερωτήσεις</div>
+          <div class="small">Για να μπορεί να το κάνει παιδί μόνο του.</div>
 
-        <!-- Block 3 -->
-        <div class="timeblock">
-          <div class="period-name">🌞 Πρωί</div>
-          <div class="time-range">06:01 – 09:00</div>
-          <div class="description">Ξύπνημα, ετοιμασία, μετάβαση & αρχή σχολείου</div>
-          <div class="block-hours" data-start="6" data-end="9"></div>
-        </div>
+          <label for="withWhom">Με ποιον είσαι;</label>
+          <select id="withWhom"></select>
 
-        <!-- Block 4 -->
-        <div class="timeblock">
-          <div class="period-name">📚 Αργά το πρωί</div>
-          <div class="time-range">09:01 – 12:00</div>
-          <div class="description">Σχολείο (μαθήματα, διάλειμμα)</div>
-          <div class="block-hours" data-start="9" data-end="12"></div>
-        </div>
+          <label for="where">Πού είσαι;</label>
+          <select id="where"></select>
 
-        <!-- Block 5 -->
-        <div class="timeblock">
-          <div class="period-name">🏠 Μεσημέρι (μετάβαση)</div>
-          <div class="time-range">12:01 – 14:00</div>
-          <div class="description">Σχολείο → σχόλασμα → επιστροφή στο σπίτι</div>
-          <div class="block-hours" data-start="12" data-end="14"></div>
-        </div>
+          <label for="what">Τι έγινε;</label>
+          <select id="what"></select>
 
-        <!-- Block 6 -->
-        <div class="timeblock">
-          <div class="period-name">🍽️ Νωρίς το απόγευμα</div>
-          <div class="time-range">14:01 – 16:00</div>
-          <div class="description">Φαγητό, ξεκούραση</div>
-          <div class="block-hours" data-start="14" data-end="16"></div>
-        </div>
-
-        <!-- Block 7 -->
-        <div class="timeblock">
-          <div class="period-name">🎮 Αργά το απόγευμα</div>
-          <div class="time-range">16:01 – 18:00</div>
-          <div class="description">Παιχνίδι, δραστηριότητες</div>
-          <div class="block-hours" data-start="16" data-end="18"></div>
-        </div>
-
-        <!-- Block 8 -->
-        <div class="timeblock">
-          <div class="period-name">👨‍👩‍👧‍👦 Νωρίς το βράδυ</div>
-          <div class="time-range">18:01 – 21:00</div>
-          <div class="description">Οικογενειακός χρόνος</div>
-          <div class="block-hours" data-start="18" data-end="21"></div>
-        </div>
-
-        <!-- Block 9 -->
-        <div class="timeblock">
-          <div class="period-name">🛏️ Βράδυ</div>
-          <div class="time-range">21:01 – 24:00</div>
-          <div class="description">Προετοιμασία για ύπνο, ύπνος</div>
-          <div class="block-hours" data-start="21" data-end="23"></div>
+          <div style="height:10px"></div>
+          <button id="btnDone" class="primary" style="width:100%">✅ ΤΕΛΟΣ για αυτή τη ζώνη</button>
+          <div id="doneMsg" class="small" style="margin-top:10px"></div>
         </div>
       </div>
     </section>
   </div>
 
 <script>
-  // ------- Data model -------
-  const HOURS = Array.from({length:24}, (_,i)=>String(i).padStart(2,'0') + ":00");
+  // ---------------- Data ----------------
+  const STORAGE_KEY = "chronofeel_game_4zones_v1";
 
+  const ZONES = [
+    { key:"morning", label:"Πρωί",     time:"06:00 – 12:00", emoji:"🌞" },
+    { key:"noon",    label:"Μεσημέρι", time:"12:00 – 16:00", emoji:"🍽️" },
+    { key:"aft",     label:"Απόγευμα", time:"16:00 – 20:00", emoji:"🎮" },
+    { key:"night",   label:"Βράδυ",    time:"20:00 – 06:00", emoji:"🌙" }
+  ];
+
+  // Μεγάλα, ξεκάθαρα ελληνικά ονόματα
   const EMOTIONS = [
-    {key:"yellow",  color:"#FFD400", label:"Χαρά / Ευτυχία", shades:["#FFD400", "#FFC200", "#FFB000"]},
-    {key:"orange",  color:"#FF8A00", label:"Ενθουσιασμός / Ενέργεια", shades:["#FF8A00", "#FF7700", "#FF6600"]},
-    {key:"pink",    color:"#FF4FD8", label:"Αγάπη / Τρυφερότητα", shades:["#FF4FD8", "#FF30C0", "#FF10A8"]},
-    {key:"green",   color:"#22C55E", label:"Ηρεμία / Ασφάλεια", shades:["#22C55E", "#16A34A", "#15803D"]},
-    {key:"lblue",   color:"#5AD7FF", label:"Γαλήνη / Χαλάρωση", shades:["#5AD7FF", "#38BDF8", "#0EA5E9"]},
-    {key:"lpurple", color:"#A78BFA", label:"Περιέργεια / Ενδιαφέρον", shades:["#A78BFA", "#C4B5FD", "#DDD6FE"]},
-    {key:"lgray",   color:"#D1D5DB", label:"Πλήξη / Αδιαφορία", shades:["#D1D5DB", "#E5E7EB", "#F3F4F6"]},
-    {key:"dgray",   color:"#6B7280", label:"Θλίψη / Στεναχώρια", shades:["#6B7280", "#4B5563", "#374151"]},
-    {key:"dblue",   color:"#1F3B88", label:"Μοναξιά / Απομόνωση", shades:["#1F3B88", "#1E3A8A", "#1E40AF"]},
-    {key:"brown",   color:"#A16207", label:"Σύγχυση / Αμηχανία", shades:["#A16207", "#92400E", "#78350F"]},
-    {key:"red",     color:"#EF4444", label:"Θυμός / Εκνευρισμός", shades:["#EF4444", "#DC2626", "#B91C1C"]},
-    {key:"black",   color:"#111827", label:"Φόβος / Τρόμος", shades:["#111827", "#1F2937", "#374151"]},
-    {key:"dpurple", color:"#7C3AED", label:"Ντροπή / Ενοχή", shades:["#7C3AED", "#6D28D9", "#5B21B6"]},
-    {key:"white",   color:"#FFFFFF", label:"Τίποτα / Δεν νιώθω τίποτα", shades:["#FFFFFF", "#BABDC2", "#E5E7EB"]},
+    {key:"yellow",  color:"#FFD400", name:"Χαρά",        hint:"Νιώθω καλά 😊"},
+    {key:"orange",  color:"#FF8A00", name:"Ενθουσιασμός",hint:"Θέλω δράση! 🤩"},
+    {key:"pink",    color:"#FF4FD8", name:"Αγάπη",       hint:"Τρυφερότητα 💗"},
+    {key:"green",   color:"#22C55E", name:"Ασφάλεια",    hint:"Ήρεμος/η 😌"},
+    {key:"lblue",   color:"#5AD7FF", name:"Χαλάρωση",    hint:"Ξεκουράζομαι 🧘"},
+    {key:"lpurple", color:"#A78BFA", name:"Περιέργεια",  hint:"Θέλω να μάθω 🧐"},
+    {key:"lgray",   color:"#D1D5DB", name:"Πλήξη",       hint:"Δεν έχω τι να κάνω 😑"},
+    {key:"dgray",   color:"#6B7280", name:"Στεναχώρια",  hint:"Κάτι με βαραίνει 😔"},
+    {key:"dblue",   color:"#1F3B88", name:"Μοναξιά",     hint:"Νιώθω μόνος/η 🥺"},
+    {key:"brown",   color:"#A16207", name:"Σύγχυση",     hint:"Δεν καταλαβαίνω 😵"},
+    {key:"red",     color:"#EF4444", name:"Θυμός",       hint:"Εκνευρίστηκα 😡"},
+    {key:"black",   color:"#111827", name:"Φόβος",       hint:"Φοβάμαι 😨"},
+    {key:"dpurple", color:"#7C3AED", name:"Ντροπή/Ενοχή",hint:"Ντρέπομαι 😳"},
+    {key:"white",   color:"#FFFFFF", name:"Τίποτα",      hint:"Δεν νιώθω κάτι 😐"},
   ];
 
-  const INTENSITIES = ["Λίγο","Μέτρια","Αρκετά","Πολύ","Πάρα πολύ"];
-
-  const WITH_WHOM = [
-    "Μητέρα","Πατέρας","Αδερφός/Αδερφή (μεγαλύτερος/η)","Αδερφός/Αδερφή (μικρότερος/η)",
-    "Παππούς (πατρικός)","Γιαγιά (πατρική)","Παππούς (μητρικός)","Γιαγιά (μητρική)",
-    "Θείος","Θεία","Ξάδερφος/Ξαδέρφη","Πατριός/Μητριά","Σύντροφος μητέρας/πατέρα",
-    "Δάσκαλος/Δασκάλα","Φίλος/Φίλη (συνομήλικος)","Γείτονας/Γειτόνισσα",
-    "Προπονητής/Προπονήτρια","Νταντά/Babysitter","Άγνωστο άτομο","Μόνος μου / Κανείς"
+  const INTENSITY = [
+    { key:"λίγο", label:"🙂 Λίγο" },
+    { key:"μέτρια", label:"😀 Μέτρια" },
+    { key:"πολύ", label:"😃 Πολύ" },
+    { key:"πάρα πολύ", label:"🤯 Πάρα πολύ" },
   ];
 
-  const EVENTS = [
-    "Χαμόγελα","Αγκαλιές/Χάδια","Παιχνίδι","Διάβασμα/Μάθηση","Φαγητό μαζί","Συζήτηση/Κουβέντα",
-    "Τραγούδι/Μουσική","Αθλητισμός","Ύπνος/Ξεκούραση","Τηλεόραση/Tablet","Μόνος/η στο δωμάτιο",
-    "Δουλειές/Καθήκοντα","Μετακίνηση","Φωνές/Τσακωμός","Χτυπήματα","Κλάματα","Φόβος/Τρομάρα",
-    "Τιμωρία","Απειλές","Παρακολούθηση/Έλεγχος","Μυστικά/Να μην πω","Αδιαφορία/Παραμέληση","Ντροπή/Εξευτελισμός"
-  ];
+  const WITH_WHOM = ["Μόνος/η","Μαμά","Μπαμπάς","Αδερφός/Αδερφή","Παππούς/Γιαγιά","Φίλος/Φίλη","Δάσκαλος/Δασκάλα"];
+  const WHERE = ["Σπίτι","Σχολείο","Δωμάτιό μου","Αυλή/Πάρκο","Δραστηριότητα/Σπορ","Αυτοκίνητο"];
+  const WHAT = ["Παιχνίδι","Μάθημα/Διάβασμα","Φαγητό","Καυγάς/Φωνές","Μουσική/Χορός","Ύπνος/Ξεκούραση","Κάτι άλλο"];
 
-  const LOCATIONS = [
-    "Σπίτι μου","Υπνοδωμάτιό μου","Κουζίνα/Τραπεζαρία","Σαλόνι","Μπάνιο","Αυλή/Μπαλκόνι",
-    "Σπίτι παππού-γιαγιάς","Σπίτι φίλου","Σχολείο (τάξη)","Σχολείο (διάλειμμα/αυλή)",
-    "Γήπεδο/Γυμναστήριο","Φροντιστήριο/Δραστηριότητες","Πάρκο/Παιδική χαρά",
-    "Μαγαζί/Σούπερ μάρκετ","Αυτοκίνητο","Γιατρός/Νοσοκομείο","Εκκλησία","Άγνωστο μέρος"
-  ];
-
-  const FREQUENCY = [
-    "Κάθε μέρα",
-    "Συχνά (3-4 φορές/εβδομάδα)",
-    "Μερικές φορές (1-2 φορές/εβδομάδα)",
-    "Σπάνια"
-  ];
-
-  const WHEN_STARTED = [
-    "Πριν μερικές μέρες",
-    "Πριν μια εβδομάδα",
-    "Πριν έναν μήνα",
-    "πριν μερικούς μήνες",
-    "Πριν ένα χρόνο",
-    "Παλαιώτερα από ένα χρόνο"
-  ];
-
-  const DEFAULT_ENTRY = () => ({
-    emotionKey: null,
-    emotionShade: null,
-    intensity: null,
-    withWhom: "",
-    events: [],
-    location: "",
-    frequency: "",
-    when_started: ""
+  const DEFAULT_ZONE = () => ({
+    emotionKey:null,
+    intensityKey:null,
+    withWhom:"",
+    where:"",
+    what:"",
   });
 
-  const STORAGE_KEY = "chronofeel24_v1";
-
   let state = {
-    participant: { name:"", age:"", sex:"" },
-    safeMostHour: null,
-    safeLeastHour: null,
-    entries: Object.fromEntries(HOURS.map(h=>[h, DEFAULT_ENTRY()])),
-    selectedHour: "00:00"
+    selectedZoneKey: "morning",
+    zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE()])),
   };
 
-  // ------- Helpers -------
+  // ---------------- Helpers ----------------
   const $ = (id) => document.getElementById(id);
-  const saveStatus = $("saveStatus");
 
   function setSaved(flag){
-    saveStatus.textContent = flag ? "● saved" : "● saving…";
-    saveStatus.style.color = flag ? "var(--muted)" : "var(--warn)";
+    const el = $("saveStatus");
+    el.textContent = flag ? "● αποθηκεύτηκε" : "● αποθήκευση…";
+    el.style.color = flag ? "var(--muted)" : "var(--warn)";
   }
-  function deepCopy(obj){ return JSON.parse(JSON.stringify(obj)); }
   function autosave(){
     setSaved(false);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
@@ -538,351 +457,172 @@
     if(!raw) return;
     try{
       const s = JSON.parse(raw);
-      if(s && s.entries) state = s;
+      if(s && s.zones) state = s;
     }catch(e){}
   }
-  function hourIndex(h){ return HOURS.indexOf(h); }
-  function selectedEntry(){ return state.entries[state.selectedHour]; }
-  function emotionByKey(key){ return EMOTIONS.find(e=>e.key===key) || null; }
-
-  function setSelectedHour(h){
-    state.selectedHour = h;
-    $("selectedHourLabel").textContent = h;
-    renderHours();
-    renderEditor();
-    autosave();
+  function zoneEntry(){
+    return state.zones[state.selectedZoneKey];
   }
+  function emoByKey(k){ return EMOTIONS.find(e=>e.key===k) || null; }
+  function zoneByKey(k){ return ZONES.find(z=>z.key===k) || ZONES[0]; }
 
-  // ------- UI build -------
-  function buildPalette(){
-    const wrap = $("palette");
+  // ---------------- UI build ----------------
+  function buildZones(){
+    const wrap = $("zones");
     wrap.innerHTML = "";
-    EMOTIONS.forEach(e=>{
+    ZONES.forEach(z=>{
       const d = document.createElement("div");
-      d.className = "sw";
-      d.dataset.key = e.key;
-      d.title = e.label; // Tooltip on hover
-      
-      // Color circle
-      const colorDiv = document.createElement("div");
-      colorDiv.className = "c";
-      colorDiv.style.background = e.color;
-      colorDiv.style.cursor = "pointer";
-      colorDiv.addEventListener("click", ()=> {
-        selectedEntry().emotionKey = e.key;
-        selectedEntry().emotionShade = e.shades[0];
+      d.className = "zone";
+      d.dataset.key = z.key;
+
+      const entry = state.zones[z.key];
+      const emo = emoByKey(entry.emotionKey);
+
+      d.innerHTML = `
+        <div class="zone-title">${z.emoji} ${z.label}</div>
+        <div class="zone-time">${z.time}</div>
+        <div class="zone-mini">
+          ${emo ? `<span class="chip"><span class="dot" style="background:${emo.color}"></span>${emo.name}</span>` : `<span class="small">Διάλεξε συναίσθημα…</span>`}
+        </div>
+      `;
+
+      d.addEventListener("click", ()=>{
+        state.selectedZoneKey = z.key;
+        render();
         autosave();
-        renderEditor();
-        renderHours();
       });
-      
-      // Shade dropdown
-      const shadeSelect = document.createElement("select");
-      shadeSelect.className = "shadeSelect";
-      shadeSelect.style.width = "100%";
-      shadeSelect.style.padding = "4px";
-      shadeSelect.style.borderRadius = "8px";
-      shadeSelect.style.border = "1px solid var(--border)";
-      shadeSelect.style.background = "rgba(0,0,0,.22)";
-      shadeSelect.style.color = "var(--text)";
-      shadeSelect.style.fontSize = "11px";
-      shadeSelect.style.cursor = "pointer";
-      shadeSelect.style.outline = "none";
-      
-      e.shades.forEach((shade, idx) => {
-        const opt = document.createElement("option");
-        opt.value = shade;
-        opt.textContent = idx === 0 ? "Light" : idx === 1 ? "Medium" : "Dark";
-        opt.style.background = shade;
-        shadeSelect.appendChild(opt);
-      });
-      
-      shadeSelect.addEventListener("change", ()=> {
-        selectedEntry().emotionKey = e.key;
-        selectedEntry().emotionShade = shadeSelect.value;
-        autosave();
-        renderEditor();
-        renderHours();
-      });
-      
-      d.appendChild(colorDiv);
-      d.appendChild(shadeSelect);
+
       wrap.appendChild(d);
     });
   }
 
   function buildIntensity(){
-    const wrap = $("intensityPills");
+    const wrap = $("intensity");
     wrap.innerHTML = "";
-    INTENSITIES.forEach(label=>{
-      const p = document.createElement("div");
-      p.className="pill";
-      p.textContent = label;
-      p.dataset.intensity = label;
-      p.addEventListener("click", ()=>{
-        // Only allow if emotion selected (guard also in code)
-        if(!selectedEntry().emotionKey) return;
-        selectedEntry().intensity = label;
+    INTENSITY.forEach(it=>{
+      const b = document.createElement("div");
+      b.className = "star";
+      b.textContent = it.label;
+      b.dataset.key = it.key;
+      b.addEventListener("click", ()=>{
+        if(!zoneEntry().emotionKey) return;
+        zoneEntry().intensityKey = it.key;
         autosave();
-        renderEditor();
-        renderHours();
+        render();
       });
-      wrap.appendChild(p);
+      wrap.appendChild(b);
     });
   }
 
-  function setIntensityEnabled(enabled){
-    const hint = $("intensityHint");
-    hint.style.display = enabled ? "none" : "block";
-    document.querySelectorAll("#intensityPills .pill").forEach(p=>{
-      p.style.pointerEvents = enabled ? "auto" : "none";
-      p.style.opacity = enabled ? "1" : "0.45";
-      p.style.transform = "none";
+  function buildEmoList(){
+    const wrap = $("emoList");
+    wrap.innerHTML = "";
+    EMOTIONS.forEach(e=>{
+      const b = document.createElement("div");
+      b.className = "emo-btn";
+      b.dataset.key = e.key;
+      b.innerHTML = `
+        <div class="emo-color" style="background:${e.color}"></div>
+        <div class="emo-text">
+          <div class="emo-name">${e.name}</div>
+          <div class="emo-hint">${e.hint}</div>
+        </div>
+      `;
+      b.addEventListener("click", ()=>{
+        zoneEntry().emotionKey = e.key;
+        // αν αλλάξει συναίσθημα, καθάρισε ένταση
+        zoneEntry().intensityKey = null;
+        autosave();
+        render();
+      });
+      wrap.appendChild(b);
     });
   }
 
-  function fillSelect(sel, options, placeholder){
+  function fillSelect(id, options, placeholder){
+    const sel = $(id);
     sel.innerHTML = "";
-    if(placeholder){
-      const o = document.createElement("option");
-      o.value = "";
-      o.textContent = placeholder;
-      sel.appendChild(o);
-    }
+    const o = document.createElement("option");
+    o.value = "";
+    o.textContent = placeholder;
+    sel.appendChild(o);
     options.forEach(v=>{
-      const o = document.createElement("option");
-      o.value = v;
-      o.textContent = v;
-      sel.appendChild(o);
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      sel.appendChild(opt);
     });
   }
 
-  function buildBlockHours(){
-    document.querySelectorAll(".block-hours").forEach(container=>{
-      container.innerHTML = "";
-      const start = parseInt(container.dataset.start, 10);
-      const end = parseInt(container.dataset.end, 10);
-      for(let i = start; i <= end; i++){
-        const h = String(i).padStart(2,"0") + ":00";
-        const btn = document.createElement("div");
-        btn.className = "block-hour";
-        btn.textContent = h;
-        btn.setAttribute("data-hour", h);
-        btn.addEventListener("click", ()=> setSelectedHour(h));
-        container.appendChild(btn);
-      }
-    });
+  // ---------------- Wheel "game" ----------------
+  function pickRandomEmotion(){
+    const idx = Math.floor(Math.random() * EMOTIONS.length);
+    const e = EMOTIONS[idx];
+    zoneEntry().emotionKey = e.key;
+    zoneEntry().intensityKey = null;
+    autosave();
+    render();
   }
 
-  function updateBlockHoursActive(){
-    document.querySelectorAll(".block-hour").forEach(btn=>{
-      btn.classList.toggle("active", btn.getAttribute("data-hour") === state.selectedHour);
-    });
-  }
+  // ---------------- Render ----------------
+  function render(){
+    buildZones();
 
-  function shorten(s, n){
-    if(!s) return "";
-    return s.length<=n ? s : s.slice(0,n-1) + "…";
-  }
-
-  function renderHours(){
-    updateBlockHoursActive();
-  }
-
-  function renderEditor(){
-    // sex pills  
-    document.querySelectorAll("#sexPills .pill").forEach(p=>{
-      p.classList.toggle("active", p.dataset.sex === state.participant.sex);
+    // active zone styling
+    document.querySelectorAll(".zone").forEach(z=>{
+      z.classList.toggle("active", z.dataset.key === state.selectedZoneKey);
     });
 
-    // palette active + shade selection
-    document.querySelectorAll("#palette .sw").forEach(sw=>{
-      sw.classList.toggle("active", sw.dataset.key === selectedEntry().emotionKey);
-      const shadeSelect = sw.querySelector(".shadeSelect");
-      if(shadeSelect && sw.dataset.key === selectedEntry().emotionKey && selectedEntry().emotionShade){
-        shadeSelect.value = selectedEntry().emotionShade;
-      }
+    const z = zoneByKey(state.selectedZoneKey);
+    $("zoneLabel").textContent = z.label;
+
+    // center emotion
+    const entry = zoneEntry();
+    const emo = emoByKey(entry.emotionKey);
+    $("centerEmotion").textContent = emo ? emo.name : "—";
+    $("centerSub").textContent = emo
+      ? (entry.intensityKey ? `Ένταση: ${entry.intensityKey.toUpperCase()}` : "Διάλεξε ένταση ↓")
+      : "Πάτα ένα συναίσθημα";
+
+    // highlight emo buttons
+    document.querySelectorAll(".emo-btn").forEach(b=>{
+      b.classList.toggle("active", b.dataset.key === entry.emotionKey);
     });
 
-    // intensity active + enable/disable logic
-    const hasEmotion = !!selectedEntry().emotionKey;
-    setIntensityEnabled(hasEmotion);
-
-    document.querySelectorAll("#intensityPills .pill").forEach((p)=>{
-      p.classList.toggle("active", p.dataset.intensity === selectedEntry().intensity);
+    // intensity enable + active
+    document.querySelectorAll(".star").forEach(s=>{
+      const k = s.dataset.key;
+      const enabled = !!entry.emotionKey;
+      s.style.opacity = enabled ? "1" : "0.45";
+      s.style.pointerEvents = enabled ? "auto" : "none";
+      s.classList.toggle("active", k === entry.intensityKey);
     });
 
     // selects
-    $("withWhom").value = selectedEntry().withWhom || "";
-    $("location").value = selectedEntry().location || "";
-    $("frequency").value = selectedEntry().frequency || "";
-    $("when_started").value = selectedEntry().when_started || "";
-
-    // events multi
-    const evSel = $("events");
-    Array.from(evSel.options).forEach(opt=>{
-      opt.selected = selectedEntry().events.includes(opt.value);
-    });
-
-    // participant
-    $("name").value = state.participant.name || "";
-    $("age").value = state.participant.age || "";
+    $("withWhom").value = entry.withWhom || "";
+    $("where").value = entry.where || "";
+    $("what").value = entry.what || "";
   }
 
-  function hookInputs(){
-    $("name").addEventListener("input", e=>{
-      state.participant.name = e.target.value.trim();
-      autosave();
-    });
-    $("age").addEventListener("input", e=>{
-      state.participant.age = e.target.value;
-      autosave();
-    });
-
-    document.querySelectorAll("#sexPills .pill").forEach(p=>{
-      p.addEventListener("click", ()=>{
-        state.participant.sex = p.dataset.sex;
-        autosave();
-        renderEditor();
-      });
-    });
-
-    $("withWhom").addEventListener("change", e=>{
-      selectedEntry().withWhom = e.target.value;
-      autosave(); renderHours();
-    });
-    $("location").addEventListener("change", e=>{
-      selectedEntry().location = e.target.value;
-      autosave(); renderHours();
-    });
-    $("frequency").addEventListener("change", e=>{
-      selectedEntry().frequency = e.target.value;
-      autosave(); renderHours();
-    });
-
-    $("when_started").addEventListener("change", e=>{
-      selectedEntry().when_started = e.target.value;
-      autosave(); renderHours();
-    });
-
-    $("events").addEventListener("change", e=>{
-      const vals = Array.from(e.target.selectedOptions).map(o=>o.value);
-      selectedEntry().events = vals;
-      autosave(); renderHours();
-    });
-
-    $("btnSafeMost").addEventListener("click", ()=>{
-      state.safeMostHour = state.selectedHour;
-      if(state.safeLeastHour === state.safeMostHour) state.safeLeastHour = null;
-      autosave(); renderHours();
-    });
-
-    $("btnSafeLeast").addEventListener("click", ()=>{
-      state.safeLeastHour = state.selectedHour;
-      if(state.safeMostHour === state.safeLeastHour) state.safeMostHour = null;
-      autosave(); renderHours();
-    });
-
-    $("btnCopyPrev").addEventListener("click", ()=>{
-      const i = hourIndex(state.selectedHour);
-      if(i<=0) return;
-      const prev = HOURS[i-1];
-      state.entries[state.selectedHour] = deepCopy(state.entries[prev]);
-      autosave(); renderEditor(); renderHours();
-    });
-
-    $("btnApplyRange").addEventListener("click", ()=>{
-      const from = prompt("Από ποια ώρα; (π.χ. 08:00)", state.selectedHour) || "";
-      const to   = prompt("Έως ποια ώρα; (π.χ. 12:00)", state.selectedHour) || "";
-      if(!HOURS.includes(from) || !HOURS.includes(to)) { alert("Λάθος ώρες."); return; }
-      const a = hourIndex(from), b = hourIndex(to);
-      const lo = Math.min(a,b), hi = Math.max(a,b);
-      const src = deepCopy(state.entries[state.selectedHour]);
-      for(let k=lo;k<=hi;k++){
-        state.entries[HOURS[k]] = deepCopy(src);
-      }
-      autosave(); renderEditor(); renderHours();
-    });
-
-    $("btnSleep").addEventListener("click", ()=>{
-      const start = prompt("Ώρα έναρξης ύπνου; (π.χ. 23:00)", "23:00") || "";
-      const end   = prompt("Ώρα λήξης ύπνου; (π.χ. 07:00)", "07:00") || "";
-      if(!HOURS.includes(start) || !HOURS.includes(end)) { alert("Λάθος ώρες."); return; }
-
-      // apply across midnight: [start..23] + [00..end]
-      const fill = {
-        emotionKey: "green",
-        intensity: "Μέτρια",
-        withWhom: "Μόνος μου / Κανείς",
-        events: ["Ύπνος/Ξεκούραση"],
-        location: "Υπνοδωμάτιό μου",
-        frequency: "Κάθε μέρα"
-      };
-
-      const si = hourIndex(start);
-      const ei = hourIndex(end);
-      if(si <= ei){
-        for(let k=si;k<=ei;k++) state.entries[HOURS[k]] = deepCopy(fill);
-      }else{
-        for(let k=si;k<24;k++) state.entries[HOURS[k]] = deepCopy(fill);
-        for(let k=0;k<=ei;k++) state.entries[HOURS[k]] = deepCopy(fill);
-      }
-      autosave(); renderEditor(); renderHours();
-    });
-
-    $("btnExportJSON").addEventListener("click", ()=>{
-      const out = buildExportObject();
-      downloadFile("chronosynaisthima24.json", JSON.stringify(out, null, 2), "application/json");
-    });
-
-    $("btnExportCSV").addEventListener("click", ()=>{
-      const csv = buildCSV();
-      downloadFile("chronosynaisthima24.csv", csv, "text/csv;charset=utf-8");
-    });
-
-    $("btnReset").addEventListener("click", ()=>{
-      if(!confirm("Σίγουρα reset; Θα χαθούν τα δεδομένα.")) return;
-      localStorage.removeItem(STORAGE_KEY);
-      state = {
-        participant: { name:"", age:"", sex:"" },
-        safeMostHour: null,
-        safeLeastHour: null,
-        entries: Object.fromEntries(HOURS.map(h=>[h, DEFAULT_ENTRY()])),
-        selectedHour: "00:00"
-      };
-      renderEditor(); renderHours();
-      autosave();
-    });
-
-    $("btnValidate").addEventListener("click", ()=>{
-      const msg = validate();
-      $("validationMsg").textContent = msg.ok ? "✅ ΟΚ! Έτοιμο για export." : "⚠ " + msg.error;
-      $("validationMsg").style.color = msg.ok ? "var(--good)" : "var(--warn)";
-    });
-  }
-
-  function validate(){
-    if(!state.participant.name) return {ok:false, error:"Λείπει Όνομα."};
-    if(!state.participant.age) return {ok:false, error:"Λείπει Ηλικία."};
-    if(!state.safeMostHour) return {ok:false, error:"Διάλεξε ώρα ΠΙΟ ασφαλής (✅ Most safe)."};
-    if(!state.safeLeastHour) return {ok:false, error:"Διάλεξε ώρα ΛΙΓΟΤΕΡΟ ασφαλής (❌ Least safe)."};
-    if(state.safeMostHour === state.safeLeastHour) return {ok:false, error:"Η ίδια ώρα δεν μπορεί να είναι και most & least safe."};
-    return {ok:true};
-  }
-
-  function buildExportObject(){
+  // ---------------- Export ----------------
+  function buildExport(){
     return {
-      tool: "ΧρονοΣυναίσθημα 24",
-      version: "1.0",
-      participant: deepCopy(state.participant),
-      safeMostHour: state.safeMostHour,
-      safeLeastHour: state.safeLeastHour,
-      hours: HOURS.map(h => ({
-        hour: h,
-        ...deepCopy(state.entries[h]),
-        // keep label in export (you can remove later if you want)
-        emotionLabel: emotionByKey(state.entries[h].emotionKey)?.label || ""
-      }))
+      εργαλείο: "ΧρονοΣυναίσθημα – 4 Ζώνες",
+      έκδοση: "1.0",
+      ζώνες: ZONES.map(z=>{
+        const e = state.zones[z.key];
+        const emo = emoByKey(e.emotionKey);
+        return {
+          ζώνη: z.label,
+          διάστημα: z.time,
+          συναίσθημα: emo ? emo.name : "",
+          χρώμα: emo ? emo.color : "",
+          ένταση: e.intensityKey || "",
+          με_ποιον: e.withWhom || "",
+          πού: e.where || "",
+          τι_έγινε: e.what || ""
+        };
+      })
     };
   }
 
@@ -893,38 +633,21 @@
   }
 
   function buildCSV(){
-    const header = [
-      "name","age","sex","hour",
-      "emotion_color","emotion_label","emotion_shade",
-      "intensity","with_whom","events","location","frequency","when_started",
-      "safe_most","safe_least"
-    ].join(",");
-
-    const rows = HOURS.map(h=>{
-      const e = state.entries[h];
-      const emo = emotionByKey(e.emotionKey);
-      const events = (e.events || []).join("|");
-      const safeMost = (state.safeMostHour===h) ? "1":"0";
-      const safeLeast = (state.safeLeastHour===h) ? "1":"0";
+    const header = ["ζώνη","διάστημα","συναίσθημα","χρώμα","ένταση","με_ποιον","πού","τι_έγινε"].join(",");
+    const rows = ZONES.map(z=>{
+      const e = state.zones[z.key];
+      const emo = emoByKey(e.emotionKey);
       return [
-        state.participant.name,
-        state.participant.age,
-        state.participant.sex,
-        h,
+        z.label,
+        z.time,
+        emo?.name || "",
         emo?.color || "",
-        emo?.label || "",
-        e.emotionShade || "",
-        e.intensity || "",
+        e.intensityKey || "",
         e.withWhom || "",
-        events,
-        e.location || "",
-        e.frequency || "",
-        e.when_started || "",
-        safeMost,
-        safeLeast
+        e.where || "",
+        e.what || ""
       ].map(csvEscape).join(",");
     });
-
     return [header, ...rows].join("\n");
   }
 
@@ -939,23 +662,54 @@
     setTimeout(()=>URL.revokeObjectURL(a.href), 800);
   }
 
-  // ------- Init -------
+  // ---------------- Init ----------------
   function init(){
     load();
 
-    buildPalette();
     buildIntensity();
-    fillSelect($("withWhom"), WITH_WHOM, "Διάλεξε…");
-    fillSelect($("location"), LOCATIONS, "Διάλεξε…");
-    fillSelect($("frequency"), FREQUENCY, "Διάλεξε…");
-    fillSelect($("when_started"), WHEN_STARTED, "Διάλεξε…");
-    fillSelect($("events"), EVENTS, null);
+    buildEmoList();
+    fillSelect("withWhom", WITH_WHOM, "Διάλεξε…");
+    fillSelect("where", WHERE, "Διάλεξε…");
+    fillSelect("what", WHAT, "Διάλεξε…");
 
-    buildBlockHours();
-    hookInputs();
+    // hook selects
+    $("withWhom").addEventListener("change", e=>{ zoneEntry().withWhom = e.target.value; autosave(); });
+    $("where").addEventListener("change", e=>{ zoneEntry().where = e.target.value; autosave(); });
+    $("what").addEventListener("change", e=>{ zoneEntry().what = e.target.value; autosave(); });
 
-    renderHours();
-    renderEditor();
+    // wheel click = random game
+    $("wheel").addEventListener("click", pickRandomEmotion);
+
+    // done message
+    $("btnDone").addEventListener("click", ()=>{
+      const entry = zoneEntry();
+      const ok = !!entry.emotionKey && !!entry.intensityKey;
+      const msg = ok
+        ? "✅ Τέλεια! Πήγαινε σε άλλη ζώνη ή κάνε εξαγωγή."
+        : "⚠ Διάλεξε πρώτα συναίσθημα ΚΑΙ ένταση.";
+      $("doneMsg").textContent = msg;
+      $("doneMsg").style.color = ok ? "var(--good)" : "var(--warn)";
+    });
+
+    // export
+    $("btnExportJSON").addEventListener("click", ()=>{
+      downloadFile("chronosynaisthima_4zones.json", JSON.stringify(buildExport(), null, 2), "application/json");
+    });
+    $("btnExportCSV").addEventListener("click", ()=>{
+      downloadFile("chronosynaisthima_4zones.csv", buildCSV(), "text/csv;charset=utf-8");
+    });
+
+    // reset
+    $("btnReset").addEventListener("click", ()=>{
+      if(!confirm("Σίγουρα; Θα χαθούν τα δεδομένα.")) return;
+      localStorage.removeItem("chronofeel_game_4zones_v1");
+      state = { selectedZoneKey:"morning", zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE()])) };
+      autosave();
+      render();
+      $("doneMsg").textContent = "";
+    });
+
+    render();
     setSaved(true);
   }
 
