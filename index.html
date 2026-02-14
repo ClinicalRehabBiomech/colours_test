@@ -20,9 +20,8 @@
 
       --good:#22c55e;
       --warn:#f59e0b;
-      --bad:#ef4444;
 
-      /* ✅ Pie colors (MUST exist) */
+      /* ✅ Pie colors */
       --c-red:#EF4444;
       --c-blue:#1F3B88;
       --c-yellow:#FFD400;
@@ -128,29 +127,15 @@
     }
     .bd{padding:16px}
 
-    .topline{
-      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
-    }
+    .topline{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
     .pill{
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.75);
-      font-weight:1100;
-      font-size:14px;
+      padding:8px 12px;border-radius:999px;border:1px solid var(--border);
+      background: rgba(255,255,255,.75);font-weight:1100;font-size:14px;
     }
 
-    .grid{
-      display:grid;
-      grid-template-columns: 1.1fr .9fr;
-      gap:14px;
-      align-items:start;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr;}
-    }
+    .grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:14px;align-items:start;}
+    @media (max-width: 980px){ .grid{grid-template-columns:1fr;} }
 
-    /* Pie */
     .pieWrap{display:flex;flex-direction:column;gap:12px;align-items:center}
     .pie{
       width: var(--pie);
@@ -162,19 +147,27 @@
       border:3px solid rgba(255,255,255,.85);
       box-shadow: var(--shadow);
 
-      /* ✅ FIX: fallback colors so gradient is NEVER invalid */
-      background:
-        conic-gradient(
-          var(--c-red,   #EF4444) 0 45deg,
-          var(--c-blue,  #1F3B88) 45 90deg,
-          var(--c-yellow,#FFD400) 90 135deg,
-          var(--c-green, #22C55E) 135 180deg,
-          var(--c-black, #111827) 180 225deg,
-          var(--c-white, #FFFFFF) 225 270deg,
-          var(--c-purple,#7C3AED) 270 315deg,
-          var(--c-brown, #A16207) 315 360deg
-        );
+      /* fallback color if gradients unsupported */
+      background: #f3f4f6;
     }
+
+    /* ✅ Only if conic-gradient is supported, apply the real pie colors */
+    @supports (background: conic-gradient(red, blue)) {
+      .pie{
+        background:
+          conic-gradient(
+            var(--c-red,   #EF4444) 0deg 45deg,
+            var(--c-blue,  #1F3B88) 45deg 90deg,
+            var(--c-yellow,#FFD400) 90deg 135deg,
+            var(--c-green, #22C55E) 135deg 180deg,
+            var(--c-black, #111827) 180deg 225deg,
+            var(--c-white, #FFFFFF) 225deg 270deg,
+            var(--c-purple,#7C3AED) 270deg 315deg,
+            var(--c-brown, #A16207) 315deg 360deg
+          );
+      }
+    }
+
     .pointer{
       position:absolute; top:-12px; left:50%;
       transform:translateX(-50%);
@@ -186,7 +179,6 @@
       z-index:6;
     }
 
-    /* Inner ring shows 3 questions progress */
     .innerRing{
       position:absolute;
       inset: clamp(54px, 8vw, 86px);
@@ -194,9 +186,9 @@
       border:2px solid rgba(255,255,255,.55);
       background:
         conic-gradient(
-          var(--q1, rgba(255,255,255,.22)) 0 120deg,
-          var(--q2, rgba(255,255,255,.22)) 120 240deg,
-          var(--q3, rgba(255,255,255,.22)) 240 360deg
+          var(--q1, rgba(255,255,255,.22)) 0deg 120deg,
+          var(--q2, rgba(255,255,255,.22)) 120deg 240deg,
+          var(--q3, rgba(255,255,255,.22)) 240deg 360deg
         );
       z-index:2;
       box-shadow: inset 0 0 0 6px rgba(255,255,255,.28);
@@ -205,12 +197,10 @@
       content:"";
       position:absolute; inset: 14px;
       border-radius:50%;
-      /* ✅ slightly less white overlay so pie colors stay visible */
       background: rgba(255,255,255,.18);
       border:1px solid rgba(16,36,58,.10);
     }
 
-    /* Intensity ring */
     .intensityRing{
       position:absolute;
       inset: clamp(26px, 4vw, 42px);
@@ -219,7 +209,7 @@
       z-index:1;
       pointer-events:none;
       opacity:.95;
-      background: conic-gradient(rgba(255,255,255,.00) 0 360deg);
+      background: conic-gradient(rgba(255,255,255,.00) 0deg 360deg);
     }
 
     .center{
@@ -238,53 +228,20 @@
       padding:14px;
       z-index:5;
     }
-    .centerTitle{
-      font-size:14px;
-      font-weight:1100;
-      color: var(--muted);
-      margin-bottom:6px;
-    }
-    .centerMain{
-      font-size:20px;
-      font-weight:1200;
-      line-height:1.1;
-    }
+    .centerTitle{font-size:14px;font-weight:1100;color: var(--muted);margin-bottom:6px;}
+    .centerMain{font-size:20px;font-weight:1200;line-height:1.1;}
     .centerSub{
-      margin-top:8px;
-      font-size:14px;
-      font-weight:1000;
-      color: var(--muted);
-      line-height:1.25;
-      white-space:pre-line;
-      display:-webkit-box;
-      -webkit-line-clamp:4;
-      -webkit-box-orient:vertical;
-      overflow:hidden;
+      margin-top:8px;font-size:14px;font-weight:1000;color: var(--muted);line-height:1.25;
+      white-space:pre-line;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;
       max-width:100%;
     }
 
-    /* Right: Kid-friendly big choices */
-    .stepTitle{
-      font-weight:1200;
-      font-size:18px;
-      margin:6px 0 6px;
-    }
-    .helper{
-      font-size:14px;
-      color: var(--muted);
-      font-weight:900;
-      line-height:1.35;
-      margin-bottom:10px;
-    }
+    .stepTitle{font-weight:1200;font-size:18px;margin:6px 0 6px;}
+    .helper{font-size:14px;color: var(--muted);font-weight:900;line-height:1.35;margin-bottom:10px;}
 
-    .choices{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:10px;
-    }
-    @media (max-width: 520px){
-      .choices{grid-template-columns:1fr;}
-    }
+    .choices{display:grid;grid-template-columns: repeat(2, minmax(0,1fr));gap:10px;}
+    @media (max-width: 520px){ .choices{grid-template-columns:1fr;} }
+
     .choice{
       border:2px solid rgba(16,36,58,.14);
       border-radius:20px;
@@ -305,19 +262,10 @@
       width:54px;height:54px;border-radius:18px;border:2px solid rgba(0,0,0,.10);
       flex:0 0 auto;
     }
-    .choiceBig{
-      font-size:18px;
-      font-weight:1200;
-      line-height:1.05;
-    }
+    .choiceBig{font-size:18px;font-weight:1200;line-height:1.05;}
     .choiceSmall{
-      font-size:14px;
-      font-weight:1000;
-      color: var(--muted);
-      display:-webkit-box;
-      -webkit-line-clamp:2;
-      -webkit-box-orient:vertical;
-      overflow:hidden;
+      font-size:14px;font-weight:1000;color: var(--muted);
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
     }
 
     .row1{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:10px}
@@ -339,13 +287,7 @@
     .emojiBig{font-size:28px;display:block;margin-bottom:6px}
     .emojiText{font-size:14px}
 
-    .btnRow{
-      display:flex;
-      justify-content:space-between;
-      gap:10px;
-      flex-wrap:wrap;
-      margin-top:12px;
-    }
+    .btnRow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;}
     .btn{
       border:1px solid var(--border);
       background: rgba(255,255,255,.78);
@@ -362,24 +304,9 @@
     .btn.primary{background: rgba(90,120,255,.20); border-color: rgba(90,120,255,.30);}
     .btn:disabled{opacity:.55; cursor:not-allowed; transform:none;}
 
-    .progress{
-      margin-top:10px;
-      font-size:14px;
-      font-weight:1100;
-      color: var(--muted);
-    }
-    .okline{
-      margin-top:10px;
-      font-size:14px;
-      font-weight:1200;
-      color: var(--good);
-    }
-    .warnline{
-      margin-top:10px;
-      font-size:14px;
-      font-weight:1200;
-      color: var(--warn);
-    }
+    .progress{margin-top:10px;font-size:14px;font-weight:1100;color: var(--muted);}
+    .okline{margin-top:10px;font-size:14px;font-weight:1200;color: var(--good);}
+    .warnline{margin-top:10px;font-size:14px;font-weight:1200;color: var(--warn);}
   </style>
 </head>
 
@@ -466,7 +393,6 @@
 </div>
 
 <script>
-  // ---------- DATA ----------
   const STORAGE_KEY = "chronosynaisthima24_zonewizard_v1";
 
   const ZONES = [
@@ -476,7 +402,6 @@
     {key:"night",     icon:"🌙", title:"Βράδυ",    bodyClass:"zone-night"},
   ];
 
-  // 8 slices, clickable by angle
   const COLORS = [
     {key:"red",    color:"#EF4444", name:"Κόκκινο", emotions:"Θυμός / Ένταση"},
     {key:"blue",   color:"#1F3B88", name:"Μπλε",    emotions:"Λύπη / Μοναξιά"},
@@ -488,34 +413,11 @@
     {key:"brown",  color:"#A16207", name:"Καφέ",    emotions:"Ανασφάλεια"},
   ];
 
-  // intensity affects ring fill amount (25/50/75/100)
   const INTENSITIES = [
     {key:"λίγο",      emoji:"🙂", label:"Λίγο",      fill: 90},
     {key:"αρκετά",    emoji:"😀", label:"Αρκετά",    fill: 180},
     {key:"πολύ",      emoji:"😟", label:"Πολύ",      fill: 270},
     {key:"πάρα πολύ", emoji:"😱", label:"Πάρα πολύ", fill: 360},
-  ];
-
-  const FREQ = [
-    {k:"κάθε μέρα", e:"📅", t:"Κάθε μέρα"},
-    {k:"συχνά",     e:"🔁", t:"Συχνά"},
-    {k:"μερικές φορές", e:"🙂", t:"Μερικές φορές"},
-    {k:"σπάνια",    e:"🫧", t:"Σπάνια"},
-  ];
-
-  const START = [
-    {k:"πριν λίγες μέρες", e:"🕒", t:"Πριν λίγες μέρες"},
-    {k:"πριν 1 μήνα",      e:"🗓️", t:"Πριν 1 μήνα"},
-    {k:"πριν μήνες",       e:"📆", t:"Πριν μήνες"},
-    {k:"πριν 1 χρόνο+",    e:"⏳", t:"Πριν 1 χρόνο+"},
-  ];
-
-  // short kid-friendly triggers (replace with your exact docx list if needed)
-  const TRIG = [
-    {k:"φωνές",     e:"📢", t:"Φωνές"},
-    {k:"τσακωμός",   e:"💥", t:"Τσακωμός"},
-    {k:"μόνος/η",   e:"🙁", t:"Μόνος/η"},
-    {k:"μαζί/αγκαλιά", e:"🤗", t:"Μαζί / Αγκαλιά"},
   ];
 
   const DEFAULT_ZONE_ENTRY = () => ({
@@ -531,7 +433,6 @@
     zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE_ENTRY()])),
   };
 
-  // ---------- Helpers ----------
   const $ = (id) => document.getElementById(id);
 
   function setSaved(flag){
@@ -566,7 +467,6 @@
     $("pillStep").textContent = `${state.idx+1}/4`;
   }
 
-  // ---------- PIE interaction ----------
   function pickColorFromPieClick(ev){
     const pie = ev.currentTarget;
     const rect = pie.getBoundingClientRect();
@@ -582,10 +482,9 @@
     const map = ["red","blue","yellow","green","black","white","purple","brown"];
     entry().colorKey = map[idx];
     autosave();
-    renderAllToPie(); // add immediately into pie
+    renderAllToPie();
   }
 
-  // ---------- Build kid-friendly choices ----------
   function buildIntensity(){
     const wrap = $("intensityRow");
     wrap.innerHTML = "";
@@ -653,7 +552,6 @@
     });
   }
 
-  // ---------- “Everything goes into the pie” rendering ----------
   function setQuestionRing(){
     const on = "rgba(34,197,94,.85)";
     const off = "rgba(255,255,255,.22)";
@@ -723,7 +621,6 @@
     renderProgressLine();
   }
 
-  // ---------- Navigation ----------
   function goNext(){
     if(state.idx < ZONES.length-1){
       state.idx += 1;
@@ -741,7 +638,6 @@
     }
   }
 
-  // ---------- Export ----------
   function buildExportObject(){
     return {
       εργαλείο: "ΧρονοΣυναίσθημα 24",
@@ -751,7 +647,6 @@
         const c = colorByKey(e.colorKey);
         return {
           ζώνη: z.title,
-          εικονίδιο: z.icon,
           χρώμα: c ? c.name : "",
           χρώμα_hex: c ? c.color : "",
           συναίσθημα_έννοια: c ? c.emotions : "",
@@ -810,19 +705,18 @@
     renderZonePage();
   }
 
-  // ---------- Render page ----------
   function renderZonePage(){
     applyZoneTheme();
     renderAllToPie();
     $("btnPrev").disabled = (state.idx === 0);
   }
 
-  // ---------- Init ----------
   function init(){
     load();
     applyZoneTheme();
 
     buildIntensity();
+
     buildChoices("qFreq", [
       {k:"κάθε μέρα", e:"📅", t:"Κάθε μέρα"},
       {k:"συχνά", e:"🔁", t:"Συχνά"},
