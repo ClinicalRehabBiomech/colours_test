@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>ΧρονοΣυναίσθημα 24 – Ζώνες (Παιχνίδι)</title>
+
   <style>
     :root{
       --text:#10243a;
@@ -21,7 +22,7 @@
       --warn:#f59e0b;
       --bad:#ef4444;
 
-      /* Pie colors */
+      /* ✅ Pie colors (MUST exist) */
       --c-red:#EF4444;
       --c-blue:#1F3B88;
       --c-yellow:#FFD400;
@@ -86,7 +87,10 @@
     .brand{display:flex;align-items:center;gap:12px}
     .logo{
       width:56px;height:56px;border-radius:18px;
-      background: conic-gradient(from 180deg, var(--c-red), var(--c-blue), var(--c-yellow), var(--c-green), var(--c-black), var(--c-white), var(--c-purple), var(--c-brown));
+      background: conic-gradient(from 180deg,
+        var(--c-red,#EF4444), var(--c-blue,#1F3B88), var(--c-yellow,#FFD400), var(--c-green,#22C55E),
+        var(--c-black,#111827), var(--c-white,#FFFFFF), var(--c-purple,#7C3AED), var(--c-brown,#A16207)
+      );
       border:2px solid rgba(255,255,255,.8);
       box-shadow: var(--shadow);
     }
@@ -157,16 +161,18 @@
       overflow:hidden;
       border:3px solid rgba(255,255,255,.85);
       box-shadow: var(--shadow);
+
+      /* ✅ FIX: fallback colors so gradient is NEVER invalid */
       background:
         conic-gradient(
-          var(--c-red) 0 45deg,
-          var(--c-blue) 45 90deg,
-          var(--c-yellow) 90 135deg,
-          var(--c-green) 135 180deg,
-          var(--c-black) 180 225deg,
-          var(--c-white) 225 270deg,
-          var(--c-purple) 270 315deg,
-          var(--c-brown) 315 360deg
+          var(--c-red,   #EF4444) 0 45deg,
+          var(--c-blue,  #1F3B88) 45 90deg,
+          var(--c-yellow,#FFD400) 90 135deg,
+          var(--c-green, #22C55E) 135 180deg,
+          var(--c-black, #111827) 180 225deg,
+          var(--c-white, #FFFFFF) 225 270deg,
+          var(--c-purple,#7C3AED) 270 315deg,
+          var(--c-brown, #A16207) 315 360deg
         );
     }
     .pointer{
@@ -193,13 +199,14 @@
           var(--q3, rgba(255,255,255,.22)) 240 360deg
         );
       z-index:2;
-      box-shadow: inset 0 0 0 6px rgba(255,255,255,.35);
+      box-shadow: inset 0 0 0 6px rgba(255,255,255,.28);
     }
     .innerRing::after{
       content:"";
       position:absolute; inset: 14px;
       border-radius:50%;
-      background: rgba(255,255,255,.30);
+      /* ✅ slightly less white overlay so pie colors stay visible */
+      background: rgba(255,255,255,.18);
       border:1px solid rgba(16,36,58,.10);
     }
 
@@ -212,7 +219,6 @@
       z-index:1;
       pointer-events:none;
       opacity:.95;
-      /* default empty */
       background: conic-gradient(rgba(255,255,255,.00) 0 360deg);
     }
 
@@ -504,7 +510,7 @@
     {k:"πριν 1 χρόνο+",    e:"⏳", t:"Πριν 1 χρόνο+"},
   ];
 
-  // short kid-friendly triggers (μπορείς να τα αντικαταστήσεις με τα ακριβή του docx)
+  // short kid-friendly triggers (replace with your exact docx list if needed)
   const TRIG = [
     {k:"φωνές",     e:"📢", t:"Φωνές"},
     {k:"τσακωμός",   e:"💥", t:"Τσακωμός"},
@@ -576,7 +582,7 @@
     const map = ["red","blue","yellow","green","black","white","purple","brown"];
     entry().colorKey = map[idx];
     autosave();
-    renderAllToPie(); // IMPORTANT: add immediately into pie
+    renderAllToPie(); // add immediately into pie
   }
 
   // ---------- Build kid-friendly choices ----------
@@ -589,7 +595,6 @@
       b.dataset.k = i.key;
       b.innerHTML = `<span class="emojiBig">${i.emoji}</span><span class="emojiText">${i.label}</span>`;
       b.addEventListener("click", ()=>{
-        // require color first (kid-friendly message)
         if(!entry().colorKey){
           $("statusLine").className = "warnline";
           $("statusLine").textContent = "Διάλεξε πρώτα χρώμα στην πίτα 🙂";
@@ -634,12 +639,9 @@
   }
 
   function highlightSelections(){
-    // intensity
     document.querySelectorAll("#intensityRow .emojiBtn").forEach(btn=>{
       btn.classList.toggle("active", btn.dataset.k === entry().intensityKey);
     });
-
-    // q cards
     document.querySelectorAll("#qFreq .choice").forEach(c=>{
       c.classList.toggle("active", c.dataset.k === entry().freqKey);
     });
@@ -665,9 +667,9 @@
     const e = entry();
     const i = intensityByKey(e.intensityKey);
     const fill = i ? i.fill : 0;
-    // ring fill in accent blue-ish + remaining transparent
     const a = "rgba(90,120,255,.55)";
-    $("intensityRing").style.background = `conic-gradient(${a} 0deg ${fill}deg, rgba(255,255,255,.00) ${fill}deg 360deg)`;
+    $("intensityRing").style.background =
+      `conic-gradient(${a} 0deg ${fill}deg, rgba(255,255,255,.00) ${fill}deg 360deg)`;
   }
 
   function renderCenterText(){
@@ -680,7 +682,6 @@
       return;
     }
 
-    // show emotion meaning only AFTER color chosen (as you wanted)
     const intensity = e.intensityKey ? `Πόσο: ${e.intensityKey}` : "Πόσο: (διάλεξε)";
     const q1 = e.freqKey ? `Συχνά: ${e.freqKey}` : "Συχνά: —";
     const q2 = e.startKey ? `Ξεκίνησε: ${e.startKey}` : "Ξεκίνησε: —";
@@ -729,7 +730,6 @@
       autosave();
       renderZonePage();
     }else{
-      // finished all zones — for now just alert
       alert("Μπράβο! Τελείωσες όλες τις ζώνες 🎉");
     }
   }
@@ -823,9 +823,26 @@
     applyZoneTheme();
 
     buildIntensity();
-    buildChoices("qFreq", FREQ, "freqKey");
-    buildChoices("qStart", START, "startKey");
-    buildChoices("qTrig", TRIG, "trigKey");
+    buildChoices("qFreq", [
+      {k:"κάθε μέρα", e:"📅", t:"Κάθε μέρα"},
+      {k:"συχνά", e:"🔁", t:"Συχνά"},
+      {k:"μερικές φορές", e:"🙂", t:"Μερικές φορές"},
+      {k:"σπάνια", e:"🫧", t:"Σπάνια"},
+    ], "freqKey");
+
+    buildChoices("qStart", [
+      {k:"πριν λίγες μέρες", e:"🕒", t:"Πριν λίγες μέρες"},
+      {k:"πριν 1 μήνα", e:"🗓️", t:"Πριν 1 μήνα"},
+      {k:"πριν μήνες", e:"📆", t:"Πριν μήνες"},
+      {k:"πριν 1 χρόνο+", e:"⏳", t:"Πριν 1 χρόνο+"},
+    ], "startKey");
+
+    buildChoices("qTrig", [
+      {k:"φωνές", e:"📢", t:"Φωνές"},
+      {k:"τσακωμός", e:"💥", t:"Τσακωμός"},
+      {k:"μόνος/η", e:"🙁", t:"Μόνος/η"},
+      {k:"μαζί/αγκαλιά", e:"🤗", t:"Μαζί / Αγκαλιά"},
+    ], "trigKey");
 
     $("pie").addEventListener("click", pickColorFromPieClick);
     $("btnNext").addEventListener("click", goNext);
