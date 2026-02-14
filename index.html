@@ -3,213 +3,376 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ΧρονοΣυναίσθημα 24 – Παιχνίδι</title>
-
+  <title>ΧρονοΣυναίσθημα 24 – Ζώνες (Παιχνίδι)</title>
   <style>
     :root{
-      --bg1:#bfe7ff; --bg2:#ffe8f6; --bg3:#fff7d6;
-      --card: rgba(255,255,255,.74);
-      --card2: rgba(255,255,255,.62);
-      --text:#1c2541; --muted:#475569;
-      --border: rgba(30,41,59,.18);
-      --shadow: 0 16px 44px rgba(2,6,23,.20);
-      --radius:24px;
+      --text:#10243a;
+      --muted:#3b556f;
+      --border: rgba(16,36,58,.18);
+      --shadow: 0 18px 46px rgba(2,6,23,.18);
+      --radius:26px;
 
-      --accent:#5a78ff;
-      --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
+      --base: clamp(16px, 1.2vw, 20px);
+      --h1: clamp(18px, 2vw, 28px);
+      --pie: clamp(280px, 48vw, 520px);
+      --center: clamp(160px, 26vw, 240px);
 
-      --baseFont: clamp(15px, 1.1vw, 18px);
-      --h1: clamp(18px, 1.6vw, 24px);
-      --wheel: clamp(280px, 42vw, 460px);
-      --center: clamp(150px, 22vw, 220px);
-      --innerRingInset: clamp(54px, 8vw, 78px);
+      --good:#22c55e;
+      --warn:#f59e0b;
+      --bad:#ef4444;
+
+      /* Pie colors */
+      --c-red:#EF4444;
+      --c-blue:#1F3B88;
+      --c-yellow:#FFD400;
+      --c-green:#22C55E;
+      --c-black:#111827;
+      --c-white:#FFFFFF;
+      --c-purple:#7C3AED;
+      --c-brown:#A16207;
     }
+
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      font-size: var(--baseFont);
-      color:var(--text);
-      background:
-        radial-gradient(900px 520px at 18% 15%, rgba(255,255,255,.85), transparent 60%),
-        radial-gradient(780px 480px at 70% 18%, rgba(255,255,255,.75), transparent 60%),
-        radial-gradient(900px 560px at 45% 95%, rgba(255,255,255,.70), transparent 62%),
-
-        radial-gradient(10px 10px at 12% 22%, rgba(255,90,90,.35), transparent 60%),
-        radial-gradient(12px 12px at 18% 40%, rgba(90,120,255,.35), transparent 60%),
-        radial-gradient(10px 10px at 30% 18%, rgba(34,197,94,.30), transparent 60%),
-        radial-gradient(12px 12px at 74% 24%, rgba(245,158,11,.35), transparent 60%),
-        radial-gradient(10px 10px at 82% 44%, rgba(124,58,237,.30), transparent 60%),
-        radial-gradient(12px 12px at 64% 70%, rgba(255,79,216,.30), transparent 60%),
-        linear-gradient(160deg, var(--bg1), var(--bg2) 45%, var(--bg3));
+      font-size: var(--base);
       min-height:100vh;
+      overflow-x:hidden;
+      transition: background .25s ease, color .25s ease;
+      color: var(--text);
     }
-    .wrap{max-width:1200px;margin:0 auto;padding:18px}
+
+    /* zone themes */
+    body.zone-morning{
+      background:
+        radial-gradient(180px 180px at 80% 18%, rgba(255,214,102,.95), transparent 62%),
+        radial-gradient(900px 520px at 20% 15%, rgba(255,255,255,.85), transparent 60%),
+        linear-gradient(160deg, #a9ddff, #fff6cc 55%, #ffffff);
+    }
+    body.zone-noon{
+      background:
+        radial-gradient(220px 220px at 78% 18%, rgba(255,200,60,.95), transparent 62%),
+        radial-gradient(900px 520px at 25% 15%, rgba(255,255,255,.80), transparent 62%),
+        linear-gradient(160deg, #7fd3ff, #bff0ff 45%, #fff2c9);
+    }
+    body.zone-afternoon{
+      background:
+        radial-gradient(240px 200px at 80% 20%, rgba(255,140,80,.85), transparent 65%),
+        radial-gradient(900px 520px at 25% 15%, rgba(255,255,255,.75), transparent 62%),
+        linear-gradient(160deg, #ffd1a1, #ffb3d6 55%, #fff7d6);
+    }
+    body.zone-night{
+      background:
+        radial-gradient(160px 160px at 82% 18%, rgba(230,230,255,.90), transparent 62%),
+        radial-gradient(720px 520px at 20% 10%, rgba(255,255,255,.12), transparent 62%),
+        radial-gradient(900px 700px at 60% 90%, rgba(90,120,255,.10), transparent 62%),
+        linear-gradient(160deg, #06132b, #0b2a5e 55%, #1b3b6f);
+      color:#eef6ff;
+    }
+    body.zone-night .card{background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.18);}
+    body.zone-night .small{color: rgba(238,246,255,.80)}
+    body.zone-night .muted{color: rgba(238,246,255,.75)}
+    body.zone-night .choice{background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.20);}
+    body.zone-night .choice:hover{background: rgba(255,255,255,.16);}
+    body.zone-night .btn{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.22); color:#eef6ff;}
+    body.zone-night .btn.primary{background: rgba(90,120,255,.28);}
+
+    .wrap{max-width:1100px;margin:0 auto;padding:16px}
     header{
-      display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;
-      margin-bottom:14px;
+      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+      margin-bottom:12px;
     }
     .brand{display:flex;align-items:center;gap:12px}
     .logo{
-      width:52px;height:52px;border-radius:18px;
-      background: conic-gradient(from 180deg,#EF4444,#1F3B88,#FFD400,#22C55E,#111827,#FFFFFF,#7C3AED,#A16207);
+      width:56px;height:56px;border-radius:18px;
+      background: conic-gradient(from 180deg, var(--c-red), var(--c-blue), var(--c-yellow), var(--c-green), var(--c-black), var(--c-white), var(--c-purple), var(--c-brown));
+      border:2px solid rgba(255,255,255,.8);
       box-shadow: var(--shadow);
-      border: 2px solid rgba(255,255,255,.8);
     }
-    h1{font-size:var(--h1);margin:0;font-weight:1100}
-    .sub{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.35;max-width:820px}
+    h1{font-size:var(--h1); margin:0; font-weight:1100}
+    .small{font-size:14px; line-height:1.35}
+    .muted{color: var(--muted); font-weight:900}
+
+    details.menu{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.70);
+      border-radius:18px;
+      padding:10px 12px;
+      box-shadow: 0 10px 22px rgba(2,6,23,.10);
+      user-select:none;
+    }
+    details.menu > summary{
+      cursor:pointer; font-weight:1100; list-style:none;
+      display:flex; gap:8px; align-items:center;
+    }
+    details.menu > summary::-webkit-details-marker{display:none}
 
     .card{
-      background: linear-gradient(180deg, var(--card), var(--card2));
       border:1px solid var(--border);
       border-radius: var(--radius);
+      background: rgba(255,255,255,.72);
       box-shadow: var(--shadow);
       overflow:hidden;
-      backdrop-filter: blur(8px);
     }
     .hd{
-      padding:16px 16px 12px;
+      padding:14px 16px;
       border-bottom:1px solid var(--border);
       background: rgba(255,255,255,.55);
-      display:flex;align-items:center;justify-content:space-between;gap:12px;
+      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+      align-items:center;
     }
     .bd{padding:16px}
-    .small{font-size:13px;color:var(--muted);line-height:1.35}
-    .hint{
-      background: rgba(255,255,255,.60);
-      border:1px dashed rgba(30,41,59,.20);
-      padding:12px 14px;border-radius:18px;
-      font-size:13px;color:var(--muted);
-      line-height:1.45;
-      margin-bottom:12px;
-    }
 
-    /* pages */
-    .page{display:none}
-    .page.active{display:block}
-
-    /* nav buttons */
-    .nav{
-      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;
+    .topline{
+      display:flex; gap:10px; align-items:center; flex-wrap:wrap;
     }
-    button{
+    .pill{
+      padding:8px 12px;
+      border-radius:999px;
       border:1px solid var(--border);
       background: rgba(255,255,255,.75);
-      color: var(--text);
-      padding:12px 14px;
-      border-radius:16px;
-      cursor:pointer;
-      font-size:15px;
-      font-weight:950;
-      transition:.15s transform,.15s background;
-      user-select:none;
-      box-shadow: 0 10px 22px rgba(2,6,23,.10);
+      font-weight:1100;
+      font-size:14px;
     }
-    button:hover{transform:translateY(-1px); background: rgba(255,255,255,.95);}
-    button.primary{background: rgba(90,120,255,.18); border-color: rgba(90,120,255,.30);}
 
-    /* zones page */
-    .zones{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
-    @media (max-width:980px){.zones{grid-template-columns:repeat(2,1fr)}}
-    @media (max-width:620px){.zones{grid-template-columns:1fr}}
-    .zone{
-      border:1px solid var(--border);
-      border-radius:20px;
-      padding:14px;
-      background: rgba(255,255,255,.60);
-      cursor:pointer;
-      transition:.15s transform,.15s background;
-      min-height:110px;
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:14px;
+      align-items:start;
     }
-    .zone:hover{transform:translateY(-2px); background: rgba(255,255,255,.85);}
-    .zone.active{outline:3px solid rgba(90,120,255,.45);}
-    .zone-title{font-weight:1100;font-size:16px}
-    .zone-time{font-size:13px;color:var(--muted);margin-top:4px;font-family:ui-monospace, Menlo, monospace;}
-
-    /* pie page layout */
-    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;align-items:start}
-    @media (max-width:980px){.grid{grid-template-columns:1fr}}
-    .panel{
-      border:1px solid var(--border);
-      border-radius:24px;
-      background: rgba(255,255,255,.60);
-      padding:16px;
-      overflow:hidden;
+    @media (max-width: 980px){
+      .grid{grid-template-columns:1fr;}
     }
-    .wheelRow{display:grid;grid-template-columns:var(--wheel) 1fr;gap:16px;align-items:start}
-    @media (max-width:980px){.wheelRow{grid-template-columns:1fr}}
 
-    .wheel{
-      width:var(--wheel);height:var(--wheel);max-width:100%;
+    /* Pie */
+    .pieWrap{display:flex;flex-direction:column;gap:12px;align-items:center}
+    .pie{
+      width: var(--pie);
+      height: var(--pie);
+      max-width: 100%;
       border-radius:50%;
+      position:relative;
+      overflow:hidden;
       border:3px solid rgba(255,255,255,.85);
       box-shadow: var(--shadow);
-      position:relative;
-      margin:0 auto;
-      overflow:hidden;
       background:
-        conic-gradient(#EF4444 0 45deg,#1F3B88 45 90deg,#FFD400 90 135deg,#22C55E 135 180deg,
-                       #111827 180 225deg,#FFFFFF 225 270deg,#7C3AED 270 315deg,#A16207 315 360deg);
+        conic-gradient(
+          var(--c-red) 0 45deg,
+          var(--c-blue) 45 90deg,
+          var(--c-yellow) 90 135deg,
+          var(--c-green) 135 180deg,
+          var(--c-black) 180 225deg,
+          var(--c-white) 225 270deg,
+          var(--c-purple) 270 315deg,
+          var(--c-brown) 315 360deg
+        );
     }
     .pointer{
-      position:absolute;top:-12px;left:50%;transform:translateX(-50%);
-      width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;
-      border-bottom:24px solid rgba(255,255,255,.95);
-      filter:drop-shadow(0 6px 10px rgba(2,6,23,.22));
-      z-index:5;
+      position:absolute; top:-12px; left:50%;
+      transform:translateX(-50%);
+      width:0;height:0;
+      border-left:16px solid transparent;
+      border-right:16px solid transparent;
+      border-bottom:26px solid rgba(255,255,255,.95);
+      filter: drop-shadow(0 8px 14px rgba(2,6,23,.20));
+      z-index:6;
     }
+
+    /* Inner ring shows 3 questions progress */
     .innerRing{
-      position:absolute; inset: var(--innerRingInset);
+      position:absolute;
+      inset: clamp(54px, 8vw, 86px);
       border-radius:50%;
       border:2px solid rgba(255,255,255,.55);
-      background: conic-gradient(var(--q1, rgba(255,255,255,.25)) 0 120deg,
-                                 var(--q2, rgba(255,255,255,.25)) 120 240deg,
-                                 var(--q3, rgba(255,255,255,.25)) 240 360deg);
+      background:
+        conic-gradient(
+          var(--q1, rgba(255,255,255,.22)) 0 120deg,
+          var(--q2, rgba(255,255,255,.22)) 120 240deg,
+          var(--q3, rgba(255,255,255,.22)) 240 360deg
+        );
       z-index:2;
+      box-shadow: inset 0 0 0 6px rgba(255,255,255,.35);
     }
     .innerRing::after{
-      content:""; position:absolute; inset:14px; border-radius:50%;
-      background: rgba(255,255,255,.35); border:1px solid rgba(30,41,59,.12);
-    }
-    .wheelCenter{
-      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-      width:var(--center);height:var(--center);border-radius:50%;
-      background: rgba(255,255,255,.86);
-      border:2px solid rgba(30,41,59,.14);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      text-align:center;padding:14px; z-index:4;
-    }
-    .centerMain{font-size:18px;font-weight:1200;line-height:1.15}
-    .centerSub{
-      margin-top:10px;font-size:13px;color:var(--muted);font-weight:1000;line-height:1.25;
-      white-space:pre-line;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;
-      overflow:hidden;max-width:100%;
+      content:"";
+      position:absolute; inset: 14px;
+      border-radius:50%;
+      background: rgba(255,255,255,.30);
+      border:1px solid rgba(16,36,58,.10);
     }
 
-    .shadeBox{margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-    .shadeBtn{
-      border:2px solid rgba(30,41,59,.14);
+    /* Intensity ring */
+    .intensityRing{
+      position:absolute;
+      inset: clamp(26px, 4vw, 42px);
+      border-radius:50%;
+      border:3px solid rgba(255,255,255,.65);
+      z-index:1;
+      pointer-events:none;
+      opacity:.95;
+      /* default empty */
+      background: conic-gradient(rgba(255,255,255,.00) 0 360deg);
+    }
+
+    .center{
+      position:absolute; left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      width: var(--center);
+      height: var(--center);
+      border-radius:50%;
+      background: rgba(255,255,255,.90);
+      border:2px solid rgba(16,36,58,.12);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      padding:14px;
+      z-index:5;
+    }
+    .centerTitle{
+      font-size:14px;
+      font-weight:1100;
+      color: var(--muted);
+      margin-bottom:6px;
+    }
+    .centerMain{
+      font-size:20px;
+      font-weight:1200;
+      line-height:1.1;
+    }
+    .centerSub{
+      margin-top:8px;
+      font-size:14px;
+      font-weight:1000;
+      color: var(--muted);
+      line-height:1.25;
+      white-space:pre-line;
+      display:-webkit-box;
+      -webkit-line-clamp:4;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
+      max-width:100%;
+    }
+
+    /* Right: Kid-friendly big choices */
+    .stepTitle{
+      font-weight:1200;
+      font-size:18px;
+      margin:6px 0 6px;
+    }
+    .helper{
+      font-size:14px;
+      color: var(--muted);
+      font-weight:900;
+      line-height:1.35;
+      margin-bottom:10px;
+    }
+
+    .choices{
+      display:grid;
+      grid-template-columns: repeat(2, minmax(0,1fr));
+      gap:10px;
+    }
+    @media (max-width: 520px){
+      .choices{grid-template-columns:1fr;}
+    }
+    .choice{
+      border:2px solid rgba(16,36,58,.14);
       border-radius:20px;
       background: rgba(255,255,255,.70);
-      padding:14px;
+      padding:12px;
       cursor:pointer;
       transition:.15s transform,.15s background,.15s outline;
-      display:flex;align-items:center;gap:12px;
-      min-height:74px; overflow:hidden;
+      user-select:none;
+      display:flex;
+      gap:12px;
+      align-items:center;
+      min-height:76px;
+      overflow:hidden;
     }
-    .shadeBtn:hover{transform:translateY(-2px); background: rgba(255,255,255,.92);}
-    .shadeBtn.active{outline:3px solid rgba(90,120,255,.45);}
-    .shadeSwatch{width:54px;height:54px;border-radius:18px;border:2px solid rgba(0,0,0,.10);flex:0 0 auto;}
-    .shadeTop{font-size:16px;font-weight:1200;line-height:1.1}
-    .shadeHint{
-      font-size:13px;color:var(--muted);font-weight:1000;line-height:1.2;
-      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
+    .choice:hover{transform:translateY(-2px); background: rgba(255,255,255,.92);}
+    .choice.active{outline:3px solid rgba(90,120,255,.40);}
+    .swatch{
+      width:54px;height:54px;border-radius:18px;border:2px solid rgba(0,0,0,.10);
+      flex:0 0 auto;
+    }
+    .choiceBig{
+      font-size:18px;
+      font-weight:1200;
+      line-height:1.05;
+    }
+    .choiceSmall{
+      font-size:14px;
+      font-weight:1000;
+      color: var(--muted);
+      display:-webkit-box;
+      -webkit-line-clamp:2;
+      -webkit-box-orient:vertical;
+      overflow:hidden;
     }
 
-    label{display:block;font-size:13px;color:var(--muted);margin:12px 0 7px;font-weight:1100}
-    select{
-      width:100%;padding:14px;border-radius:18px;border:1px solid rgba(30,41,59,.18);
-      background: rgba(255,255,255,.75);font-size:16px;font-weight:900;outline:none;
+    .row1{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:10px}
+    @media (max-width: 520px){ .row1{grid-template-columns:repeat(2,1fr)} }
+    .emojiBtn{
+      border:2px solid rgba(16,36,58,.14);
+      background: rgba(255,255,255,.70);
+      border-radius:20px;
+      padding:14px 10px;
+      cursor:pointer;
+      text-align:center;
+      font-weight:1200;
+      transition:.15s transform,.15s background,.15s outline;
+      user-select:none;
+      min-height:72px;
+    }
+    .emojiBtn:hover{transform:translateY(-2px); background: rgba(255,255,255,.92);}
+    .emojiBtn.active{outline:3px solid rgba(90,120,255,.40);}
+    .emojiBig{font-size:28px;display:block;margin-bottom:6px}
+    .emojiText{font-size:14px}
+
+    .btnRow{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      margin-top:12px;
+    }
+    .btn{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.78);
+      color: inherit;
+      padding:12px 14px;
+      border-radius:18px;
+      cursor:pointer;
+      font-weight:1200;
+      font-size:16px;
+      box-shadow: 0 10px 22px rgba(2,6,23,.10);
+      transition:.15s transform,.15s background;
+    }
+    .btn:hover{transform:translateY(-1px); background: rgba(255,255,255,.95);}
+    .btn.primary{background: rgba(90,120,255,.20); border-color: rgba(90,120,255,.30);}
+    .btn:disabled{opacity:.55; cursor:not-allowed; transform:none;}
+
+    .progress{
+      margin-top:10px;
+      font-size:14px;
+      font-weight:1100;
+      color: var(--muted);
+    }
+    .okline{
+      margin-top:10px;
+      font-size:14px;
+      font-weight:1200;
+      color: var(--good);
+    }
+    .warnline{
+      margin-top:10px;
+      font-size:14px;
+      font-weight:1200;
+      color: var(--warn);
     }
   </style>
 </head>
@@ -218,163 +381,189 @@
 <div class="wrap">
   <header>
     <div class="brand">
-      <div class="logo"></div>
+      <div class="logo" aria-hidden="true"></div>
       <div>
-        <h1>ΧρονοΣυναίσθημα 24 – Παιχνίδι</h1>
-        <div class="sub">Σελίδα 1: Ζώνη. Σελίδα 2: Πίτα + “πόσο” + 3 ερωτήσεις. (Χωρίς επικαλύψεις)</div>
+        <h1 id="zoneTitle">Ζώνη: Πρωί ☀️</h1>
+        <div class="small muted" id="zoneSubtitle">Βήμα 1/4 — Διάλεξε χρώμα, πόσο και απάντησε 3 ερωτήσεις.</div>
       </div>
     </div>
+
+    <details class="menu">
+      <summary>⚙️ Μενού (για επαγγελματία)</summary>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
+        <button class="btn" id="btnExportJSON">⬇ JSON</button>
+        <button class="btn" id="btnExportCSV">⬇ CSV</button>
+        <button class="btn" id="btnReset">🧹 Reset</button>
+      </div>
+      <div class="small muted" style="margin-top:10px">
+        Το παιδί δεν χρειάζεται αυτό το μενού.
+      </div>
+    </details>
   </header>
 
-  <!-- Page 1 -->
-  <section class="card page active" id="pageZones">
+  <section class="card">
     <div class="hd">
-      <div>
-        <div style="font-weight:1200">Σελίδα 1/2 — Ζώνες</div>
-        <div class="small">Διάλεξε μία ζώνη και πάτα «Επόμενο».</div>
+      <div class="topline">
+        <span class="pill" id="pillZone">☀️ Πρωί</span>
+        <span class="pill" id="pillStep">1/4</span>
       </div>
-      <div class="small" id="zoneLabelSmall">—</div>
-    </div>
-    <div class="bd">
-      <div class="hint">👧🧒 Πάτα τη ζώνη της ημέρας που θυμάσαι.</div>
-      <div class="zones" id="zones"></div>
-      <div class="nav">
-        <div></div>
-        <button class="primary" id="btnNext">➡️ Επόμενο (Πίτα)</button>
-      </div>
-    </div>
-  </section>
-
-  <div style="height:14px"></div>
-
-  <!-- Page 2 -->
-  <section class="card page" id="pagePie">
-    <div class="hd">
-      <div>
-        <div style="font-weight:1200">Σελίδα 2/2 — Πίτα & Ερωτήσεις</div>
-        <div class="small">Πάτα χρώμα → διάλεξε “πόσο” → απάντησε 3 ερωτήσεις.</div>
-      </div>
-      <div class="small">Ζώνη: <b id="zoneLabel">—</b></div>
+      <div class="small muted" id="saveStatus">● αποθηκεύτηκε</div>
     </div>
 
     <div class="bd grid">
-      <div class="panel">
-        <div class="wheelRow">
-          <div class="wheel" id="wheel">
-            <div class="pointer"></div>
-            <div class="innerRing" id="innerRing"></div>
-            <div class="wheelCenter">
-              <div class="centerMain" id="centerMain">—</div>
-              <div class="centerSub" id="centerSub">Πάτα ένα χρώμα</div>
-            </div>
-          </div>
+      <!-- LEFT: PIE -->
+      <div class="pieWrap">
+        <div class="pie" id="pie" role="button" aria-label="Πίτα χρωμάτων">
+          <div class="pointer" aria-hidden="true"></div>
+          <div class="intensityRing" id="intensityRing" aria-hidden="true"></div>
+          <div class="innerRing" id="innerRing" aria-hidden="true"></div>
 
-          <div>
-            <div class="hint">🎮 Πάτα στην πίτα για χρώμα. Μετά διάλεξε “πόσο”.</div>
-            <div class="shadeBox" id="shadeBox"></div>
-            <div class="nav">
-              <button id="btnBack">⬅️ Πίσω</button>
-              <button class="primary" id="btnDone">✅ Τέλος</button>
-            </div>
-            <div class="small" id="doneMsg"></div>
+          <div class="center" id="center">
+            <div class="centerTitle">Διάλεξες:</div>
+            <div class="centerMain" id="centerMain">—</div>
+            <div class="centerSub" id="centerSub">Πάτα ένα χρώμα στην πίτα</div>
           </div>
         </div>
+
+        <div class="progress" id="progressText">Χρώμα: ○  •  Πόσο: ○  •  Ερωτήσεις: ○○○</div>
+        <div id="statusLine" class="warnline">Πρώτα διάλεξε χρώμα 🙂</div>
       </div>
 
-      <div class="panel">
-        <div style="font-weight:1200;margin-bottom:6px">Οι 3 ερωτήσεις</div>
-        <label for="frequency">1) Αυτό συμβαίνει…</label>
-        <select id="frequency"></select>
+      <!-- RIGHT: CONTROLS -->
+      <div>
+        <div class="stepTitle">1) Χρώμα</div>
+        <div class="helper">Πάτα πάνω στην πίτα (αριστερά) για να διαλέξεις χρώμα.</div>
 
-        <label for="whenStarted">2) Πότε ένιωσες έτσι για πρώτη φορά;</label>
-        <select id="whenStarted"></select>
+        <div class="stepTitle">2) Πόσο το νιώθεις;</div>
+        <div class="helper">Διάλεξε ένα από τα 4 κουμπιά.</div>
+        <div class="row1" id="intensityRow"></div>
 
-        <label for="trigger">3) Τι το προκάλεσε; (διάλεξε ένα)</label>
-        <select id="trigger"></select>
+        <div class="stepTitle">3) Οι 3 ερωτήσεις</div>
+        <div class="helper">Πάτα μια απάντηση σε κάθε ερώτηση.</div>
+
+        <div class="stepTitle" style="font-size:16px;margin-top:10px">3α) Πόσο συχνά συμβαίνει;</div>
+        <div class="choices" id="qFreq"></div>
+
+        <div class="stepTitle" style="font-size:16px;margin-top:10px">3β) Πότε ξεκίνησε;</div>
+        <div class="choices" id="qStart"></div>
+
+        <div class="stepTitle" style="font-size:16px;margin-top:10px">3γ) Τι το προκάλεσε;</div>
+        <div class="choices" id="qTrig"></div>
+
+        <div class="btnRow">
+          <button class="btn" id="btnPrev">⬅️ Πίσω</button>
+          <button class="btn primary" id="btnNext">➡️ Επόμενο</button>
+        </div>
       </div>
     </div>
   </section>
 </div>
 
 <script>
+  // ---------- DATA ----------
+  const STORAGE_KEY = "chronosynaisthima24_zonewizard_v1";
+
   const ZONES = [
-    { key:"morning", label:"🌞 Πρωί", time:"06:00 – 12:00" },
-    { key:"noon", label:"🍽️ Μεσημέρι", time:"12:00 – 16:00" },
-    { key:"afternoon", label:"🎮 Απόγευμα", time:"16:00 – 20:00" },
-    { key:"night", label:"🌙 Βράδυ", time:"20:00 – 24:00" },
+    {key:"morning",   icon:"☀️", title:"Πρωί",     bodyClass:"zone-morning"},
+    {key:"noon",      icon:"🌤️", title:"Μεσημέρι", bodyClass:"zone-noon"},
+    {key:"afternoon", icon:"🌇", title:"Απόγευμα", bodyClass:"zone-afternoon"},
+    {key:"night",     icon:"🌙", title:"Βράδυ",    bodyClass:"zone-night"},
   ];
 
+  // 8 slices, clickable by angle
   const COLORS = [
-    { key:"red", base:"#EF4444", name:"Κόκκινο", emotions:"Θυμός / Ένταση", shade:["#FCA5A5","#EF4444","#DC2626","#991B1B"] },
-    { key:"blue", base:"#1F3B88", name:"Μπλε", emotions:"Λύπη / Μοναξιά", shade:["#93C5FD","#3B82F6","#1D4ED8","#1E3A8A"] },
-    { key:"yellow", base:"#FFD400", name:"Κίτρινο", emotions:"Χαρά / Ελπίδα", shade:["#FEF08A","#FFD400","#F59E0B","#B45309"] },
-    { key:"green", base:"#22C55E", name:"Πράσινο", emotions:"Ηρεμία / Ασφάλεια", shade:["#BBF7D0","#22C55E","#16A34A","#14532D"] },
-    { key:"black", base:"#111827", name:"Μαύρο", emotions:"Φόβος", shade:["#9CA3AF","#4B5563","#1F2937","#111827"] },
-    { key:"white", base:"#FFFFFF", name:"Άσπρο", emotions:"Κενό", shade:["#FFFFFF","#F3F4F6","#E5E7EB","#D1D5DB"] },
-    { key:"purple", base:"#7C3AED", name:"Μωβ", emotions:"Σύγχυση", shade:["#DDD6FE","#A78BFA","#7C3AED","#4C1D95"] },
-    { key:"brown", base:"#A16207", name:"Καφέ", emotions:"Ανασφάλεια", shade:["#FED7AA","#F59E0B","#A16207","#78350F"] },
+    {key:"red",    color:"#EF4444", name:"Κόκκινο", emotions:"Θυμός / Ένταση"},
+    {key:"blue",   color:"#1F3B88", name:"Μπλε",    emotions:"Λύπη / Μοναξιά"},
+    {key:"yellow", color:"#FFD400", name:"Κίτρινο", emotions:"Χαρά / Ελπίδα"},
+    {key:"green",  color:"#22C55E", name:"Πράσινο", emotions:"Ηρεμία / Ασφάλεια"},
+    {key:"black",  color:"#111827", name:"Μαύρο",   emotions:"Φόβος"},
+    {key:"white",  color:"#FFFFFF", name:"Άσπρο",   emotions:"Κενό / Μούδιασμα"},
+    {key:"purple", color:"#7C3AED", name:"Μωβ",     emotions:"Σύγχυση"},
+    {key:"brown",  color:"#A16207", name:"Καφέ",    emotions:"Ανασφάλεια"},
   ];
 
-  const INTENSITY = ["🙂 Λίγο","😀 Αρκετά","😟 Πολύ","😱 Πάρα πολύ"];
-  const FREQUENCY = ["Κάθε μέρα",">1 μέρα/εβδομάδα",">1 μέρα/μήνα",">1 φορά/χρόνο","Μόνο μία φορά"];
-  const WHEN_STARTED = ["Πριν λίγες μέρες","Πριν έναν μήνα","Πριν κάποιους μήνες","Πριν ένα χρόνο","Παλαιότερα από ένα χρόνο"];
-  const TRIGGERS = ["Οι μεγάλοι μαλώνουν έντονα μπροστά μου.","Υπάρχουν συχνά φωνές στο σπίτι.","Κανείς δεν με βοηθά.","Υπάρχει ήρεμη συζήτηση στο σπίτι.","Παίζουμε/γελάμε μαζί."];
+  // intensity affects ring fill amount (25/50/75/100)
+  const INTENSITIES = [
+    {key:"λίγο",      emoji:"🙂", label:"Λίγο",      fill: 90},
+    {key:"αρκετά",    emoji:"😀", label:"Αρκετά",    fill: 180},
+    {key:"πολύ",      emoji:"😟", label:"Πολύ",      fill: 270},
+    {key:"πάρα πολύ", emoji:"😱", label:"Πάρα πολύ", fill: 360},
+  ];
 
-  const $ = (id)=>document.getElementById(id);
+  const FREQ = [
+    {k:"κάθε μέρα", e:"📅", t:"Κάθε μέρα"},
+    {k:"συχνά",     e:"🔁", t:"Συχνά"},
+    {k:"μερικές φορές", e:"🙂", t:"Μερικές φορές"},
+    {k:"σπάνια",    e:"🫧", t:"Σπάνια"},
+  ];
+
+  const START = [
+    {k:"πριν λίγες μέρες", e:"🕒", t:"Πριν λίγες μέρες"},
+    {k:"πριν 1 μήνα",      e:"🗓️", t:"Πριν 1 μήνα"},
+    {k:"πριν μήνες",       e:"📆", t:"Πριν μήνες"},
+    {k:"πριν 1 χρόνο+",    e:"⏳", t:"Πριν 1 χρόνο+"},
+  ];
+
+  // short kid-friendly triggers (μπορείς να τα αντικαταστήσεις με τα ακριβή του docx)
+  const TRIG = [
+    {k:"φωνές",     e:"📢", t:"Φωνές"},
+    {k:"τσακωμός",   e:"💥", t:"Τσακωμός"},
+    {k:"μόνος/η",   e:"🙁", t:"Μόνος/η"},
+    {k:"μαζί/αγκαλιά", e:"🤗", t:"Μαζί / Αγκαλιά"},
+  ];
+
+  const DEFAULT_ZONE_ENTRY = () => ({
+    colorKey: null,
+    intensityKey: null,
+    freqKey: null,
+    startKey: null,
+    trigKey: null
+  });
 
   let state = {
-    selectedZoneKey: "morning",
-    selectedColorKey: null,
-    shadeIndex: null,
-    intensity: null,
-    q1:"", q2:"", q3:""
+    idx: 0,
+    zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE_ENTRY()])),
   };
 
-  function showPage(which){
-    $("pageZones").classList.toggle("active", which==="zones");
-    $("pagePie").classList.toggle("active", which==="pie");
-    window.scrollTo({top:0, behavior:"smooth"});
+  // ---------- Helpers ----------
+  const $ = (id) => document.getElementById(id);
+
+  function setSaved(flag){
+    const el = $("saveStatus");
+    el.textContent = flag ? "● αποθηκεύτηκε" : "● αποθήκευση…";
+    el.style.color = flag ? "var(--muted)" : "var(--warn)";
+  }
+  function autosave(){
+    setSaved(false);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    setTimeout(()=>setSaved(true), 120);
+  }
+  function load(){
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return;
+    try{
+      const s = JSON.parse(raw);
+      if(s && s.zones) state = s;
+    }catch(e){}
   }
 
-  function renderZones(){
-    const wrap = $("zones");
-    wrap.innerHTML = "";
-    ZONES.forEach(z=>{
-      const d = document.createElement("div");
-      d.className = "zone";
-      d.innerHTML = `<div class="zone-title">${z.label}</div><div class="zone-time">${z.time}</div>`;
-      d.addEventListener("click", ()=>{
-        state.selectedZoneKey = z.key;
-        document.querySelectorAll(".zone").forEach(x=>x.classList.remove("active"));
-        d.classList.add("active");
-        updateZoneLabels();
-      });
-      if(z.key===state.selectedZoneKey) d.classList.add("active");
-      wrap.appendChild(d);
-    });
-    updateZoneLabels();
+  function currentZone(){ return ZONES[state.idx]; }
+  function entry(){ return state.zones[currentZone().key]; }
+  function colorByKey(k){ return COLORS.find(c=>c.key===k) || null; }
+  function intensityByKey(k){ return INTENSITIES.find(i=>i.key===k) || null; }
+
+  function applyZoneTheme(){
+    document.body.className = currentZone().bodyClass;
+    $("zoneTitle").textContent = `Ζώνη: ${currentZone().title} ${currentZone().icon}`;
+    $("zoneSubtitle").textContent = `Βήμα ${state.idx+1}/4 — Διάλεξε χρώμα, πόσο και απάντησε 3 ερωτήσεις.`;
+    $("pillZone").textContent = `${currentZone().icon} ${currentZone().title}`;
+    $("pillStep").textContent = `${state.idx+1}/4`;
   }
 
-  function updateZoneLabels(){
-    const z = ZONES.find(x=>x.key===state.selectedZoneKey);
-    const txt = `${z.label} (${z.time})`;
-    $("zoneLabel").textContent = txt;
-    $("zoneLabelSmall").textContent = txt;
-  }
-
-  function fillSelect(id, arr){
-    const sel = $(id);
-    sel.innerHTML = `<option value="">Διάλεξε…</option>`;
-    arr.forEach(v=>{
-      const o=document.createElement("option");
-      o.value=v; o.textContent=v;
-      sel.appendChild(o);
-    });
-  }
-
-  function pickColorFromWheelClick(ev){
-    const wheel = ev.currentTarget;
-    const rect = wheel.getBoundingClientRect();
+  // ---------- PIE interaction ----------
+  function pickColorFromPieClick(ev){
+    const pie = ev.currentTarget;
+    const rect = pie.getBoundingClientRect();
     const cx = rect.left + rect.width/2;
     const cy = rect.top + rect.height/2;
     const x = ev.clientX - cx;
@@ -382,82 +571,277 @@
 
     let angle = Math.atan2(y, x) * (180/Math.PI);
     angle = (angle + 360 + 90) % 360;
-
     const idx = Math.floor(angle / 45) % 8;
+
     const map = ["red","blue","yellow","green","black","white","purple","brown"];
-    state.selectedColorKey = map[idx];
-    state.shadeIndex = null;
-    state.intensity = null;
-    renderCenter();
-    renderShades();
+    entry().colorKey = map[idx];
+    autosave();
+    renderAllToPie(); // IMPORTANT: add immediately into pie
   }
 
-  function renderCenter(){
-    const c = COLORS.find(x=>x.key===state.selectedColorKey);
-    if(!c){
-      $("centerMain").textContent = "—";
-      $("centerSub").textContent = "Πάτα ένα χρώμα";
-      return;
-    }
-    $("centerMain").textContent = c.name;
-    const how = state.intensity ? `Ένταση: ${state.intensity}` : "Διάλεξε «πόσο»";
-    $("centerSub").textContent = `Συναίσθημα: ${c.emotions}\n${how}`;
-  }
-
-  function renderShades(){
-    const box = $("shadeBox");
-    box.innerHTML = "";
-    const c = COLORS.find(x=>x.key===state.selectedColorKey);
-
-    if(!c){
-      INTENSITY.forEach(t=>{
-        const b=document.createElement("div");
-        b.className="shadeBtn";
-        b.style.opacity="0.55";
-        b.innerHTML = `<div class="shadeSwatch" style="background:rgba(255,255,255,.35)"></div>
-          <div><div class="shadeTop">${t}</div><div class="shadeHint">Διάλεξε πρώτα χρώμα</div></div>`;
-        box.appendChild(b);
-      });
-      return;
-    }
-
-    for(let i=0;i<4;i++){
-      const b=document.createElement("div");
-      b.className="shadeBtn";
-      b.innerHTML = `<div class="shadeSwatch" style="background:${c.shade[i]}"></div>
-        <div><div class="shadeTop">${INTENSITY[i]}</div><div class="shadeHint">${c.emotions}</div></div>`;
+  // ---------- Build kid-friendly choices ----------
+  function buildIntensity(){
+    const wrap = $("intensityRow");
+    wrap.innerHTML = "";
+    INTENSITIES.forEach(i=>{
+      const b = document.createElement("div");
+      b.className = "emojiBtn";
+      b.dataset.k = i.key;
+      b.innerHTML = `<span class="emojiBig">${i.emoji}</span><span class="emojiText">${i.label}</span>`;
       b.addEventListener("click", ()=>{
-        state.shadeIndex=i;
-        state.intensity = INTENSITY[i].replace(/^.. /,"");
-        document.querySelectorAll(".shadeBtn").forEach(x=>x.classList.remove("active"));
-        b.classList.add("active");
-        renderCenter();
+        // require color first (kid-friendly message)
+        if(!entry().colorKey){
+          $("statusLine").className = "warnline";
+          $("statusLine").textContent = "Διάλεξε πρώτα χρώμα στην πίτα 🙂";
+          return;
+        }
+        entry().intensityKey = i.key;
+        autosave();
+        renderAllToPie();
       });
-      box.appendChild(b);
-    }
+      wrap.appendChild(b);
+    });
   }
 
-  function init(){
-    renderZones();
+  function buildChoices(containerId, items, keyName){
+    const wrap = $(containerId);
+    wrap.innerHTML = "";
+    items.forEach(item=>{
+      const d = document.createElement("div");
+      d.className = "choice";
+      d.dataset.k = item.k;
+      d.innerHTML = `
+        <div class="swatch" style="background: rgba(255,255,255,.45); display:flex;align-items:center;justify-content:center;font-size:26px;">
+          ${item.e}
+        </div>
+        <div>
+          <div class="choiceBig">${item.t}</div>
+          <div class="choiceSmall">πάτησέ το</div>
+        </div>
+      `;
+      d.addEventListener("click", ()=>{
+        if(!entry().colorKey){
+          $("statusLine").className = "warnline";
+          $("statusLine").textContent = "Διάλεξε πρώτα χρώμα στην πίτα 🙂";
+          return;
+        }
+        entry()[keyName] = item.k;
+        autosave();
+        renderAllToPie();
+      });
+      wrap.appendChild(d);
+    });
+  }
 
-    fillSelect("frequency", FREQUENCY);
-    fillSelect("whenStarted", WHEN_STARTED);
-    fillSelect("trigger", TRIGGERS);
-
-    $("btnNext").addEventListener("click", ()=>showPage("pie"));
-    $("btnBack").addEventListener("click", ()=>showPage("zones"));
-    $("wheel").addEventListener("click", pickColorFromWheelClick);
-
-    $("btnDone").addEventListener("click", ()=>{
-      const ok = !!state.selectedColorKey && (state.shadeIndex!==null) &&
-                 $("frequency").value && $("whenStarted").value && $("trigger").value;
-      $("doneMsg").textContent = ok ? "✅ Τέλος! Μπράβο!" : "⚠ Θέλει: χρώμα + πόσο + 3 ερωτήσεις.";
+  function highlightSelections(){
+    // intensity
+    document.querySelectorAll("#intensityRow .emojiBtn").forEach(btn=>{
+      btn.classList.toggle("active", btn.dataset.k === entry().intensityKey);
     });
 
-    renderCenter();
-    renderShades();
+    // q cards
+    document.querySelectorAll("#qFreq .choice").forEach(c=>{
+      c.classList.toggle("active", c.dataset.k === entry().freqKey);
+    });
+    document.querySelectorAll("#qStart .choice").forEach(c=>{
+      c.classList.toggle("active", c.dataset.k === entry().startKey);
+    });
+    document.querySelectorAll("#qTrig .choice").forEach(c=>{
+      c.classList.toggle("active", c.dataset.k === entry().trigKey);
+    });
   }
 
+  // ---------- “Everything goes into the pie” rendering ----------
+  function setQuestionRing(){
+    const on = "rgba(34,197,94,.85)";
+    const off = "rgba(255,255,255,.22)";
+    const e = entry();
+    $("innerRing").style.setProperty("--q1", e.freqKey ? on : off);
+    $("innerRing").style.setProperty("--q2", e.startKey ? on : off);
+    $("innerRing").style.setProperty("--q3", e.trigKey ? on : off);
+  }
+
+  function setIntensityRing(){
+    const e = entry();
+    const i = intensityByKey(e.intensityKey);
+    const fill = i ? i.fill : 0;
+    // ring fill in accent blue-ish + remaining transparent
+    const a = "rgba(90,120,255,.55)";
+    $("intensityRing").style.background = `conic-gradient(${a} 0deg ${fill}deg, rgba(255,255,255,.00) ${fill}deg 360deg)`;
+  }
+
+  function renderCenterText(){
+    const e = entry();
+    const c = colorByKey(e.colorKey);
+
+    if(!c){
+      $("centerMain").textContent = "—";
+      $("centerSub").textContent = "Πάτα ένα χρώμα στην πίτα";
+      return;
+    }
+
+    // show emotion meaning only AFTER color chosen (as you wanted)
+    const intensity = e.intensityKey ? `Πόσο: ${e.intensityKey}` : "Πόσο: (διάλεξε)";
+    const q1 = e.freqKey ? `Συχνά: ${e.freqKey}` : "Συχνά: —";
+    const q2 = e.startKey ? `Ξεκίνησε: ${e.startKey}` : "Ξεκίνησε: —";
+    const q3 = e.trigKey ? `Αιτία: ${e.trigKey}` : "Αιτία: —";
+
+    $("centerMain").textContent = `${c.name}`;
+    $("centerSub").textContent =
+      `Συναίσθημα: ${c.emotions}\n${intensity}\n${q1}\n${q2}\n${q3}`;
+  }
+
+  function renderProgressLine(){
+    const e = entry();
+    const colorOk = !!e.colorKey;
+    const intOk = !!e.intensityKey;
+    const qCount = [e.freqKey, e.startKey, e.trigKey].filter(Boolean).length;
+
+    $("progressText").textContent =
+      `Χρώμα: ${colorOk ? "●" : "○"}  •  Πόσο: ${intOk ? "●" : "○"}  •  Ερωτήσεις: ${"●".repeat(qCount)}${"○".repeat(3-qCount)}`;
+
+    const allOk = colorOk && intOk && qCount === 3;
+    if(allOk){
+      $("statusLine").className = "okline";
+      $("statusLine").textContent = "✅ Τέλεια! Πάτα «Επόμενο» για την επόμενη ζώνη.";
+    }else{
+      $("statusLine").className = "warnline";
+      if(!colorOk) $("statusLine").textContent = "Πρώτα διάλεξε χρώμα στην πίτα 🙂";
+      else if(!intOk) $("statusLine").textContent = "Τώρα διάλεξε «πόσο» 🙂";
+      else $("statusLine").textContent = "Μένουν λίγες ερωτήσεις ακόμα 🙂";
+    }
+
+    $("btnNext").disabled = !allOk;
+  }
+
+  function renderAllToPie(){
+    setQuestionRing();
+    setIntensityRing();
+    renderCenterText();
+    highlightSelections();
+    renderProgressLine();
+  }
+
+  // ---------- Navigation ----------
+  function goNext(){
+    if(state.idx < ZONES.length-1){
+      state.idx += 1;
+      autosave();
+      renderZonePage();
+    }else{
+      // finished all zones — for now just alert
+      alert("Μπράβο! Τελείωσες όλες τις ζώνες 🎉");
+    }
+  }
+  function goPrev(){
+    if(state.idx > 0){
+      state.idx -= 1;
+      autosave();
+      renderZonePage();
+    }
+  }
+
+  // ---------- Export ----------
+  function buildExportObject(){
+    return {
+      εργαλείο: "ΧρονοΣυναίσθημα 24",
+      έκδοση: "zone-wizard-1.0",
+      ζώνες: ZONES.map(z=>{
+        const e = state.zones[z.key];
+        const c = colorByKey(e.colorKey);
+        return {
+          ζώνη: z.title,
+          εικονίδιο: z.icon,
+          χρώμα: c ? c.name : "",
+          χρώμα_hex: c ? c.color : "",
+          συναίσθημα_έννοια: c ? c.emotions : "",
+          πόσο: e.intensityKey || "",
+          συχνότητα: e.freqKey || "",
+          έναρξη: e.startKey || "",
+          αιτία: e.trigKey || ""
+        };
+      })
+    };
+  }
+
+  function csvEscape(v){
+    const s = (v ?? "").toString();
+    if(/[",\n]/.test(s)) return `"${s.replaceAll('"','""')}"`;
+    return s;
+  }
+  function buildCSV(){
+    const header = ["ζώνη","χρώμα","χρώμα_hex","συναίσθημα_έννοια","πόσο","συχνότητα","έναρξη","αιτία"].join(",");
+    const rows = ZONES.map(z=>{
+      const e = state.zones[z.key];
+      const c = colorByKey(e.colorKey);
+      return [
+        z.title,
+        c ? c.name : "",
+        c ? c.color : "",
+        c ? c.emotions : "",
+        e.intensityKey || "",
+        e.freqKey || "",
+        e.startKey || "",
+        e.trigKey || "",
+      ].map(csvEscape).join(",");
+    });
+    return [header, ...rows].join("\n");
+  }
+
+  function downloadFile(filename, content, mime){
+    const blob = new Blob([content], {type:mime});
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(()=>URL.revokeObjectURL(a.href), 800);
+  }
+
+  function resetAll(){
+    if(!confirm("Σίγουρα reset;")) return;
+    localStorage.removeItem(STORAGE_KEY);
+    state = {
+      idx: 0,
+      zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE_ENTRY()])),
+    };
+    autosave();
+    renderZonePage();
+  }
+
+  // ---------- Render page ----------
+  function renderZonePage(){
+    applyZoneTheme();
+    renderAllToPie();
+    $("btnPrev").disabled = (state.idx === 0);
+  }
+
+  // ---------- Init ----------
+  function init(){
+    load();
+    applyZoneTheme();
+
+    buildIntensity();
+    buildChoices("qFreq", FREQ, "freqKey");
+    buildChoices("qStart", START, "startKey");
+    buildChoices("qTrig", TRIG, "trigKey");
+
+    $("pie").addEventListener("click", pickColorFromPieClick);
+    $("btnNext").addEventListener("click", goNext);
+    $("btnPrev").addEventListener("click", goPrev);
+
+    $("btnExportJSON").addEventListener("click", ()=>{
+      downloadFile("chronosynaisthima24.json", JSON.stringify(buildExportObject(), null, 2), "application/json");
+    });
+    $("btnExportCSV").addEventListener("click", ()=>{
+      downloadFile("chronosynaisthima24.csv", buildCSV(), "text/csv;charset=utf-8");
+    });
+    $("btnReset").addEventListener("click", resetAll);
+
+    setSaved(true);
+    renderZonePage();
+  }
   init();
 </script>
 </body>
