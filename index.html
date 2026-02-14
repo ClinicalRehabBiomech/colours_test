@@ -3,413 +3,286 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ΧρονοΣυναίσθημα 24 – Φάση Α (Παιχνίδι)</title>
+  <title>ΧρονοΣυναίσθημα 24 – Παιχνίδι</title>
+
   <style>
     :root{
-      --bg:#0b1020;
-      --text:#eaf0ff;
-      --muted:#b8c3e6;
-      --border:rgba(255,255,255,.14);
-      --shadow:0 16px 44px rgba(0,0,0,.45);
+      --bg1:#bfe7ff; --bg2:#ffe8f6; --bg3:#fff7d6;
+      --card: rgba(255,255,255,.74);
+      --card2: rgba(255,255,255,.62);
+      --text:#1c2541; --muted:#475569;
+      --border: rgba(30,41,59,.18);
+      --shadow: 0 16px 44px rgba(2,6,23,.20);
       --radius:24px;
-      --warn:#f59e0b;
-      --good:#22c55e;
+
       --accent:#5a78ff;
-      --card:rgba(255,255,255,.05);
+      --good:#22c55e; --warn:#f59e0b; --bad:#ef4444;
 
-      /* BIG UI */
-      --baseFont: 17px;
-      --h1: 22px;
-      --wheel: 440px;
-      --center: 200px;
-      --innerRingInset: 72px; /* thickness control */
+      --baseFont: clamp(15px, 1.1vw, 18px);
+      --h1: clamp(18px, 1.6vw, 24px);
+      --wheel: clamp(280px, 42vw, 460px);
+      --center: clamp(150px, 22vw, 220px);
+      --innerRingInset: clamp(54px, 8vw, 78px);
     }
-
     *{box-sizing:border-box}
     body{
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
       font-size: var(--baseFont);
-      background:
-        radial-gradient(1100px 700px at 20% 10%, rgba(90,120,255,.25), transparent 55%),
-        radial-gradient(900px 700px at 80% 20%, rgba(255,120,210,.18), transparent 55%),
-        radial-gradient(900px 700px at 60% 90%, rgba(0,255,200,.12), transparent 55%),
-        var(--bg);
       color:var(--text);
+      background:
+        radial-gradient(900px 520px at 18% 15%, rgba(255,255,255,.85), transparent 60%),
+        radial-gradient(780px 480px at 70% 18%, rgba(255,255,255,.75), transparent 60%),
+        radial-gradient(900px 560px at 45% 95%, rgba(255,255,255,.70), transparent 62%),
+
+        radial-gradient(10px 10px at 12% 22%, rgba(255,90,90,.35), transparent 60%),
+        radial-gradient(12px 12px at 18% 40%, rgba(90,120,255,.35), transparent 60%),
+        radial-gradient(10px 10px at 30% 18%, rgba(34,197,94,.30), transparent 60%),
+        radial-gradient(12px 12px at 74% 24%, rgba(245,158,11,.35), transparent 60%),
+        radial-gradient(10px 10px at 82% 44%, rgba(124,58,237,.30), transparent 60%),
+        radial-gradient(12px 12px at 64% 70%, rgba(255,79,216,.30), transparent 60%),
+        linear-gradient(160deg, var(--bg1), var(--bg2) 45%, var(--bg3));
+      min-height:100vh;
     }
-    .wrap{max-width:1240px;margin:0 auto;padding:18px}
+    .wrap{max-width:1200px;margin:0 auto;padding:18px}
     header{
       display:flex;gap:14px;align-items:center;justify-content:space-between;flex-wrap:wrap;
       margin-bottom:14px;
     }
     .brand{display:flex;align-items:center;gap:12px}
     .logo{
-      width:50px;height:50px;border-radius:18px;
-      background: conic-gradient(from 180deg,
-        #EF4444, #1F3B88, #FFD400, #22C55E, #111827, #FFFFFF, #7C3AED, #A16207);
+      width:52px;height:52px;border-radius:18px;
+      background: conic-gradient(from 180deg,#EF4444,#1F3B88,#FFD400,#22C55E,#111827,#FFFFFF,#7C3AED,#A16207);
       box-shadow: var(--shadow);
-      border: 1px solid rgba(255,255,255,.18);
+      border: 2px solid rgba(255,255,255,.8);
     }
     h1{font-size:var(--h1);margin:0;font-weight:1100}
-    .sub{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.35;max-width:780px}
+    .sub{color:var(--muted);font-size:13px;margin-top:4px;line-height:1.35;max-width:820px}
 
     .card{
-      background: linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      background: linear-gradient(180deg, var(--card), var(--card2));
       border:1px solid var(--border);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow:hidden;
+      backdrop-filter: blur(8px);
     }
     .hd{
       padding:16px 16px 12px;
       border-bottom:1px solid var(--border);
-      background: rgba(0,0,0,.12);
+      background: rgba(255,255,255,.55);
       display:flex;align-items:center;justify-content:space-between;gap:12px;
     }
     .bd{padding:16px}
     .small{font-size:13px;color:var(--muted);line-height:1.35}
-    .status{font-size:13px;color:var(--muted);font-weight:900}
-
-    /* Dropdown dev menu */
-    details.menu{
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.18);
-      border-radius:16px;
-      padding:10px 12px;
-      box-shadow: 0 8px 20px rgba(0,0,0,.25);
-      user-select:none;
-    }
-    details.menu > summary{
-      cursor:pointer;
-      font-weight:1000;
-      list-style:none;
-      display:flex;align-items:center;gap:8px;
-    }
-    details.menu > summary::-webkit-details-marker{display:none}
-    .btnbar{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}
-    button{
-      border:1px solid var(--border);
-      background: linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      color:var(--text);
-      padding:12px 14px;
-      border-radius:16px;
-      cursor:pointer;
-      font-size:15px;
-      font-weight:900;
-      transition:.15s transform,.15s background;
-      user-select:none;
-    }
-    button:hover{transform:translateY(-1px); background: rgba(255,255,255,.10);}
-    button.good{background: linear-gradient(180deg, rgba(34,197,94,.35), rgba(34,197,94,.12));}
-    button.bad{background: linear-gradient(180deg, rgba(239,68,68,.35), rgba(239,68,68,.12));}
-    button.primary{background: linear-gradient(180deg, rgba(90,120,255,.35), rgba(90,120,255,.12));}
-
-    /* 9 zones */
-    .zones{
-      display:grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap:12px;
-    }
-    @media (max-width: 980px){
-      .zones{grid-template-columns: repeat(2, 1fr);}
-      :root{ --wheel: 380px; --center: 180px; --innerRingInset: 64px; }
-    }
-    @media (max-width: 620px){
-      .zones{grid-template-columns: 1fr;}
-      :root{ --wheel: 330px; --center: 170px; --innerRingInset: 58px; }
-    }
-    .zone{
-      border:1px solid var(--border);
-      border-radius:20px;
-      padding:14px;
-      background: rgba(0,0,0,.18);
-      cursor:pointer;
-      transition:.15s transform,.15s background;
-      min-height:110px;
-    }
-    .zone:hover{transform:translateY(-2px); background: rgba(255,255,255,.07);}
-    .zone.active{outline:3px solid rgba(90,120,255,.55);}
-    .zone-title{font-weight:1100;font-size:16px}
-    .zone-time{font-size:13px;color:var(--muted);margin-top:4px;font-family: ui-monospace, SFMono-Regular, Menlo, monospace;}
-    .zone-mini{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-    .chip{
-      display:inline-flex;align-items:center;gap:8px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.18);
-      padding:7px 11px;border-radius:999px;
-      font-weight:1000;font-size:13px;
-    }
-    .dot{width:15px;height:15px;border-radius:999px;border:1px solid rgba(255,255,255,.35)}
-    .tag{
-      font-size:13px;color:var(--muted);
-      border:1px dashed rgba(255,255,255,.18);
-      padding:7px 11px;border-radius:999px;
-      background: rgba(255,255,255,.05);
-      font-weight:900;
-    }
-
-    /* layout */
-    .grid{
-      display:grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap:14px;
-    }
-    @media (max-width: 980px){
-      .grid{grid-template-columns:1fr}
-    }
-
-    /* Wheel */
-    .panel{
-      border:1px solid var(--border);
-      border-radius:24px;
-      background: rgba(0,0,0,.18);
-      padding:16px;
-    }
-    .wheelRow{
-      display:grid;
-      grid-template-columns: var(--wheel) 1fr;
-      gap:16px;
-      align-items:start;
-    }
-    @media (max-width: 980px){
-      .wheelRow{grid-template-columns: 1fr;}
-    }
-
-    .wheel{
-      width:var(--wheel);height:var(--wheel);border-radius:50%;
-      border:2px solid rgba(255,255,255,.18);
-      box-shadow: var(--shadow);
-      position:relative;
-      margin:0 auto;
-      overflow:hidden;
-      background:
-        conic-gradient(
-          #EF4444 0deg 45deg,
-          #1F3B88 45deg 90deg,
-          #FFD400 90deg 135deg,
-          #22C55E 135deg 180deg,
-          #111827 180deg 225deg,
-          #FFFFFF 225deg 270deg,
-          #7C3AED 270deg 315deg,
-          #A16207 315deg 360deg
-        );
-    }
-    .wheel::after{
-      content:"";
-      position:absolute; inset:0;
-      background: radial-gradient(circle at center, rgba(0,0,0,.0) 0 58%, rgba(0,0,0,.40) 61% 100%);
-      pointer-events:none;
-    }
-    .pointer{
-      position:absolute; top:-12px; left:50%;
-      transform:translateX(-50%);
-      width:0;height:0;
-      border-left:16px solid transparent;
-      border-right:16px solid transparent;
-      border-bottom:24px solid rgba(255,255,255,.90);
-      filter: drop-shadow(0 6px 10px rgba(0,0,0,.35));
-      z-index:5;
-    }
-
-    /* INNER RING: questions progress inside the pie */
-    .innerRing{
-      position:absolute;
-      inset: var(--innerRingInset);
-      border-radius:50%;
-      border:2px solid rgba(255,255,255,.14);
-      background:
-        conic-gradient(
-          var(--q1, rgba(255,255,255,.14)) 0deg 120deg,
-          var(--q2, rgba(255,255,255,.14)) 120deg 240deg,
-          var(--q3, rgba(255,255,255,.14)) 240deg 360deg
-        );
-      box-shadow: inset 0 0 0 6px rgba(0,0,0,.18);
-      z-index:2;
-    }
-    .innerRing::after{
-      content:"";
-      position:absolute; inset:14px;
-      border-radius:50%;
-      background: rgba(10,16,32,.55);
-      border:1px solid rgba(255,255,255,.10);
-    }
-
-    .wheelCenter{
-      position:absolute; left:50%; top:50%;
-      transform:translate(-50%,-50%);
-      width:var(--center);height:var(--center);border-radius:50%;
-      background: rgba(10,16,32,.92);
-      border:2px solid rgba(255,255,255,.16);
-      display:flex;flex-direction:column;align-items:center;justify-content:center;
-      text-align:center;padding:14px;
-      z-index:4;
-    }
-    .centerLabel{font-size:13px;color:var(--muted);font-weight:1100;margin-bottom:8px}
-    .centerMain{font-size:18px;font-weight:1200;line-height:1.15}
-    .centerSub{margin-top:10px;font-size:13px;color:var(--muted);font-weight:1000;line-height:1.25}
-
     .hint{
-      background: rgba(255,255,255,.06);
-      border:1px dashed rgba(255,255,255,.18);
+      background: rgba(255,255,255,.60);
+      border:1px dashed rgba(30,41,59,.20);
       padding:12px 14px;border-radius:18px;
       font-size:13px;color:var(--muted);
       line-height:1.45;
       margin-bottom:12px;
     }
 
-    /* Shade buttons (bigger) */
-    .shadeBox{
-      margin-top:12px;
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap:12px;
+    /* pages */
+    .page{display:none}
+    .page.active{display:block}
+
+    /* nav buttons */
+    .nav{
+      display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-top:12px;
     }
-    .shadeBtn{
-      border:2px solid rgba(255,255,255,.16);
+    button{
+      border:1px solid var(--border);
+      background: rgba(255,255,255,.75);
+      color: var(--text);
+      padding:12px 14px;
+      border-radius:16px;
+      cursor:pointer;
+      font-size:15px;
+      font-weight:950;
+      transition:.15s transform,.15s background;
+      user-select:none;
+      box-shadow: 0 10px 22px rgba(2,6,23,.10);
+    }
+    button:hover{transform:translateY(-1px); background: rgba(255,255,255,.95);}
+    button.primary{background: rgba(90,120,255,.18); border-color: rgba(90,120,255,.30);}
+
+    /* zones page */
+    .zones{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+    @media (max-width:980px){.zones{grid-template-columns:repeat(2,1fr)}}
+    @media (max-width:620px){.zones{grid-template-columns:1fr}}
+    .zone{
+      border:1px solid var(--border);
       border-radius:20px;
-      background: rgba(0,0,0,.16);
+      padding:14px;
+      background: rgba(255,255,255,.60);
+      cursor:pointer;
+      transition:.15s transform,.15s background;
+      min-height:110px;
+    }
+    .zone:hover{transform:translateY(-2px); background: rgba(255,255,255,.85);}
+    .zone.active{outline:3px solid rgba(90,120,255,.45);}
+    .zone-title{font-weight:1100;font-size:16px}
+    .zone-time{font-size:13px;color:var(--muted);margin-top:4px;font-family:ui-monospace, Menlo, monospace;}
+
+    /* pie page layout */
+    .grid{display:grid;grid-template-columns:1.15fr .85fr;gap:14px;align-items:start}
+    @media (max-width:980px){.grid{grid-template-columns:1fr}}
+    .panel{
+      border:1px solid var(--border);
+      border-radius:24px;
+      background: rgba(255,255,255,.60);
+      padding:16px;
+      overflow:hidden;
+    }
+    .wheelRow{display:grid;grid-template-columns:var(--wheel) 1fr;gap:16px;align-items:start}
+    @media (max-width:980px){.wheelRow{grid-template-columns:1fr}}
+
+    .wheel{
+      width:var(--wheel);height:var(--wheel);max-width:100%;
+      border-radius:50%;
+      border:3px solid rgba(255,255,255,.85);
+      box-shadow: var(--shadow);
+      position:relative;
+      margin:0 auto;
+      overflow:hidden;
+      background:
+        conic-gradient(#EF4444 0 45deg,#1F3B88 45 90deg,#FFD400 90 135deg,#22C55E 135 180deg,
+                       #111827 180 225deg,#FFFFFF 225 270deg,#7C3AED 270 315deg,#A16207 315 360deg);
+    }
+    .pointer{
+      position:absolute;top:-12px;left:50%;transform:translateX(-50%);
+      width:0;height:0;border-left:16px solid transparent;border-right:16px solid transparent;
+      border-bottom:24px solid rgba(255,255,255,.95);
+      filter:drop-shadow(0 6px 10px rgba(2,6,23,.22));
+      z-index:5;
+    }
+    .innerRing{
+      position:absolute; inset: var(--innerRingInset);
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,.55);
+      background: conic-gradient(var(--q1, rgba(255,255,255,.25)) 0 120deg,
+                                 var(--q2, rgba(255,255,255,.25)) 120 240deg,
+                                 var(--q3, rgba(255,255,255,.25)) 240 360deg);
+      z-index:2;
+    }
+    .innerRing::after{
+      content:""; position:absolute; inset:14px; border-radius:50%;
+      background: rgba(255,255,255,.35); border:1px solid rgba(30,41,59,.12);
+    }
+    .wheelCenter{
+      position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+      width:var(--center);height:var(--center);border-radius:50%;
+      background: rgba(255,255,255,.86);
+      border:2px solid rgba(30,41,59,.14);
+      display:flex;flex-direction:column;align-items:center;justify-content:center;
+      text-align:center;padding:14px; z-index:4;
+    }
+    .centerMain{font-size:18px;font-weight:1200;line-height:1.15}
+    .centerSub{
+      margin-top:10px;font-size:13px;color:var(--muted);font-weight:1000;line-height:1.25;
+      white-space:pre-line;display:-webkit-box;-webkit-line-clamp:5;-webkit-box-orient:vertical;
+      overflow:hidden;max-width:100%;
+    }
+
+    .shadeBox{margin-top:12px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+    .shadeBtn{
+      border:2px solid rgba(30,41,59,.14);
+      border-radius:20px;
+      background: rgba(255,255,255,.70);
       padding:14px;
       cursor:pointer;
       transition:.15s transform,.15s background,.15s outline;
-      user-select:none;
       display:flex;align-items:center;gap:12px;
-      min-height:70px;
-      font-weight:1100;
+      min-height:74px; overflow:hidden;
     }
-    .shadeBtn:hover{transform:translateY(-2px); background: rgba(255,255,255,.06);}
-    .shadeBtn.active{outline:3px solid rgba(90,120,255,.55);}
-    .shadeSwatch{
-      width:54px;height:54px;border-radius:18px;border:2px solid rgba(0,0,0,.25);
-      flex:0 0 auto;
+    .shadeBtn:hover{transform:translateY(-2px); background: rgba(255,255,255,.92);}
+    .shadeBtn.active{outline:3px solid rgba(90,120,255,.45);}
+    .shadeSwatch{width:54px;height:54px;border-radius:18px;border:2px solid rgba(0,0,0,.10);flex:0 0 auto;}
+    .shadeTop{font-size:16px;font-weight:1200;line-height:1.1}
+    .shadeHint{
+      font-size:13px;color:var(--muted);font-weight:1000;line-height:1.2;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
     }
-    .shadeTop{font-size:16px}
-    .shadeHint{font-size:13px;color:var(--muted);font-weight:1000}
 
-    /* Right questions */
     label{display:block;font-size:13px;color:var(--muted);margin:12px 0 7px;font-weight:1100}
     select{
-      width:100%;
-      padding:14px 14px;
-      border-radius:18px;
-      border:1px solid var(--border);
-      background: rgba(0,0,0,.22);
-      color: var(--text);
-      outline:none;
-      font-size:16px;
-      font-weight:800;
+      width:100%;padding:14px;border-radius:18px;border:1px solid rgba(30,41,59,.18);
+      background: rgba(255,255,255,.75);font-size:16px;font-weight:900;outline:none;
     }
-    select option{background:#000;color:var(--text)}
-    .legend{
-      display:flex;flex-wrap:wrap;gap:10px;
-      margin-top:12px;
-      font-size:13px;
-      color:var(--muted);
-      font-weight:900;
-    }
-    .legend span{
-      display:inline-flex;align-items:center;gap:8px;
-      padding:7px 11px;border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background: rgba(0,0,0,.16);
-    }
-    .sq{width:14px;height:14px;border-radius:4px;border:1px solid rgba(255,255,255,.25)}
-    .ok{color:var(--good);font-weight:1100;font-size:13px;margin-top:12px}
-    .warn{color:var(--warn);font-weight:1100;font-size:13px;margin-top:12px}
   </style>
 </head>
+
 <body>
 <div class="wrap">
   <header>
     <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
+      <div class="logo"></div>
       <div>
-        <h1>ΧρονοΣυναίσθημα 24 – Φάση Α</h1>
-        <div class="sub">
-          Πάτα ζώνη → πάτα χρώμα στην “πίτα” → διάλεξε «πόσο» (απόχρωση) → απάντησε 3 ερωτήσεις.
-          Οι 3 ερωτήσεις φαίνονται σαν <b>3 κομμάτια</b> μέσα στην πίτα και “ανάβουν” όταν συμπληρωθούν.
-        </div>
+        <h1>ΧρονοΣυναίσθημα 24 – Παιχνίδι</h1>
+        <div class="sub">Σελίδα 1: Ζώνη. Σελίδα 2: Πίτα + “πόσο” + 3 ερωτήσεις. (Χωρίς επικαλύψεις)</div>
       </div>
     </div>
-
-    <!-- DEV tools hidden in dropdown -->
-    <details class="menu">
-      <summary>⚙️ Μενού (εξαγωγές)</summary>
-      <div class="btnbar">
-        <button id="btnExportJSON" class="good">⬇ Εξαγωγή JSON</button>
-        <button id="btnExportCSV" class="good">⬇ Εξαγωγή CSV</button>
-        <button id="btnReset" class="bad">🧹 Καθαρισμός</button>
-      </div>
-      <div class="small" style="margin-top:10px">
-        Αυτά είναι εργαλεία για τον/την επαγγελματία (developer). Το παιδί δεν χρειάζεται να τα βλέπει.
-      </div>
-    </details>
   </header>
 
-  <section class="card">
+  <!-- Page 1 -->
+  <section class="card page active" id="pageZones">
     <div class="hd">
       <div>
-        <div style="font-weight:1200">1) Διάλεξε μέρος της ημέρας</div>
-        <div class="small">9 ζώνες, καλύπτουν το 24ωρο χωρίς κενά/επικαλύψεις.</div>
+        <div style="font-weight:1200">Σελίδα 1/2 — Ζώνες</div>
+        <div class="small">Διάλεξε μία ζώνη και πάτα «Επόμενο».</div>
       </div>
-      <div class="status" id="saveStatus">● αποθηκεύτηκε</div>
+      <div class="small" id="zoneLabelSmall">—</div>
     </div>
     <div class="bd">
+      <div class="hint">👧🧒 Πάτα τη ζώνη της ημέρας που θυμάσαι.</div>
       <div class="zones" id="zones"></div>
+      <div class="nav">
+        <div></div>
+        <button class="primary" id="btnNext">➡️ Επόμενο (Πίτα)</button>
+      </div>
     </div>
   </section>
 
   <div style="height:14px"></div>
 
-  <section class="card">
+  <!-- Page 2 -->
+  <section class="card page" id="pagePie">
     <div class="hd">
       <div>
-        <div style="font-weight:1200">2) Πίτα: Χρώμα + Ένταση + Ερωτήσεις</div>
-        <div class="small">Το παιδί πατά χρώμα. Μετά επιλέγει πόσο έντονο. Μετά απαντά τις 3 ερωτήσεις.</div>
+        <div style="font-weight:1200">Σελίδα 2/2 — Πίτα & Ερωτήσεις</div>
+        <div class="small">Πάτα χρώμα → διάλεξε “πόσο” → απάντησε 3 ερωτήσεις.</div>
       </div>
       <div class="small">Ζώνη: <b id="zoneLabel">—</b></div>
     </div>
 
     <div class="bd grid">
-      <!-- LEFT: pie + shades -->
       <div class="panel">
         <div class="wheelRow">
-          <div class="wheel" id="wheel" role="button" aria-label="Πίτα χρωμάτων">
-            <div class="pointer" aria-hidden="true"></div>
-
-            <!-- inner ring shows question completion -->
-            <div class="innerRing" id="innerRing" aria-hidden="true"></div>
-
+          <div class="wheel" id="wheel">
+            <div class="pointer"></div>
+            <div class="innerRing" id="innerRing"></div>
             <div class="wheelCenter">
-              <div class="centerLabel">Διάλεξες:</div>
               <div class="centerMain" id="centerMain">—</div>
               <div class="centerSub" id="centerSub">Πάτα ένα χρώμα</div>
             </div>
           </div>
 
           <div>
-            <div class="hint">
-              🎮 <b>Παιχνίδι:</b> Πάτα στην πίτα για να διαλέξεις χρώμα.<br>
-              Μετά διάλεξε «πόσο» (απόχρωση).<br>
-              Και στο τέλος απάντησε τις 3 ερωτήσεις (θα “ανάψουν” τα 3 κομμάτια μέσα στην πίτα).
-            </div>
-
-            <div class="small" style="font-weight:1200;margin-top:6px">Απόχρωση (πόσο το νιώθεις;)</div>
+            <div class="hint">🎮 Πάτα στην πίτα για χρώμα. Μετά διάλεξε “πόσο”.</div>
             <div class="shadeBox" id="shadeBox"></div>
-
-            <div class="legend" aria-hidden="true">
-              <span><span class="sq" style="background:var(--q1, rgba(255,255,255,.18))"></span> 1) Συχνότητα</span>
-              <span><span class="sq" style="background:var(--q2, rgba(255,255,255,.18))"></span> 2) Πότε ξεκίνησε</span>
-              <span><span class="sq" style="background:var(--q3, rgba(255,255,255,.18))"></span> 3) Τι το προκάλεσε</span>
+            <div class="nav">
+              <button id="btnBack">⬅️ Πίσω</button>
+              <button class="primary" id="btnDone">✅ Τέλος</button>
             </div>
+            <div class="small" id="doneMsg"></div>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: questions -->
       <div class="panel">
-        <div style="font-weight:1200;margin-bottom:6px">3) Οι ερωτήσεις (Φάση Α)</div>
-        <div class="small">Συμπλήρωσέ τες. Θα δεις τα 3 κομμάτια στην πίτα να γίνονται πράσινα.</div>
-
+        <div style="font-weight:1200;margin-bottom:6px">Οι 3 ερωτήσεις</div>
         <label for="frequency">1) Αυτό συμβαίνει…</label>
         <select id="frequency"></select>
 
@@ -418,225 +291,85 @@
 
         <label for="trigger">3) Τι το προκάλεσε; (διάλεξε ένα)</label>
         <select id="trigger"></select>
-
-        <button id="btnDone" class="primary" style="width:100%;margin-top:14px">✅ ΤΕΛΟΣ για αυτή τη ζώνη</button>
-        <div id="doneMsg" class="small" style="margin-top:12px"></div>
       </div>
     </div>
   </section>
 </div>
 
 <script>
-  const STORAGE_KEY = "chronosynaisthima24_phaseA_v2";
-
   const ZONES = [
-    { key:"z00_05", label:"🌙 Μεσάνυχτα – Νύχτα", time:"00:00 – 05:00", context:"Βαθύς ύπνος" },
-    { key:"z05_06", label:"🌅 Ξημέρωμα", time:"05:00 – 06:00", context:"Ύπνος / σταδιακή αφύπνιση" },
-    { key:"z06_09", label:"🌞 Πρωί", time:"06:00 – 09:00", context:"Ξύπνημα, ετοιμασία, μετάβαση & αρχή σχολείου" },
-    { key:"z09_12", label:"📚 Αργά το πρωί", time:"09:00 – 12:00", context:"Σχολείο (μαθήματα, διάλειμμα)" },
-    { key:"z12_14", label:"🏠 Μεσημέρι (μετάβαση)", time:"12:00 – 14:00", context:"Σχολείο → σχόλασμα → επιστροφή στο σπίτι" },
-    { key:"z14_16", label:"🍽️ Νωρίς το απόγευμα", time:"14:00 – 16:00", context:"Φαγητό, ξεκούραση" },
-    { key:"z16_18", label:"🎮 Αργά το απόγευμα", time:"16:00 – 18:00", context:"Παιχνίδι, δραστηριότητες" },
-    { key:"z18_21", label:"👨‍👩‍👧‍👦 Νωρίς το βράδυ", time:"18:00 – 21:00", context:"Οικογενειακός χρόνος" },
-    { key:"z21_24", label:"🛏️ Βράδυ", time:"21:00 – 24:00", context:"Προετοιμασία για ύπνο, ύπνος" },
+    { key:"morning", label:"🌞 Πρωί", time:"06:00 – 12:00" },
+    { key:"noon", label:"🍽️ Μεσημέρι", time:"12:00 – 16:00" },
+    { key:"afternoon", label:"🎮 Απόγευμα", time:"16:00 – 20:00" },
+    { key:"night", label:"🌙 Βράδυ", time:"20:00 – 24:00" },
   ];
 
   const COLORS = [
-    { key:"red",   base:"#EF4444", name:"Κόκκινο",  emotions:"Θυμός / Ένταση / Αναστάτωση", shade: ["#FCA5A5","#EF4444","#DC2626","#991B1B"] },
-    { key:"blue",  base:"#1F3B88", name:"Μπλε",     emotions:"Λύπη / Μοναξιά / Απόσυρση",   shade: ["#93C5FD","#3B82F6","#1D4ED8","#1E3A8A"] },
-    { key:"yellow",base:"#FFD400", name:"Κίτρινο",  emotions:"Χαρά / Ελπίδα / Περιέργεια",  shade: ["#FEF08A","#FFD400","#F59E0B","#B45309"] },
-    { key:"green", base:"#22C55E", name:"Πράσινο",  emotions:"Ηρεμία / Ασφάλεια",           shade: ["#BBF7D0","#22C55E","#16A34A","#14532D"] },
-    { key:"black", base:"#111827", name:"Μαύρο",    emotions:"Φόβος / Απειλή / Απόσυρση",   shade: ["#9CA3AF","#4B5563","#1F2937","#111827"] },
-    { key:"white", base:"#FFFFFF", name:"Άσπρο",    emotions:"Κενό / Μούδιασμα / Απόσταση", shade: ["#FFFFFF","#F3F4F6","#E5E7EB","#D1D5DB"] },
-    { key:"purple",base:"#7C3AED", name:"Μωβ",      emotions:"Σύγχυση / Εσωτερική ένταση",  shade: ["#DDD6FE","#A78BFA","#7C3AED","#4C1D95"] },
-    { key:"brown", base:"#A16207", name:"Καφέ",     emotions:"Ανασφάλεια / Έλλειψη φροντίδας", shade: ["#FED7AA","#F59E0B","#A16207","#78350F"] },
+    { key:"red", base:"#EF4444", name:"Κόκκινο", emotions:"Θυμός / Ένταση", shade:["#FCA5A5","#EF4444","#DC2626","#991B1B"] },
+    { key:"blue", base:"#1F3B88", name:"Μπλε", emotions:"Λύπη / Μοναξιά", shade:["#93C5FD","#3B82F6","#1D4ED8","#1E3A8A"] },
+    { key:"yellow", base:"#FFD400", name:"Κίτρινο", emotions:"Χαρά / Ελπίδα", shade:["#FEF08A","#FFD400","#F59E0B","#B45309"] },
+    { key:"green", base:"#22C55E", name:"Πράσινο", emotions:"Ηρεμία / Ασφάλεια", shade:["#BBF7D0","#22C55E","#16A34A","#14532D"] },
+    { key:"black", base:"#111827", name:"Μαύρο", emotions:"Φόβος", shade:["#9CA3AF","#4B5563","#1F2937","#111827"] },
+    { key:"white", base:"#FFFFFF", name:"Άσπρο", emotions:"Κενό", shade:["#FFFFFF","#F3F4F6","#E5E7EB","#D1D5DB"] },
+    { key:"purple", base:"#7C3AED", name:"Μωβ", emotions:"Σύγχυση", shade:["#DDD6FE","#A78BFA","#7C3AED","#4C1D95"] },
+    { key:"brown", base:"#A16207", name:"Καφέ", emotions:"Ανασφάλεια", shade:["#FED7AA","#F59E0B","#A16207","#78350F"] },
   ];
 
-  const INTENSITY = [
-    { key:"λίγο",       label:"🙂 Λίγο" },
-    { key:"αρκετά",     label:"😀 Αρκετά" },
-    { key:"πολύ",       label:"😟 Πολύ" },
-    { key:"πάρα πολύ",  label:"😱 Πάρα πολύ" },
-  ];
+  const INTENSITY = ["🙂 Λίγο","😀 Αρκετά","😟 Πολύ","😱 Πάρα πολύ"];
+  const FREQUENCY = ["Κάθε μέρα",">1 μέρα/εβδομάδα",">1 μέρα/μήνα",">1 φορά/χρόνο","Μόνο μία φορά"];
+  const WHEN_STARTED = ["Πριν λίγες μέρες","Πριν έναν μήνα","Πριν κάποιους μήνες","Πριν ένα χρόνο","Παλαιότερα από ένα χρόνο"];
+  const TRIGGERS = ["Οι μεγάλοι μαλώνουν έντονα μπροστά μου.","Υπάρχουν συχνά φωνές στο σπίτι.","Κανείς δεν με βοηθά.","Υπάρχει ήρεμη συζήτηση στο σπίτι.","Παίζουμε/γελάμε μαζί."];
 
-  const FREQUENCY = [
-    "Κάθε μέρα",
-    "Περισσότερο από μία μέρα την εβδομάδα",
-    "Περισσότερο από μία μέρα το μήνα",
-    "Περισσότερο από 1 φορά το χρόνο",
-    "Μόνο μία φορά"
-  ];
-
-  const WHEN_STARTED = [
-    "Πριν λίγες μέρες",
-    "Πριν έναν μήνα",
-    "Πριν κάποιους μήνες",
-    "Πριν ένα χρόνο",
-    "Παλαιότερα από ένα χρόνο"
-  ];
-
-  const TRIGGERS = [
-    { group:"Συμπεριφορές στο σπίτι (δύσκολα)", items:[
-      "Υπάρχουν συχνά φωνές στο σπίτι.",
-      "Οι μεγάλοι μαλώνουν έντονα μπροστά μου.",
-      "Μένω μόνος/η στο σπίτι για πολλές ώρες.",
-      "Οι γονείς λείπουν συχνά χωρίς να υπάρχει φροντίδα.",
-      "Οι μεγάλοι πίνουν αλκοόλ μέσα στο σπίτι.",
-      "Υπάρχουν χτυπήματα ή σπρωξίματα στο σπίτι.",
-      "Με τιμωρούν με φωνές, απειλές ή χτυπήματα.",
-      "Δεν μου μιλούν ή με αγνοούν για μεγάλο διάστημα."
-    ]},
-    { group:"Φροντίδα & βασικές ανάγκες (δύσκολα)", items:[
-      "Δεν υπάρχει πάντα φαγητό στο σπίτι.",
-      "Πηγαίνω σχολείο χωρίς πρωινό.",
-      "Το σπίτι είναι κρύο τον χειμώνα.",
-      "Δεν έχω καθαρά ρούχα ή παπούτσια.",
-      "Δεν υπάρχει φροντίδα όταν αρρωσταίνω.",
-      "Δεν υπάρχουν σχολικά είδη όταν τα χρειάζομαι."
-    ]},
-    { group:"Σχολείο & εκπαίδευση (δύσκολα)", items:[
-      "Ο/Η δάσκαλος/α φωνάζει συχνά στην τάξη.",
-      "Με βάζουν τιμωρία μπροστά στους άλλους.",
-      "Δεν μου εξηγούν όταν δεν καταλαβαίνω το μάθημα.",
-      "Υπάρχουν κοροϊδίες ή χτυπήματα από άλλα παιδιά.",
-      "Κανείς δεν βοηθά στη μελέτη στο σπίτι.",
-      "Με χαρακτηρίζουν «τεμπέλη» ή «κακό μαθητή»."
-    ]},
-    { group:"Σχέση γονέων – παιδιού (δύσκολα)", items:[
-      "Δεν μιλάμε καθημερινά στο σπίτι.",
-      "Δεν περνάμε χρόνο μαζί.",
-      "Δεν υπάρχει κοινή μελέτη ή δραστηριότητες.",
-      "Οι γονείς δεν έρχονται σε συναντήσεις σχολείου.",
-      "Δεν με ρωτούν πώς πήγε το σχολείο."
-    ]},
-    { group:"Προστατευτικές συμπεριφορές (καλά)", items:[
-      "Υπάρχει ήρεμη συζήτηση στο σπίτι.",
-      "Υπάρχει φαγητό σε καθημερινή βάση.",
-      "Οι γονείς μελετούν μαζί μου.",
-      "Οι μεγάλοι παίζουν ή γελούν μαζί μου.",
-      "Οι γονείς συνεργάζονται με το σχολείο.",
-      "Υπάρχει χιούμορ και κοινός χρόνος.",
-      "Με επιβραβεύουν για την προσπάθεια."
-    ]},
-  ];
-
-  const DEFAULT_ZONE = () => ({
-    colorKey: null,
-    shadeIndex: null,     // 0..3
-    intensityKey: null,   // "λίγο/αρκετά/πολύ/πάρα πολύ"
-    frequency: "",
-    whenStarted: "",
-    trigger: ""
-  });
+  const $ = (id)=>document.getElementById(id);
 
   let state = {
-    selectedZoneKey: ZONES[0].key,
-    zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE()])),
-    selectedColorKey: null
+    selectedZoneKey: "morning",
+    selectedColorKey: null,
+    shadeIndex: null,
+    intensity: null,
+    q1:"", q2:"", q3:""
   };
 
-  const $ = (id) => document.getElementById(id);
-
-  function setSaved(flag){
-    const el = $("saveStatus");
-    el.textContent = flag ? "● αποθηκεύτηκε" : "● αποθήκευση…";
-    el.style.color = flag ? "var(--muted)" : "var(--warn)";
-  }
-  function autosave(){
-    setSaved(false);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    setTimeout(()=>setSaved(true), 120);
-  }
-  function load(){
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return;
-    try{
-      const s = JSON.parse(raw);
-      if(s && s.zones) state = s;
-    }catch(e){}
+  function showPage(which){
+    $("pageZones").classList.toggle("active", which==="zones");
+    $("pagePie").classList.toggle("active", which==="pie");
+    window.scrollTo({top:0, behavior:"smooth"});
   }
 
-  function zoneEntry(){ return state.zones[state.selectedZoneKey]; }
-  function zoneByKey(k){ return ZONES.find(z=>z.key===k) || ZONES[0]; }
-  function colorByKey(k){ return COLORS.find(c=>c.key===k) || null; }
-
-  function fillSelect(id, options, placeholder){
-    const sel = $(id);
-    sel.innerHTML = "";
-    const o = document.createElement("option");
-    o.value = "";
-    o.textContent = placeholder;
-    sel.appendChild(o);
-    options.forEach(v=>{
-      const opt = document.createElement("option");
-      opt.value = v;
-      opt.textContent = v;
-      sel.appendChild(opt);
-    });
-  }
-
-  function fillTriggerSelect(){
-    const sel = $("trigger");
-    sel.innerHTML = "";
-    const o = document.createElement("option");
-    o.value = "";
-    o.textContent = "Διάλεξε…";
-    sel.appendChild(o);
-
-    TRIGGERS.forEach(g=>{
-      const og = document.createElement("optgroup");
-      og.label = g.group;
-      g.items.forEach(item=>{
-        const opt = document.createElement("option");
-        opt.value = item;
-        opt.textContent = item;
-        og.appendChild(opt);
-      });
-      sel.appendChild(og);
-    });
-  }
-
-  function buildZones(){
+  function renderZones(){
     const wrap = $("zones");
     wrap.innerHTML = "";
     ZONES.forEach(z=>{
-      const entry = state.zones[z.key];
-      const col = colorByKey(entry.colorKey);
-
       const d = document.createElement("div");
       d.className = "zone";
-      d.dataset.key = z.key;
-
-      const chip = col
-        ? `<span class="chip"><span class="dot" style="background:${col.base}"></span>${col.name}</span>`
-        : `<span class="tag">Διάλεξε χρώμα…</span>`;
-
-      const intensityTag = entry.intensityKey
-        ? `<span class="chip">Ένταση: ${entry.intensityKey}</span>`
-        : "";
-
-      d.innerHTML = `
-        <div class="zone-title">${z.label}</div>
-        <div class="zone-time">${z.time}</div>
-        <div class="small" style="margin-top:6px">${z.context}</div>
-        <div class="zone-mini">${chip} ${intensityTag}</div>
-      `;
-
+      d.innerHTML = `<div class="zone-title">${z.label}</div><div class="zone-time">${z.time}</div>`;
       d.addEventListener("click", ()=>{
         state.selectedZoneKey = z.key;
-        state.selectedColorKey = state.zones[z.key].colorKey || null;
-        render();
-        autosave();
+        document.querySelectorAll(".zone").forEach(x=>x.classList.remove("active"));
+        d.classList.add("active");
+        updateZoneLabels();
       });
-
+      if(z.key===state.selectedZoneKey) d.classList.add("active");
       wrap.appendChild(d);
     });
+    updateZoneLabels();
+  }
 
-    document.querySelectorAll(".zone").forEach(el=>{
-      el.classList.toggle("active", el.dataset.key === state.selectedZoneKey);
+  function updateZoneLabels(){
+    const z = ZONES.find(x=>x.key===state.selectedZoneKey);
+    const txt = `${z.label} (${z.time})`;
+    $("zoneLabel").textContent = txt;
+    $("zoneLabelSmall").textContent = txt;
+  }
+
+  function fillSelect(id, arr){
+    const sel = $(id);
+    sel.innerHTML = `<option value="">Διάλεξε…</option>`;
+    arr.forEach(v=>{
+      const o=document.createElement("option");
+      o.value=v; o.textContent=v;
+      sel.appendChild(o);
     });
-
-    $("zoneLabel").textContent = `${zoneByKey(state.selectedZoneKey).label} (${zoneByKey(state.selectedZoneKey).time})`;
   }
 
   function pickColorFromWheelClick(ev){
@@ -647,277 +380,82 @@
     const x = ev.clientX - cx;
     const y = ev.clientY - cy;
 
-    let angle = Math.atan2(y, x) * (180/Math.PI); // -180..180, 0 at right
-    angle = (angle + 360 + 90) % 360; // 0 at top
+    let angle = Math.atan2(y, x) * (180/Math.PI);
+    angle = (angle + 360 + 90) % 360;
 
     const idx = Math.floor(angle / 45) % 8;
     const map = ["red","blue","yellow","green","black","white","purple","brown"];
-    const key = map[idx];
-
-    state.selectedColorKey = key;
-    zoneEntry().colorKey = key;
-    zoneEntry().shadeIndex = null;
-    zoneEntry().intensityKey = null;
-
-    autosave();
+    state.selectedColorKey = map[idx];
+    state.shadeIndex = null;
+    state.intensity = null;
     renderCenter();
-    buildShades();
-    highlightShades();
-    updateQuestionRing();
-    buildZones();
+    renderShades();
   }
 
   function renderCenter(){
-    const col = colorByKey(state.selectedColorKey);
-    const entry = zoneEntry();
-
-    if(!col){
+    const c = COLORS.find(x=>x.key===state.selectedColorKey);
+    if(!c){
       $("centerMain").textContent = "—";
       $("centerSub").textContent = "Πάτα ένα χρώμα";
       return;
     }
-
-    $("centerMain").textContent = `${col.name}`;
-    const intensity = entry.intensityKey ? `• Ένταση: ${entry.intensityKey}` : "• Διάλεξε «πόσο»";
-    const progress = questionProgressText(entry);
-    $("centerSub").textContent = `Συναίσθημα: ${col.emotions} ${intensity}\n${progress}`;
+    $("centerMain").textContent = c.name;
+    const how = state.intensity ? `Ένταση: ${state.intensity}` : "Διάλεξε «πόσο»";
+    $("centerSub").textContent = `Συναίσθημα: ${c.emotions}\n${how}`;
   }
 
-  function questionProgressText(e){
-    const a = e.frequency ? "✔" : "○";
-    const b = e.whenStarted ? "✔" : "○";
-    const c = e.trigger ? "✔" : "○";
-    return `Ερωτήσεις: ${a} Συχνότητα  ${b} Έναρξη  ${c} Αιτία`;
-  }
-
-  function buildShades(){
+  function renderShades(){
     const box = $("shadeBox");
     box.innerHTML = "";
+    const c = COLORS.find(x=>x.key===state.selectedColorKey);
 
-    const col = colorByKey(state.selectedColorKey);
-    if(!col){
-      INTENSITY.forEach((it)=>{
-        const b = document.createElement("div");
-        b.className = "shadeBtn";
-        b.style.opacity = "0.45";
-        b.style.pointerEvents = "none";
-        b.innerHTML = `
-          <div class="shadeSwatch" style="background:rgba(255,255,255,.15)"></div>
-          <div>
-            <div class="shadeTop">${it.label}</div>
-            <div class="shadeHint">Διάλεξε πρώτα χρώμα</div>
-          </div>
-        `;
+    if(!c){
+      INTENSITY.forEach(t=>{
+        const b=document.createElement("div");
+        b.className="shadeBtn";
+        b.style.opacity="0.55";
+        b.innerHTML = `<div class="shadeSwatch" style="background:rgba(255,255,255,.35)"></div>
+          <div><div class="shadeTop">${t}</div><div class="shadeHint">Διάλεξε πρώτα χρώμα</div></div>`;
         box.appendChild(b);
       });
       return;
     }
 
     for(let i=0;i<4;i++){
-      const it = INTENSITY[i];
-      const shade = col.shade[i];
-
-      const b = document.createElement("div");
-      b.className = "shadeBtn";
-      b.dataset.idx = String(i);
-      b.innerHTML = `
-        <div class="shadeSwatch" style="background:${shade}"></div>
-        <div>
-          <div class="shadeTop">${it.label}</div>
-          <div class="shadeHint">${col.emotions}</div>
-        </div>
-      `;
-
+      const b=document.createElement("div");
+      b.className="shadeBtn";
+      b.innerHTML = `<div class="shadeSwatch" style="background:${c.shade[i]}"></div>
+        <div><div class="shadeTop">${INTENSITY[i]}</div><div class="shadeHint">${c.emotions}</div></div>`;
       b.addEventListener("click", ()=>{
-        zoneEntry().shadeIndex = i;
-        zoneEntry().intensityKey = it.key;
-        autosave();
+        state.shadeIndex=i;
+        state.intensity = INTENSITY[i].replace(/^.. /,"");
+        document.querySelectorAll(".shadeBtn").forEach(x=>x.classList.remove("active"));
+        b.classList.add("active");
         renderCenter();
-        highlightShades();
-        buildZones();
       });
-
       box.appendChild(b);
     }
   }
 
-  function highlightShades(){
-    document.querySelectorAll(".shadeBtn").forEach(btn=>{
-      const i = parseInt(btn.dataset.idx || "-1", 10);
-      btn.classList.toggle("active", i === zoneEntry().shadeIndex);
-    });
-  }
+  function init(){
+    renderZones();
 
-  // ✅ This is the “questions inside the pie” part:
-  function updateQuestionRing(){
-    const e = zoneEntry();
-    const ring = $("innerRing");
+    fillSelect("frequency", FREQUENCY);
+    fillSelect("whenStarted", WHEN_STARTED);
+    fillSelect("trigger", TRIGGERS);
 
-    const on = "rgba(34,197,94,.85)";     // green
-    const off = "rgba(255,255,255,.14)";  // grey
-
-    ring.style.setProperty("--q1", e.frequency ? on : off);
-    ring.style.setProperty("--q2", e.whenStarted ? on : off);
-    ring.style.setProperty("--q3", e.trigger ? on : off);
-  }
-
-  function hookRightPanel(){
-    $("frequency").addEventListener("change", e=>{
-      zoneEntry().frequency = e.target.value;
-      autosave();
-      updateQuestionRing();
-      renderCenter();
-    });
-
-    $("whenStarted").addEventListener("change", e=>{
-      zoneEntry().whenStarted = e.target.value;
-      autosave();
-      updateQuestionRing();
-      renderCenter();
-    });
-
-    $("trigger").addEventListener("change", e=>{
-      zoneEntry().trigger = e.target.value;
-      autosave();
-      updateQuestionRing();
-      renderCenter();
-    });
+    $("btnNext").addEventListener("click", ()=>showPage("pie"));
+    $("btnBack").addEventListener("click", ()=>showPage("zones"));
+    $("wheel").addEventListener("click", pickColorFromWheelClick);
 
     $("btnDone").addEventListener("click", ()=>{
-      const e = zoneEntry();
-      const ok = !!e.colorKey && !!e.intensityKey && !!e.frequency && !!e.whenStarted && !!e.trigger;
-      const msg = ok
-        ? "✅ Τέλεια! Πάτα επόμενο μέρος της ημέρας (πάνω) ή σταμάτα εδώ."
-        : "⚠ Χρειάζεται: χρώμα + ένταση + συχνότητα + πότε ξεκίνησε + τι το προκάλεσε.";
-      $("doneMsg").textContent = msg;
-      $("doneMsg").className = ok ? "ok" : "warn";
-      buildZones();
+      const ok = !!state.selectedColorKey && (state.shadeIndex!==null) &&
+                 $("frequency").value && $("whenStarted").value && $("trigger").value;
+      $("doneMsg").textContent = ok ? "✅ Τέλος! Μπράβο!" : "⚠ Θέλει: χρώμα + πόσο + 3 ερωτήσεις.";
     });
-  }
-
-  function buildExport(){
-    return {
-      εργαλείο: "ΧρονοΣυναίσθημα 24",
-      φάση: "Α",
-      έκδοση: "2.0",
-      ζώνες: ZONES.map(z=>{
-        const e = state.zones[z.key];
-        const c = colorByKey(e.colorKey);
-        const shadeHex = (c && e.shadeIndex != null) ? c.shade[e.shadeIndex] : "";
-        return {
-          ζώνη: z.label,
-          ώρες: z.time,
-          πλαίσιο: z.context,
-          χρώμα: c ? c.name : "",
-          χρώμα_hex: c ? c.base : "",
-          απόχρωση_hex: shadeHex,
-          συναίσθημα_έννοια: c ? c.emotions : "",
-          ένταση: e.intensityKey || "",
-          συχνότητα: e.frequency || "",
-          έναρξη: e.whenStarted || "",
-          εκλυτικός_παράγοντας: e.trigger || ""
-        };
-      })
-    };
-  }
-
-  function csvEscape(v){
-    const s = (v ?? "").toString();
-    if(/[",\n]/.test(s)) return `"${s.replaceAll('"','""')}"`;
-    return s;
-  }
-
-  function buildCSV(){
-    const header = [
-      "ζώνη","ώρες","πλαίσιο",
-      "χρώμα","χρώμα_hex","απόχρωση_hex","συναίσθημα_έννοια","ένταση",
-      "συχνότητα","έναρξη","εκλυτικός_παράγοντας"
-    ].join(",");
-
-    const rows = ZONES.map(z=>{
-      const e = state.zones[z.key];
-      const c = colorByKey(e.colorKey);
-      const shadeHex = (c && e.shadeIndex != null) ? c.shade[e.shadeIndex] : "";
-      return [
-        z.label, z.time, z.context,
-        c ? c.name : "",
-        c ? c.base : "",
-        shadeHex,
-        c ? c.emotions : "",
-        e.intensityKey || "",
-        e.frequency || "",
-        e.whenStarted || "",
-        e.trigger || ""
-      ].map(csvEscape).join(",");
-    });
-
-    return [header, ...rows].join("\n");
-  }
-
-  function downloadFile(filename, content, mime){
-    const blob = new Blob([content], {type:mime});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 800);
-  }
-
-  function resetAll(){
-    if(!confirm("Σίγουρα; Θα χαθούν τα δεδομένα.")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    state = {
-      selectedZoneKey: ZONES[0].key,
-      zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE()])),
-      selectedColorKey: null
-    };
-    autosave();
-    render();
-    $("doneMsg").textContent = "";
-  }
-
-  function render(){
-    buildZones();
-
-    // set current zone’s color as selectedColorKey for proper shading
-    state.selectedColorKey = zoneEntry().colorKey || state.selectedColorKey;
-
-    // fill selects
-    fillSelect("frequency", FREQUENCY, "Διάλεξε…");
-    fillSelect("whenStarted", WHEN_STARTED, "Διάλεξε…");
-    fillTriggerSelect();
-
-    // set values
-    const e = zoneEntry();
-    $("frequency").value = e.frequency || "";
-    $("whenStarted").value = e.whenStarted || "";
-    $("trigger").value = e.trigger || "";
 
     renderCenter();
-    buildShades();
-    highlightShades();
-    updateQuestionRing();
-  }
-
-  function init(){
-    load();
-    state.selectedColorKey = zoneEntry().colorKey || null;
-
-    $("wheel").addEventListener("click", pickColorFromWheelClick);
-    hookRightPanel();
-
-    $("btnExportJSON").addEventListener("click", ()=>{
-      downloadFile("chronosynaisthima24_phaseA.json", JSON.stringify(buildExport(), null, 2), "application/json");
-    });
-    $("btnExportCSV").addEventListener("click", ()=>{
-      downloadFile("chronosynaisthima24_phaseA.csv", buildCSV(), "text/csv;charset=utf-8");
-    });
-    $("btnReset").addEventListener("click", resetAll);
-
-    render();
-    setSaved(true);
+    renderShades();
   }
 
   init();
