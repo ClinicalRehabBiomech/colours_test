@@ -783,6 +783,12 @@
           <div class="scaleList" id="frequencyPalette"></div>
         </section>
 
+        <section class="panel" id="onsetPanel" hidden>
+          <h2>Πότε ξεκίνησε;</h2>
+          <p class="hint" id="onsetQuestion"></p>
+          <div class="scaleList" id="onsetPalette"></div>
+        </section>
+
         <section class="completionPanel" id="completionPanel" hidden>
           <h2>Ο κύκλος ολοκληρώθηκε</h2>
           <p>Μπράβο, τελείωσες αυτή την αξιολόγηση. Τα στοιχεία αποθηκεύτηκαν αυτόματα.</p>
@@ -793,7 +799,7 @@
           </div>
         </section>
 
-        <section class="actions" aria-label="Πρόοδος και πλοήγηση">
+        <section class="actions" id="actionsPanel" aria-label="Πρόοδος και πλοήγηση">
           <div class="completion">
             <div class="bar" aria-hidden="true"><span id="progressBar"></span></div>
             <div class="completionText" id="progressText">0 από 18 πεδία ολοκληρώθηκαν</div>
@@ -811,7 +817,8 @@
   <div class="srOnly" aria-live="polite" id="liveStatus"></div>
 
   <script>
-    const STORAGE_KEY = "chronosynaisthima24_cycle1_database_v11";
+    const STORAGE_KEY = "chronosynaisthima24_cycle1_database_v14";
+    const ONSET_SCORE_THRESHOLD = 12;
 
     const SLOTS = [
       { key:"lateNight", label:"Ξημερώματα", start:"00:00", end:"03:00", startHour:0, endHour:3 },
@@ -847,6 +854,13 @@
       { key:"rarely", label:"Σπάνια", short:"σπάνια", value:1 }
     ];
 
+    const ONSETS = [
+      { key:"fewDays", label:"Πριν λίγες ημέρες", short:"λίγες ημέρες", value:1 },
+      { key:"oneMonth", label:"Πριν 1 μήνα", short:"1 μήνα", value:2 },
+      { key:"months", label:"Πριν μήνες", short:"μήνες", value:3 },
+      { key:"oneYearPlus", label:"Πριν 1 χρόνο+", short:"1 χρόνο+", value:4 }
+    ];
+
     const STEPS = ["emotion", "intensity", "frequency"];
     const STEP_LABEL = {
       emotion:"χρώμα",
@@ -874,12 +888,15 @@
         completedAt: null,
         slotIdx: 0,
         step: "emotion",
+        followupActive: false,
+        followupIdx: 0,
         finished: false,
         updatedAt: null,
         slots: Object.fromEntries(SLOTS.map(slot => [slot.key, {
           emotionKey: null,
           intensityKey: null,
-          frequencyKey: null
+          frequencyKey: null,
+          onsetKey: null
         }]))
       };
     }
@@ -893,6 +910,12 @@
         if(!Number.isInteger(state.slotIdx)) state.slotIdx = 0;
         state.slotIdx = Math.max(0, Math.min(SLOTS.length - 1, state.slotIdx));
         state.beneficiaryId = (state.beneficiaryId || "").toString().replace(/\D/g, "").slice(0, 4);
+        state.followupActive = Boolean(state.followupActive);
+        if(!Number.isInteger(state.followupIdx)) state.followupIdx = 0;
+        SLOTS.forEach(slot => {
+          if(!state.slots[slot.key]) state.slots[slot.key] = defaultState().slots[slot.key];
+          if(!("onsetKey" in state.slots[slot.key])) state.slots[slot.key].onsetKey = null;
+        });
       }catch(error){}
     }
 
@@ -943,6 +966,24 @@
       return state.slots[currentSlot().key];
     }
 
+    function zoneScore(slotKey){
+      const record = state.slots[slotKey];
+      const emotion = itemByKey(EMOTIONS, record.emotionKey);
+      const intensity = itemByKey(INTENSITIES, record.intensityKey);
+      const frequency = itemByKey(FREQUENCIES, record.frequencyKey);
+      if(!emotion || !intensity || !frequency) return 0;
+      return emotion.risk * intensity.value * frequency.value;
+    }
+
+    function followupSlots(){
+      return SLOTS.filter(slot => zoneScore(slot.key) >= ONSET_SCORE_THRESHOLD);
+    }
+
+    function currentFollowupSlot(){
+      const slots = followupSlots();
+      return slots[state.followupIdx] || slots[0] || null;
+    }
+
     function slotComplete(slotKey){
       const record = state.slots[slotKey];
       return Boolean(record.emotionKey && record.intensityKey && record.frequencyKey);
@@ -980,6 +1021,7 @@
         record.emotionKey = payload.key;
         record.intensityKey = null;
         record.frequencyKey = null;
+        record.onsetKey = null;
         state.step = "intensity";
         state.finished = false;
         state.completedAt = null;
@@ -988,6 +1030,7 @@
       if(payload.type === "intensity"){
         record.intensityKey = payload.key;
         record.frequencyKey = null;
+        record.onsetKey = null;
         state.step = "frequency";
         state.finished = false;
         state.completedAt = null;
@@ -995,6 +1038,7 @@
       }
       if(payload.type === "frequency"){
         record.frequencyKey = payload.key;
+        record.onsetKey = null;
         state.finished = false;
         state.completedAt = null;
         nextMessage = state.slotIdx === SLOTS.length - 1
@@ -1157,6 +1201,26 @@
       });
     }
 
+    function buildOnsetChoices(){
+      const container = $("onsetPalette");
+      container.innerHTML = "";
+      ONSETS.forEach(item => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "token";
+        button.dataset.key = item.key;
+        button.innerHTML = `
+          <span class="swatch">${item.value}</span>
+          <span class="tokenText">
+            <span class="tokenTitle">${item.label}</span>
+            <span class="tokenSub">πότε ξεκίνησε</span>
+          </span>
+        `;
+        button.addEventListener("click", () => answerOnset(item.key));
+        container.appendChild(button);
+      });
+    }
+
     function selectToken(button, payload){
       selectedPayload = payload;
       clearTokenSelection();
@@ -1206,18 +1270,64 @@
         const slot = currentSlot();
         announce(`Ζώνη ${slot.start} - ${slot.end}: διάλεξε συναίσθημα.`);
       }else {
-        state.finished = true;
-        state.completedAt = new Date().toISOString();
-        selectedPayload = null;
-        clearTokenSelection();
-        saveState();
-        render();
-        announce("Ο κύκλος ολοκληρώθηκε. Ενημέρωσε τον/την επαγγελματία για να συνεχίσετε.");
+        startFollowupsOrFinish();
       }
+    }
+
+    function startFollowupsOrFinish(){
+      const slots = followupSlots();
+      const pendingIndex = slots.findIndex(slot => !state.slots[slot.key].onsetKey);
+      if(pendingIndex === -1){
+        finishAssessment();
+        return;
+      }
+      state.followupActive = true;
+      state.followupIdx = pendingIndex;
+      state.finished = false;
+      selectedPayload = null;
+      clearTokenSelection();
+      saveState();
+      render();
+      announce("Χρειάζεται μία συμπληρωματική ερώτηση για τη ζώνη που πέρασε το όριο.");
+    }
+
+    function finishAssessment(){
+      state.followupActive = false;
+      state.finished = true;
+      state.completedAt = new Date().toISOString();
+      selectedPayload = null;
+      clearTokenSelection();
+      saveState();
+      render();
+      announce("Ο κύκλος ολοκληρώθηκε. Ενημέρωσε τον/την επαγγελματία για να συνεχίσετε.");
+    }
+
+    function answerOnset(onsetKey){
+      const slot = currentFollowupSlot();
+      if(!slot) return;
+      state.slots[slot.key].onsetKey = onsetKey;
+      const slots = followupSlots();
+      const pendingIndex = slots.findIndex(item => !state.slots[item.key].onsetKey);
+      if(pendingIndex === -1){
+        finishAssessment();
+        return;
+      }
+      state.followupIdx = pendingIndex;
+      saveState();
+      render();
+      announce("Συνέχισε με την επόμενη ζώνη που πέρασε το όριο.");
     }
 
     function goBackStep(){
       const currentIndex = STEPS.indexOf(state.step);
+      if(state.followupActive){
+        state.followupActive = false;
+        state.step = "frequency";
+        state.slotIdx = SLOTS.length - 1;
+        saveState();
+        render();
+        return;
+      }
       if(state.finished){
         state.finished = false;
         state.step = "frequency";
@@ -1259,13 +1369,7 @@
       let points = 0;
       let max = 0;
       SLOTS.forEach(slot => {
-        const record = state.slots[slot.key];
-        const emotion = itemByKey(EMOTIONS, record.emotionKey);
-        const intensity = itemByKey(INTENSITIES, record.intensityKey);
-        const frequency = itemByKey(FREQUENCIES, record.frequencyKey);
-        if(emotion && intensity && frequency){
-          points += emotion.risk * intensity.value * frequency.value;
-        }
+        points += zoneScore(slot.key);
         max += 4 * 4 * 4;
       });
       return Math.round((points / max) * 100);
@@ -1297,18 +1401,23 @@
           const emotion = itemByKey(EMOTIONS, record.emotionKey);
           const intensity = itemByKey(INTENSITIES, record.intensityKey);
           const frequency = itemByKey(FREQUENCIES, record.frequencyKey);
+          const onset = itemByKey(ONSETS, record.onsetKey);
           return {
             slotKey:slot.key,
             from:slot.start,
             to:slot.end,
             label:slot.label,
+            zoneScore:zoneScore(slot.key),
+            onsetQuestionShown:zoneScore(slot.key) >= ONSET_SCORE_THRESHOLD,
             emotionColor:emotion ? emotion.name : "",
             emotionHex:emotion ? emotion.color : "",
             emotion:emotion ? emotion.emotion : "",
             intensity:intensity ? intensity.label : "",
             intensityValue:intensity ? intensity.value : "",
             frequency:frequency ? frequency.label : "",
-            frequencyValue:frequency ? frequency.value : ""
+            frequencyValue:frequency ? frequency.value : "",
+            onset:onset ? onset.label : "",
+            onsetValue:onset ? onset.value : ""
           };
         })
       };
@@ -1317,7 +1426,7 @@
     function buildCSV(){
       const output = recordToExport();
       const rows = output.slots;
-      const header = ["cycle","beneficiaryId","outputDate","outputTime","timezone","from","to","label","emotionColor","emotionHex","emotion","intensity","intensityValue","frequency","frequencyValue"];
+      const header = ["cycle","beneficiaryId","outputDate","outputTime","timezone","from","to","label","zoneScore","onsetQuestionShown","emotionColor","emotionHex","emotion","intensity","intensityValue","frequency","frequencyValue","onset","onsetValue"];
       const escape = (value) => {
         const text = String(value ?? "");
         if(/[",\n]/.test(text)) return `"${text.replaceAll('"', '""')}"`;
@@ -1334,13 +1443,17 @@
           row.from,
           row.to,
           row.label,
+          row.zoneScore,
+          row.onsetQuestionShown,
           row.emotionColor,
           row.emotionHex,
           row.emotion,
           row.intensity,
           row.intensityValue,
           row.frequency,
-          row.frequencyValue
+          row.frequencyValue,
+          row.onset,
+          row.onsetValue
         ].map(escape).join(","))
       ].join("\n");
     }
@@ -1366,6 +1479,7 @@
       localStorage.removeItem(STORAGE_KEY);
       state = defaultState();
       selectedPayload = null;
+      dragPayload = null;
       render();
       saveState();
       announce("Ξεκίνησε νέα αξιολόγηση. Συμπλήρωσε το ID οφελούμενου.");
@@ -1429,7 +1543,7 @@
           : step === "intensity"
           ? Boolean(record.intensityKey)
           : Boolean(record.frequencyKey);
-        const disabled = state.finished
+        const disabled = state.finished || state.followupActive
           || (step === "intensity" && !record.emotionKey)
           || (step === "frequency" && !record.intensityKey);
         button.classList.toggle("active", step === state.step);
@@ -1439,16 +1553,17 @@
     }
 
     function renderPalettes(){
-      document.querySelectorAll(".token").forEach(token => {
-        const disabled = state.finished || token.dataset.type !== state.step;
+      document.querySelectorAll("[data-type].token").forEach(token => {
+        const disabled = state.finished || state.followupActive || token.dataset.type !== state.step;
         token.classList.toggle("disabled", disabled);
         token.draggable = !disabled;
         token.setAttribute("aria-disabled", String(disabled));
       });
 
-      $("emotionPanel").style.display = !state.finished && state.step === "emotion" ? "block" : "none";
-      $("intensityPanel").style.display = !state.finished && state.step === "intensity" ? "block" : "none";
-      $("frequencyPanel").style.display = !state.finished && state.step === "frequency" ? "block" : "none";
+      $("emotionPanel").style.display = !state.finished && !state.followupActive && state.step === "emotion" ? "block" : "none";
+      $("intensityPanel").style.display = !state.finished && !state.followupActive && state.step === "intensity" ? "block" : "none";
+      $("frequencyPanel").style.display = !state.finished && !state.followupActive && state.step === "frequency" ? "block" : "none";
+      $("onsetPanel").hidden = !state.followupActive;
       $("completionPanel").hidden = !state.finished;
     }
 
@@ -1460,10 +1575,14 @@
       $("completedSlots").textContent = `${completedSlotCount()}/${SLOTS.length}`;
       $("riskPreview").textContent = String(riskScore());
       $("updatedAt").textContent = formatClockTime(state.updatedAt);
-      $("btnPrev").disabled = !state.finished && state.slotIdx === 0 && state.step === "emotion";
-      $("btnNext").disabled = state.finished || !slotComplete(currentSlot().key);
+      $("btnPrev").disabled = !state.followupActive && !state.finished && state.slotIdx === 0 && state.step === "emotion";
+      $("btnNext").disabled = state.finished || state.followupActive || !slotComplete(currentSlot().key);
       $("btnNext").textContent = state.slotIdx === SLOTS.length - 1 ? "Ολοκλήρωση" : "Επόμενη ζώνη";
       if(state.finished) $("progressText").textContent = "Η αξιολόγηση ολοκληρώθηκε";
+      if(state.followupActive){
+        const total = followupSlots().length;
+        $("progressText").textContent = `Συμπληρωματική ερώτηση ${state.followupIdx + 1}/${total}`;
+      }
     }
 
     function renderDatabasePreview(){
@@ -1485,8 +1604,20 @@
       ];
       if(emotion) bits.push(`Συναίσθημα: ${emotion.emotion}`);
       if(intensity) bits.push(`Ένταση: ${intensity.label}`);
-      $("zonePrompt").hidden = state.finished;
+      $("zonePrompt").hidden = state.finished || state.followupActive;
       $("zonePrompt").textContent = bits.join(" · ");
+    }
+
+    function renderOnsetQuestion(){
+      const slot = currentFollowupSlot();
+      if(!slot){
+        $("onsetQuestion").textContent = "";
+        return;
+      }
+      const record = state.slots[slot.key];
+      const emotion = itemByKey(EMOTIONS, record.emotionKey);
+      $("onsetQuestion").textContent =
+        `Στη ζώνη ${slot.start} - ${slot.end} σημειώθηκε: ${emotion ? emotion.emotion : "αυτό το συναίσθημα"}. Από πότε περίπου συμβαίνει αυτό σε αυτή την ώρα της ημέρας;`;
     }
 
     function renderIdentity(){
@@ -1503,6 +1634,8 @@
       };
       $("activeInstruction").textContent = state.finished
         ? "Η αξιολόγηση ολοκληρώθηκε."
+        : state.followupActive
+        ? "Απάντησε από πότε συμβαίνει στη συγκεκριμένη ζώνη."
         : current[state.step];
     }
 
@@ -1511,6 +1644,7 @@
       renderClockState();
       renderBadges();
       renderZonePrompt();
+      renderOnsetQuestion();
       renderIdentity();
       renderPalettes();
       renderProgress();
@@ -1535,6 +1669,7 @@
       $("btnPrev").addEventListener("click", goBackStep);
       $("btnReview").addEventListener("click", () => {
         state.finished = false;
+        state.followupActive = false;
         state.step = "frequency";
         saveState();
         render();
@@ -1556,6 +1691,7 @@
       buildPalette("emotionPalette", EMOTIONS, "emotion");
       buildPalette("intensityPalette", INTENSITIES, "intensity");
       buildPalette("frequencyPalette", FREQUENCIES, "frequency");
+      buildOnsetChoices();
       renderLegend();
       bindControls();
       render();
