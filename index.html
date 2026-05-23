@@ -787,7 +787,10 @@
           <h2>Ο κύκλος ολοκληρώθηκε</h2>
           <p>Μπράβο, τελείωσες αυτή την αξιολόγηση. Τα στοιχεία αποθηκεύτηκαν αυτόματα.</p>
           <p>Τώρα ενημέρωσε τον/την επαγγελματία για να συνεχίσετε μαζί.</p>
-          <button class="btn" id="btnReview" type="button">Έλεγχος απαντήσεων</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="btnReview" type="button">Έλεγχος απαντήσεων</button>
+            <button class="btn primary" id="btnNewAssessment" type="button">Νέα αξιολόγηση</button>
+          </div>
         </section>
 
         <section class="actions" aria-label="Πρόοδος και πλοήγηση">
@@ -1356,11 +1359,16 @@
 
     function resetAll(){
       if(!confirm("Να καθαριστούν όλα τα στοιχεία του κύκλου;")) return;
+      startNewAssessment();
+    }
+
+    function startNewAssessment(){
       localStorage.removeItem(STORAGE_KEY);
       state = defaultState();
       selectedPayload = null;
       render();
       saveState();
+      announce("Ξεκίνησε νέα αξιολόγηση. Συμπλήρωσε το ID οφελούμενου.");
     }
 
     function renderClockState(){
@@ -1532,6 +1540,7 @@
         render();
         announce("Μπορείς να ελέγξεις ή να αλλάξεις τις απαντήσεις σου.");
       });
+      $("btnNewAssessment").addEventListener("click", startNewAssessment);
       $("btnExportJSON").addEventListener("click", () => {
         download("chronosynaisthima_cycle1.json", JSON.stringify(recordToExport(), null, 2), "application/json;charset=utf-8");
       });
