@@ -2,758 +2,1557 @@
 <html lang="el">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>ΧρονοΣυναίσθημα 24 – Ζώνες (Παιχνίδι)</title>
-
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Κύκλος Ρολογιού 24ώρου</title>
   <style>
     :root{
-      --text:#10243a;
-      --muted:#3b556f;
-      --border: rgba(16,36,58,.18);
-      --shadow: 0 18px 46px rgba(2,6,23,.18);
-      --radius:26px;
-
-      --base: clamp(16px, 1.2vw, 20px);
-      --h1: clamp(18px, 2vw, 28px);
-      --pie: clamp(280px, 48vw, 520px);
-      --center: clamp(160px, 26vw, 240px);
-
-      --good:#22c55e;
-      --warn:#f59e0b;
-
-      /* ✅ Pie colors */
-      --c-red:#EF4444;
-      --c-blue:#1F3B88;
-      --c-yellow:#FFD400;
-      --c-green:#22C55E;
-      --c-black:#111827;
-      --c-white:#FFFFFF;
-      --c-purple:#7C3AED;
-      --c-brown:#A16207;
+      --bg:#f6f4ef;
+      --paper:#fffdf8;
+      --ink:#202a33;
+      --muted:#66717d;
+      --line:#d8d0c2;
+      --line-strong:#67625b;
+      --accent:#2563eb;
+      --accent-soft:#dbeafe;
+      --ok:#16833c;
+      --warn:#b45309;
+      --danger:#b91c1c;
+      --shadow:0 18px 44px rgba(38, 31, 18, .13);
+      --radius:8px;
+      --clock-size:clamp(330px, 54vw, 690px);
+      --base:16px;
     }
 
     *{box-sizing:border-box}
+    html, body{
+      max-width:100%;
+      overflow-x:hidden;
+    }
     body{
       margin:0;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      font-size: var(--base);
       min-height:100vh;
-      overflow-x:hidden;
-      transition: background .25s ease, color .25s ease;
-      color: var(--text);
+      font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      color:var(--ink);
+      background:
+        linear-gradient(90deg, rgba(214,207,192,.32) 1px, transparent 1px) 0 0/28px 28px,
+        linear-gradient(0deg, rgba(214,207,192,.28) 1px, transparent 1px) 0 0/28px 28px,
+        var(--bg);
+      font-size:var(--base);
     }
 
-    /* zone themes */
-    body.zone-morning{
-      background:
-        radial-gradient(180px 180px at 80% 18%, rgba(255,214,102,.95), transparent 62%),
-        radial-gradient(900px 520px at 20% 15%, rgba(255,255,255,.85), transparent 60%),
-        linear-gradient(160deg, #a9ddff, #fff6cc 55%, #ffffff);
-    }
-    body.zone-noon{
-      background:
-        radial-gradient(220px 220px at 78% 18%, rgba(255,200,60,.95), transparent 62%),
-        radial-gradient(900px 520px at 25% 15%, rgba(255,255,255,.80), transparent 62%),
-        linear-gradient(160deg, #7fd3ff, #bff0ff 45%, #fff2c9);
-    }
-    body.zone-afternoon{
-      background:
-        radial-gradient(240px 200px at 80% 20%, rgba(255,140,80,.85), transparent 65%),
-        radial-gradient(900px 520px at 25% 15%, rgba(255,255,255,.75), transparent 62%),
-        linear-gradient(160deg, #ffd1a1, #ffb3d6 55%, #fff7d6);
-    }
-    body.zone-night{
-      background:
-        radial-gradient(160px 160px at 82% 18%, rgba(230,230,255,.90), transparent 62%),
-        radial-gradient(720px 520px at 20% 10%, rgba(255,255,255,.12), transparent 62%),
-        radial-gradient(900px 700px at 60% 90%, rgba(90,120,255,.10), transparent 62%),
-        linear-gradient(160deg, #06132b, #0b2a5e 55%, #1b3b6f);
-      color:#eef6ff;
-    }
-    body.zone-night .card{background: rgba(255,255,255,.10); border-color: rgba(255,255,255,.18);}
-    body.zone-night .small{color: rgba(238,246,255,.80)}
-    body.zone-night .muted{color: rgba(238,246,255,.75)}
-    body.zone-night .choice{background: rgba(255,255,255,.12); border-color: rgba(255,255,255,.20);}
-    body.zone-night .choice:hover{background: rgba(255,255,255,.16);}
-    body.zone-night .btn{background: rgba(255,255,255,.14); border-color: rgba(255,255,255,.22); color:#eef6ff;}
-    body.zone-night .btn.primary{background: rgba(90,120,255,.28);}
+    button, input, select{font:inherit}
+    button{color:inherit}
 
-    .wrap{max-width:1100px;margin:0 auto;padding:16px}
+    .app{
+      width:100%;
+      max-width:1400px;
+      margin:0 auto;
+      padding:18px;
+    }
+
     header{
-      display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-      margin-bottom:12px;
+      display:grid;
+      grid-template-columns:minmax(0, 1fr) auto;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:16px;
+      margin-bottom:16px;
     }
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{
-      width:56px;height:56px;border-radius:18px;
-      background: conic-gradient(from 180deg,
-        var(--c-red,#EF4444), var(--c-blue,#1F3B88), var(--c-yellow,#FFD400), var(--c-green,#22C55E),
-        var(--c-black,#111827), var(--c-white,#FFFFFF), var(--c-purple,#7C3AED), var(--c-brown,#A16207)
-      );
-      border:2px solid rgba(255,255,255,.8);
-      box-shadow: var(--shadow);
-    }
-    h1{font-size:var(--h1); margin:0; font-weight:1100}
-    .small{font-size:14px; line-height:1.35}
-    .muted{color: var(--muted); font-weight:900}
 
-    details.menu{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.70);
-      border-radius:18px;
-      padding:10px 12px;
-      box-shadow: 0 10px 22px rgba(2,6,23,.10);
+    .brand{
+      display:grid;
+      grid-template-columns:64px minmax(0,1fr);
+      gap:14px;
+      align-items:center;
+      min-width:0;
+    }
+    .brand > div{min-width:0}
+
+    .logo{
+      width:64px;
+      height:64px;
+      border:2px solid var(--line-strong);
+      border-radius:50%;
+      background:
+        radial-gradient(circle at center, var(--paper) 0 29%, transparent 30%),
+        conic-gradient(from -90deg, #eef2ff 0 45deg, #fff7ed 45deg 120deg, #ecfdf5 120deg 195deg, #fef9c3 195deg 270deg, #fce7f3 270deg 360deg);
+      box-shadow:var(--shadow);
+      position:relative;
+    }
+    .logo::before,
+    .logo::after{
+      content:"";
+      position:absolute;
+      left:50%;
+      top:50%;
+      width:2px;
+      background:var(--line-strong);
+      transform-origin:bottom center;
+      border-radius:999px;
+    }
+    .logo::before{height:20px; transform:translate(-50%,-100%) rotate(30deg)}
+    .logo::after{height:15px; transform:translate(-50%,-100%) rotate(115deg)}
+
+    h1{
+      margin:0;
+      font-size:clamp(23px, 3vw, 40px);
+      line-height:1.05;
+      letter-spacing:0;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .subtitle{
+      margin-top:6px;
+      color:var(--muted);
+      font-weight:700;
+      line-height:1.35;
+      max-width:100%;
+      overflow-wrap:anywhere;
+    }
+
+    .toolbar{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      justify-content:flex-end;
+      min-width:0;
+    }
+
+    .proMenu{
+      min-width:250px;
+    }
+    .proMenu summary{
+      min-height:42px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      font-weight:900;
+    }
+    .proMenuBody{
+      display:grid;
+      gap:10px;
+      margin-top:10px;
+    }
+    .proMenuActions{
+      display:flex;
+      flex-wrap:wrap;
+      gap:8px;
+    }
+
+    .btn{
+      border:1px solid var(--line);
+      background:var(--paper);
+      border-radius:var(--radius);
+      padding:10px 13px;
+      min-height:42px;
+      font-weight:800;
+      cursor:pointer;
+      box-shadow:0 8px 18px rgba(38, 31, 18, .09);
+      transition:transform .14s ease, border-color .14s ease, background .14s ease;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:7px;
+    }
+    .btn:hover{transform:translateY(-1px); border-color:#9a9287}
+    .btn.primary{background:#1d4ed8; color:white; border-color:#1d4ed8}
+    .btn:disabled{opacity:.45; cursor:not-allowed; transform:none}
+
+    .steps{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:8px;
+      margin:0 0 16px;
+      min-width:0;
+    }
+
+    .step{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:rgba(255,253,248,.78);
+      padding:12px;
+      min-height:84px;
+      display:grid;
+      gap:5px;
+      min-width:0;
+      overflow:hidden;
+    }
+    .step strong{font-size:15px; overflow-wrap:anywhere}
+    .step span{font-size:14px; color:var(--muted); font-weight:700; line-height:1.32; overflow-wrap:anywhere}
+    .step.active{
+      background:#eff6ff;
+      border-color:#93c5fd;
+      box-shadow:0 8px 24px rgba(37, 99, 235, .14);
+    }
+    .step.done{border-color:#86efac; background:#f0fdf4}
+
+    .layout{
+      display:grid;
+      grid-template-columns:minmax(0, 1.12fr) minmax(330px, .88fr);
+      gap:16px;
+      align-items:start;
+      min-width:0;
+    }
+
+    .clockArea,
+    .side{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:rgba(255,253,248,.86);
+      box-shadow:var(--shadow);
+      min-width:0;
+    }
+
+    .clockArea{
+      padding:16px;
+      display:grid;
+      gap:12px;
+      justify-items:center;
+      overflow:hidden;
+    }
+
+    .clockHead{
+      width:100%;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      flex-wrap:wrap;
+    }
+    .clockHead > *{min-width:0}
+
+    .status{
+      color:var(--muted);
+      font-weight:800;
+      font-size:14px;
+      line-height:1.3;
+      overflow-wrap:anywhere;
+    }
+    #activeInstruction{
+      flex:1 1 100%;
+      max-width:100%;
+      text-align:left;
+    }
+
+    .clockFrame{
+      width:var(--clock-size);
+      max-width:100%;
+      aspect-ratio:1;
+      position:relative;
+    }
+
+    svg{
+      width:100%;
+      height:100%;
+      display:block;
+    }
+
+    .slotPath{
+      fill:#ffffff;
+      stroke:var(--line-strong);
+      stroke-width:2.4;
+      transition:fill .16s ease, filter .16s ease, stroke-width .16s ease;
+      cursor:pointer;
+    }
+    .slotPath.hasEmotion{stroke-width:2.9}
+    .slotPath.currentSlot{stroke:#2563eb; stroke-width:4}
+    .slotPath.dropReady{filter:drop-shadow(0 0 10px rgba(37,99,235,.45)); stroke:#2563eb}
+    .slotPath.blocked{opacity:.48; cursor:not-allowed}
+
+    .clockRing,
+    .clockTicks,
+    .clockHands,
+    .clockLabels{
+      pointer-events:none;
       user-select:none;
     }
-    details.menu > summary{
-      cursor:pointer; font-weight:1100; list-style:none;
-      display:flex; gap:8px; align-items:center;
-    }
-    details.menu > summary::-webkit-details-marker{display:none}
 
-    .card{
-      border:1px solid var(--border);
-      border-radius: var(--radius);
-      background: rgba(255,255,255,.72);
-      box-shadow: var(--shadow);
-      overflow:hidden;
+    .outerBorder{
+      fill:none;
+      stroke:#59554f;
+      stroke-width:3.4;
     }
-    .hd{
-      padding:14px 16px;
-      border-bottom:1px solid var(--border);
-      background: rgba(255,255,255,.55);
-      display:flex; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    .innerBorder{
+      fill:#fffdf8;
+      stroke:#59554f;
+      stroke-width:2.6;
+    }
+    .tick{stroke:#77716a; stroke-width:1.8}
+    .majorTick{stroke:#4f4a45; stroke-width:3}
+    .hourText{
+      fill:#5d5852;
+      font-size:13px;
+      font-weight:900;
+      dominant-baseline:middle;
+      text-anchor:middle;
+    }
+    .zoneText{
+      fill:#4d4944;
+      font-size:14px;
+      font-weight:900;
+      text-anchor:middle;
+      dominant-baseline:middle;
+    }
+    .zoneSubText{
+      fill:#6b665f;
+      font-size:11px;
+      font-weight:800;
+      text-anchor:middle;
+      dominant-baseline:middle;
+    }
+    .centerDot{fill:#3f3b36}
+    .hand{stroke:#3f3b36; stroke-width:3; stroke-linecap:round}
+    .hand.minute{stroke-width:2}
+
+    .slotBadges{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+    }
+    .slotBadge{
+      position:absolute;
+      transform:translate(-50%, -50%);
+      border:1px solid rgba(32,42,51,.18);
+      background:rgba(255,253,248,.92);
+      border-radius:var(--radius);
+      min-width:86px;
+      padding:6px 8px;
+      display:grid;
+      gap:4px;
+      box-shadow:0 8px 18px rgba(38,31,18,.12);
+    }
+    .badgeTop{
+      display:flex;
       align-items:center;
+      justify-content:center;
+      gap:5px;
+      font-size:12px;
+      font-weight:900;
+      line-height:1.05;
     }
-    .bd{padding:16px}
-
-    .topline{display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
-    .pill{
-      padding:8px 12px;border-radius:999px;border:1px solid var(--border);
-      background: rgba(255,255,255,.75);font-weight:1100;font-size:14px;
-    }
-
-    .grid{display:grid;grid-template-columns: 1.1fr .9fr;gap:14px;align-items:start;}
-    @media (max-width: 980px){ .grid{grid-template-columns:1fr;} }
-
-    .pieWrap{display:flex;flex-direction:column;gap:12px;align-items:center}
-    .pie{
-      width: var(--pie);
-      height: var(--pie);
-      max-width: 100%;
+    .badgeColor{
+      width:12px;
+      height:12px;
       border-radius:50%;
-      position:relative;
-      overflow:hidden;
-      border:3px solid rgba(255,255,255,.85);
-      box-shadow: var(--shadow);
-
-      /* fallback color if gradients unsupported */
-      background: #f3f4f6;
+      border:1px solid rgba(0,0,0,.2);
+      flex:0 0 auto;
+    }
+    .badgeMeta{
+      display:flex;
+      justify-content:center;
+      gap:4px;
+      flex-wrap:wrap;
+    }
+    .badgeMeta span{
+      border:1px solid rgba(32,42,51,.12);
+      background:#f8fafc;
+      border-radius:999px;
+      padding:2px 5px;
+      font-size:10px;
+      font-weight:900;
+      color:#475569;
     }
 
-    /* ✅ Only if conic-gradient is supported, apply the real pie colors */
-    @supports (background: conic-gradient(red, blue)) {
-      .pie{
-        background:
-          conic-gradient(
-            var(--c-red,   #EF4444) 0deg 45deg,
-            var(--c-blue,  #1F3B88) 45deg 90deg,
-            var(--c-yellow,#FFD400) 90deg 135deg,
-            var(--c-green, #22C55E) 135deg 180deg,
-            var(--c-black, #111827) 180deg 225deg,
-            var(--c-white, #FFFFFF) 225deg 270deg,
-            var(--c-purple,#7C3AED) 270deg 315deg,
-            var(--c-brown, #A16207) 315deg 360deg
-          );
+    .legend{
+      width:100%;
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:6px 14px;
+      color:var(--muted);
+      font-size:14px;
+      font-weight:800;
+      line-height:1.25;
+    }
+
+    .side{
+      padding:16px;
+      display:grid;
+      gap:16px;
+    }
+
+    .zonePrompt{
+      border:1px solid #93c5fd;
+      background:#eff6ff;
+      color:#1e3a8a;
+      border-radius:var(--radius);
+      padding:12px;
+      font-weight:900;
+      line-height:1.35;
+      overflow-wrap:anywhere;
+    }
+
+    .identityPanel{
+      border:1px solid var(--line);
+      background:#ffffff;
+      border-radius:var(--radius);
+      padding:12px;
+      display:grid;
+      gap:10px;
+    }
+    .identityPanel h2{
+      margin:0;
+      font-size:16px;
+      line-height:1.2;
+    }
+    .identityGrid{
+      display:grid;
+      grid-template-columns:1fr;
+      gap:10px;
+    }
+    .field{
+      display:grid;
+      gap:5px;
+      min-width:0;
+    }
+    .field label{
+      font-size:13px;
+      font-weight:900;
+      color:var(--ink);
+    }
+    .field input{
+      width:100%;
+      min-height:40px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fffdf8;
+      padding:9px 10px;
+      font-weight:850;
+      color:var(--ink);
+    }
+    .field input:focus{
+      outline:3px solid rgba(37,99,235,.18);
+      border-color:#2563eb;
+    }
+    .fieldHelp{
+      color:var(--muted);
+      font-size:11px;
+      line-height:1.3;
+      font-weight:700;
+    }
+
+    .panel{
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+    .panel:first-child{border-top:0; padding-top:0}
+    .panel h2{
+      margin:0 0 7px;
+      font-size:18px;
+      line-height:1.15;
+      letter-spacing:0;
+    }
+    .hint{
+      margin:0 0 10px;
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.35;
+      font-weight:700;
+    }
+
+    .palette{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(0,1fr));
+      gap:9px;
+    }
+
+    .token{
+      min-height:64px;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#ffffff;
+      padding:9px;
+      cursor:grab;
+      display:grid;
+      grid-template-columns:36px minmax(0,1fr);
+      align-items:center;
+      gap:9px;
+      text-align:left;
+      box-shadow:0 7px 14px rgba(38,31,18,.07);
+      transition:transform .14s ease, border-color .14s ease, background .14s ease;
+      user-select:none;
+    }
+    .token:hover{transform:translateY(-1px); border-color:#9a9287}
+    .token:active{cursor:grabbing}
+    .token.selected{
+      outline:3px solid rgba(37,99,235,.24);
+      border-color:#2563eb;
+      background:#eff6ff;
+    }
+    .token.disabled{opacity:.42; cursor:not-allowed}
+
+    .swatch{
+      width:36px;
+      height:36px;
+      border-radius:50%;
+      border:2px solid rgba(0,0,0,.16);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:1000;
+      color:#111827;
+      background:#fff;
+    }
+    .tokenText{min-width:0}
+    .tokenTitle{
+      display:block;
+      font-size:14px;
+      font-weight:950;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .tokenSub{
+      display:block;
+      margin-top:2px;
+      color:var(--muted);
+      font-size:12px;
+      line-height:1.25;
+      font-weight:800;
+    }
+
+    .scaleList{
+      display:grid;
+      grid-template-columns:repeat(4, minmax(0,1fr));
+      gap:8px;
+    }
+    .scaleList .token{
+      grid-template-columns:1fr;
+      justify-items:center;
+      text-align:center;
+      min-height:78px;
+    }
+    .scaleList .swatch{
+      width:34px;
+      height:34px;
+      border-radius:var(--radius);
+      color:#1f2937;
+      background:#f8fafc;
+    }
+
+    .actions{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      flex-wrap:wrap;
+      border-top:1px solid var(--line);
+      padding-top:14px;
+    }
+
+    .completion{
+      display:grid;
+      gap:7px;
+      min-width:min(100%, 260px);
+    }
+    .bar{
+      height:10px;
+      border-radius:999px;
+      background:#e5e7eb;
+      overflow:hidden;
+    }
+    .bar span{
+      display:block;
+      height:100%;
+      width:0;
+      background:linear-gradient(90deg, #22c55e, #2563eb);
+      transition:width .18s ease;
+    }
+    .completionText{
+      color:var(--muted);
+      font-size:13px;
+      font-weight:850;
+    }
+
+    .completionPanel{
+      border:2px solid #86efac;
+      background:#f0fdf4;
+      border-radius:var(--radius);
+      padding:16px;
+      display:grid;
+      gap:10px;
+    }
+    .completionPanel[hidden]{display:none}
+    .completionPanel h2{
+      margin:0;
+      color:#14532d;
+    }
+    .completionPanel p{
+      margin:0;
+      color:#166534;
+      font-weight:750;
+      line-height:1.4;
+    }
+
+    details{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#fff;
+      padding:12px;
+    }
+    summary{
+      cursor:pointer;
+      font-weight:950;
+    }
+    .database{
+      margin-top:10px;
+      display:grid;
+      gap:9px;
+    }
+    .dbGrid{
+      display:grid;
+      grid-template-columns:repeat(3, minmax(0,1fr));
+      gap:8px;
+    }
+    .dbBox{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      padding:10px;
+      background:#f8fafc;
+    }
+    .dbBox strong{display:block; font-size:20px}
+    .dbBox span{display:block; color:var(--muted); font-size:12px; font-weight:800}
+    pre{
+      margin:0;
+      max-height:210px;
+      overflow:auto;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:#111827;
+      color:#f8fafc;
+      padding:10px;
+      font-size:12px;
+      line-height:1.45;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+
+    .srOnly{
+      position:absolute;
+      width:1px;
+      height:1px;
+      padding:0;
+      margin:-1px;
+      overflow:hidden;
+      clip:rect(0,0,0,0);
+      white-space:nowrap;
+      border:0;
+    }
+
+    @media (max-width:1050px){
+      header{grid-template-columns:1fr}
+      .toolbar{justify-content:flex-start}
+      .layout{grid-template-columns:1fr}
+      .side{order:-1}
+      .palette{grid-template-columns:repeat(4, minmax(0,1fr))}
+      .token{grid-template-columns:1fr; justify-items:center; text-align:center}
+      .tokenTitle{white-space:normal}
+    }
+
+    @media (max-width:720px){
+      .app{padding:12px}
+      header{display:grid}
+      .toolbar{justify-content:flex-start}
+      .proMenu{min-width:0; width:100%}
+      .brand{grid-template-columns:52px minmax(0,1fr)}
+      .logo{width:52px;height:52px}
+      .steps{grid-template-columns:1fr}
+      .palette{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .scaleList{grid-template-columns:repeat(2, minmax(0,1fr))}
+      .identityGrid{grid-template-columns:1fr}
+      .legend{grid-template-columns:1fr}
+      .clockArea{padding:10px}
+      #activeInstruction{flex-basis:100%}
+      .slotBadge{
+        min-width:70px;
+        padding:5px 6px;
+      }
+      .badgeTop{font-size:11px}
+      .dbGrid{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>Κύκλος Ρολογιού 24ώρου</h1>
+          <div class="subtitle">Συμπλήρωσε κάθε χρονικό τμήμα με συναίσθημα, ένταση και συχνότητα. Τα στοιχεία αποθηκεύονται αυτόματα.</div>
+        </div>
+      </div>
+      <div class="toolbar" aria-label="Ενέργειες">
+        <details class="proMenu">
+          <summary>Μενού επαγγελματία</summary>
+          <div class="proMenuBody">
+            <div class="proMenuActions">
+              <button class="btn" id="btnExportJSON" type="button" title="Εξαγωγή JSON">JSON</button>
+              <button class="btn" id="btnExportCSV" type="button" title="Εξαγωγή CSV">CSV</button>
+              <button class="btn" id="btnReset" type="button" title="Καθαρισμός">Reset</button>
+            </div>
+            <div class="database">
+              <div class="dbGrid">
+                <div class="dbBox"><strong id="completedSlots">0/6</strong><span>τμήματα πλήρη</span></div>
+                <div class="dbBox"><strong id="riskPreview">0</strong><span>προσωρινός δείκτης</span></div>
+                <div class="dbBox"><strong id="updatedAt">-</strong><span>τελευταία αλλαγή</span></div>
+              </div>
+              <pre id="databasePreview"></pre>
+            </div>
+          </div>
+        </details>
+      </div>
+    </header>
+
+    <nav class="steps" aria-label="Βήματα">
+      <button class="step active" type="button" data-step="emotion">
+        <strong>Βήμα Β: Χρώμα και συναίσθημα</strong>
+        <span>Διάλεξε χρώμα για την τρέχουσα ζώνη.</span>
+      </button>
+      <button class="step" type="button" data-step="intensity">
+        <strong>Βήμα Γ: Βαθμός έντασης</strong>
+        <span>Διάλεξε πόσο έντονα εμφανίζεται.</span>
+      </button>
+      <button class="step" type="button" data-step="frequency">
+        <strong>Βήμα Δ: Συχνότητα</strong>
+        <span>Διάλεξε πόσο συχνά εμφανίζεται.</span>
+      </button>
+    </nav>
+
+    <main class="layout">
+      <section class="clockArea" aria-labelledby="clockTitle">
+        <div class="clockHead">
+          <div>
+            <h2 id="clockTitle" style="margin:0;font-size:20px">Ρολόι 24ώρου</h2>
+            <div class="status" id="saveStatus">αποθηκεύτηκε τοπικά</div>
+          </div>
+          <div class="status" id="activeInstruction">Σύρε ένα χρώμα πάνω σε τμήμα ώρας.</div>
+        </div>
+
+        <div class="clockFrame">
+          <svg id="clockSvg" viewBox="0 0 520 520" role="img" aria-label="Κύκλος ρολογιού χωρισμένος σε χρονικά τμήματα">
+            <g id="slotLayer"></g>
+            <g class="clockRing">
+              <circle class="outerBorder" cx="260" cy="260" r="220"></circle>
+              <circle class="innerBorder" cx="260" cy="260" r="82"></circle>
+            </g>
+            <g id="tickLayer" class="clockTicks"></g>
+            <g id="labelLayer" class="clockLabels"></g>
+            <g class="clockHands">
+              <line class="hand" x1="260" y1="260" x2="260" y2="206"></line>
+              <line class="hand minute" x1="260" y1="260" x2="306" y2="260"></line>
+              <circle class="centerDot" cx="260" cy="260" r="6"></circle>
+            </g>
+          </svg>
+          <div class="slotBadges" id="slotBadges" aria-hidden="true"></div>
+        </div>
+
+        <div class="legend" id="timeLegend"></div>
+      </section>
+
+      <aside class="side" aria-label="Παλέτες επιλογών">
+        <section class="identityPanel" aria-labelledby="identityTitle">
+          <h2 id="identityTitle">Στοιχεία καταγραφής</h2>
+          <div class="identityGrid">
+            <div class="field">
+              <label for="beneficiaryId">ID οφελούμενου</label>
+              <input id="beneficiaryId" type="text" inputmode="numeric" pattern="[0-9]{4}" maxlength="4" autocomplete="off" placeholder="0000" />
+              <div class="fieldHelp">Μόνο 4 αριθμητικά ψηφία. Επιτρέπεται να αρχίζει από 0.</div>
+            </div>
+          </div>
+        </section>
+
+        <div class="zonePrompt" id="zonePrompt"></div>
+
+        <section class="panel" id="emotionPanel">
+          <h2>Παλέτα χρωμάτων</h2>
+          <p class="hint">Κάθε χρώμα αντιστοιχεί σε συναίσθημα. Διάλεξε για την τρέχουσα ζώνη.</p>
+          <div class="palette" id="emotionPalette"></div>
+        </section>
+
+        <section class="panel" id="intensityPanel">
+          <h2>Βαθμός έντασης</h2>
+          <p class="hint">Διάλεξε πόσο έντονα εμφανίζεται αυτό το συναίσθημα στην ίδια ζώνη.</p>
+          <div class="scaleList" id="intensityPalette"></div>
+        </section>
+
+        <section class="panel" id="frequencyPanel">
+          <h2>Βαθμός συχνότητας</h2>
+          <p class="hint">Διάλεξε πόσο συχνά εμφανίζεται αυτό το συναίσθημα στην ίδια ζώνη.</p>
+          <div class="scaleList" id="frequencyPalette"></div>
+        </section>
+
+        <section class="completionPanel" id="completionPanel" hidden>
+          <h2>Ο κύκλος ολοκληρώθηκε</h2>
+          <p>Μπράβο, τελείωσες αυτή την αξιολόγηση. Τα στοιχεία αποθηκεύτηκαν αυτόματα.</p>
+          <p>Τώρα ενημέρωσε τον/την επαγγελματία για να συνεχίσετε μαζί.</p>
+          <button class="btn" id="btnReview" type="button">Έλεγχος απαντήσεων</button>
+        </section>
+
+        <section class="actions" aria-label="Πρόοδος και πλοήγηση">
+          <div class="completion">
+            <div class="bar" aria-hidden="true"><span id="progressBar"></span></div>
+            <div class="completionText" id="progressText">0 από 18 πεδία ολοκληρώθηκαν</div>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap">
+            <button class="btn" id="btnPrev" type="button">Πίσω</button>
+            <button class="btn primary" id="btnNext" type="button">Επόμενο</button>
+          </div>
+        </section>
+
+      </aside>
+    </main>
+  </div>
+
+  <div class="srOnly" aria-live="polite" id="liveStatus"></div>
+
+  <script>
+    const STORAGE_KEY = "chronosynaisthima24_cycle1_database_v11";
+
+    const SLOTS = [
+      { key:"lateNight", label:"Ξημερώματα", start:"00:00", end:"03:00", startHour:0, endHour:3 },
+      { key:"earlyMorning", label:"Ξημερώματα έως Πρωί", start:"03:00", end:"08:00", startHour:3, endHour:8 },
+      { key:"morningNoon", label:"Πρωί έως Μεσημέρι", start:"08:00", end:"13:00", startHour:8, endHour:13 },
+      { key:"noonAfternoon", label:"Μεσημέρι έως Απόγευμα", start:"13:00", end:"18:00", startHour:13, endHour:18 },
+      { key:"afternoonNight", label:"Απόγευμα έως Βράδυ", start:"18:00", end:"21:00", startHour:18, endHour:21 },
+      { key:"night", label:"Βράδυ", start:"21:00", end:"24:00", startHour:21, endHour:24 }
+    ];
+
+    const EMOTIONS = [
+      { key:"calm", color:"#22c55e", name:"Πράσινο", emotion:"Ηρεμία, ασφάλεια", risk:0 },
+      { key:"anger", color:"#ef4444", name:"Κόκκινο", emotion:"Θυμός, εκνευρισμός", risk:3 },
+      { key:"lonely", color:"#1d4ed8", name:"Μπλε", emotion:"Μοναξιά, απομόνωση", risk:3 },
+      { key:"joy", color:"#facc15", name:"Κίτρινο", emotion:"Χαρά, ευτυχία", risk:0 },
+      { key:"fear", color:"#111827", name:"Μαύρο", emotion:"Φόβος", risk:4 },
+      { key:"numb", color:"#ffffff", name:"Άσπρο", emotion:"Κενό, μούδιασμα", risk:2 },
+      { key:"confused", color:"#7c3aed", name:"Μωβ", emotion:"Σύγχυση", risk:2 },
+      { key:"unsafe", color:"#a16207", name:"Καφέ", emotion:"Ανασφάλεια", risk:3 }
+    ];
+
+    const INTENSITIES = [
+      { key:"little", label:"Λίγο", short:"λίγο", value:1 },
+      { key:"enough", label:"Αρκετά", short:"αρκετά", value:2 },
+      { key:"much", label:"Πολύ", short:"πολύ", value:3 },
+      { key:"veryMuch", label:"Πάρα πολύ", short:"πάρα πολύ", value:4 }
+    ];
+
+    const FREQUENCIES = [
+      { key:"daily", label:"Κάθε μέρα", short:"κάθε μέρα", value:4 },
+      { key:"often", label:"Συχνά", short:"συχνά", value:3 },
+      { key:"sometimes", label:"Μερικές φορές", short:"μερικές", value:2 },
+      { key:"rarely", label:"Σπάνια", short:"σπάνια", value:1 }
+    ];
+
+    const STEPS = ["emotion", "intensity", "frequency"];
+    const STEP_LABEL = {
+      emotion:"χρώμα",
+      intensity:"ένταση",
+      frequency:"συχνότητα"
+    };
+    const STEP_ARTICLE = {
+      emotion:"Το",
+      intensity:"Η",
+      frequency:"Η"
+    };
+
+    const $ = (id) => document.getElementById(id);
+    const svgNS = "http://www.w3.org/2000/svg";
+
+    let dragPayload = null;
+    let selectedPayload = null;
+    let state = defaultState();
+
+    function defaultState(){
+      return {
+        cycle: 1,
+        beneficiaryId: "",
+        startedAt: new Date().toISOString(),
+        completedAt: null,
+        slotIdx: 0,
+        step: "emotion",
+        finished: false,
+        updatedAt: null,
+        slots: Object.fromEntries(SLOTS.map(slot => [slot.key, {
+          emotionKey: null,
+          intensityKey: null,
+          frequencyKey: null
+        }]))
+      };
+    }
+
+    function loadState(){
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return;
+      try{
+        const parsed = JSON.parse(raw);
+        if(parsed && parsed.slots) state = {...defaultState(), ...parsed};
+        if(!Number.isInteger(state.slotIdx)) state.slotIdx = 0;
+        state.slotIdx = Math.max(0, Math.min(SLOTS.length - 1, state.slotIdx));
+        state.beneficiaryId = (state.beneficiaryId || "").toString().replace(/\D/g, "").slice(0, 4);
+      }catch(error){}
+    }
+
+    function saveState(){
+      state.updatedAt = new Date().toISOString();
+      $("saveStatus").textContent = "αποθήκευση...";
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      window.setTimeout(() => {
+        $("saveStatus").textContent = "αποθηκεύτηκε τοπικά";
+      }, 140);
+    }
+
+    function polar(cx, cy, r, deg){
+      const rad = (deg - 90) * Math.PI / 180;
+      return { x: cx + r * Math.cos(rad), y: cy + r * Math.sin(rad) };
+    }
+
+    function angleFromHour(hour){
+      return (hour / 24) * 360;
+    }
+
+    function sectorPath(slot, outerR = 220, innerR = 82){
+      const start = angleFromHour(slot.startHour);
+      const end = angleFromHour(slot.endHour);
+      const large = end - start > 180 ? 1 : 0;
+      const p1 = polar(260, 260, outerR, start);
+      const p2 = polar(260, 260, outerR, end);
+      const p3 = polar(260, 260, innerR, end);
+      const p4 = polar(260, 260, innerR, start);
+      return [
+        `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)}`,
+        `A ${outerR} ${outerR} 0 ${large} 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`,
+        `L ${p3.x.toFixed(2)} ${p3.y.toFixed(2)}`,
+        `A ${innerR} ${innerR} 0 ${large} 0 ${p4.x.toFixed(2)} ${p4.y.toFixed(2)}`,
+        "Z"
+      ].join(" ");
+    }
+
+    function itemByKey(list, key){
+      return list.find(item => item.key === key) || null;
+    }
+
+    function currentSlot(){
+      return SLOTS[state.slotIdx] || SLOTS[0];
+    }
+
+    function currentRecord(){
+      return state.slots[currentSlot().key];
+    }
+
+    function slotComplete(slotKey){
+      const record = state.slots[slotKey];
+      return Boolean(record.emotionKey && record.intensityKey && record.frequencyKey);
+    }
+
+    function slotIsReady(slotKey, step = state.step){
+      const record = state.slots[slotKey];
+      if(step === "emotion") return true;
+      if(step === "intensity") return Boolean(record.emotionKey);
+      if(step === "frequency") return Boolean(record.emotionKey && record.intensityKey);
+      return false;
+    }
+
+    function canApply(payload, slotKey){
+      if(!payload || payload.type !== state.step) return false;
+      if(slotKey !== currentSlot().key) return false;
+      return slotIsReady(slotKey, payload.type);
+    }
+
+    function applyPayloadToSlot(slotKey, payload){
+      if(!canApply(payload, slotKey)) {
+        const slot = currentSlot();
+        const msg = slotKey !== slot.key
+          ? `Συμπλήρωσε πρώτα τη ζώνη ${slot.start} - ${slot.end}.`
+          : slotIsReady(slotKey, state.step)
+          ? `Τώρα δούλεψε με ${STEP_LABEL[state.step]}.`
+          : "Συμπλήρωσε πρώτα το προηγούμενο βήμα σε αυτό το τμήμα.";
+        announce(msg);
+        return;
+      }
+
+      const record = state.slots[slotKey];
+      let nextMessage = "";
+      if(payload.type === "emotion"){
+        record.emotionKey = payload.key;
+        record.intensityKey = null;
+        record.frequencyKey = null;
+        state.step = "intensity";
+        state.finished = false;
+        state.completedAt = null;
+        nextMessage = "Ωραία. Τώρα διάλεξε πόσο έντονο είναι.";
+      }
+      if(payload.type === "intensity"){
+        record.intensityKey = payload.key;
+        record.frequencyKey = null;
+        state.step = "frequency";
+        state.finished = false;
+        state.completedAt = null;
+        nextMessage = "Τώρα διάλεξε πόσο συχνά εμφανίζεται.";
+      }
+      if(payload.type === "frequency"){
+        record.frequencyKey = payload.key;
+        state.finished = false;
+        state.completedAt = null;
+        nextMessage = state.slotIdx === SLOTS.length - 1
+          ? "Η τελευταία ζώνη ολοκληρώθηκε. Πάτησε Ολοκλήρωση."
+          : "Η ζώνη ολοκληρώθηκε. Πάτησε Επόμενη ζώνη.";
+      }
+
+      selectedPayload = null;
+      clearTokenSelection();
+      saveState();
+      render();
+      announce(nextMessage);
+    }
+
+    function announce(message){
+      $("activeInstruction").textContent = message;
+      $("liveStatus").textContent = message;
+    }
+
+    function formatClockTime(iso){
+      if(!iso) return "-";
+      const date = new Date(iso);
+      return date.toLocaleTimeString("el-GR", {hour:"2-digit", minute:"2-digit"});
+    }
+
+    function dateTimeParts(iso = new Date().toISOString()){
+      const date = new Date(iso);
+      return {
+        iso,
+        date: date.toLocaleDateString("el-GR", {year:"numeric", month:"2-digit", day:"2-digit"}),
+        time: date.toLocaleTimeString("el-GR", {hour:"2-digit", minute:"2-digit"}),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || ""
+      };
+    }
+
+    function buildClock(){
+      const slotLayer = $("slotLayer");
+      const tickLayer = $("tickLayer");
+      const labelLayer = $("labelLayer");
+      slotLayer.innerHTML = "";
+      tickLayer.innerHTML = "";
+      labelLayer.innerHTML = "";
+
+      SLOTS.forEach(slot => {
+        const path = document.createElementNS(svgNS, "path");
+        path.setAttribute("d", sectorPath(slot));
+        path.setAttribute("class", "slotPath");
+        path.dataset.slot = slot.key;
+        path.setAttribute("tabindex", "0");
+        path.setAttribute("role", "button");
+        path.setAttribute("aria-label", `${slot.start} έως ${slot.end}, ${slot.label}`);
+
+        path.addEventListener("dragover", (event) => {
+          event.preventDefault();
+          path.classList.toggle("dropReady", canApply(dragPayload, slot.key));
+        });
+        path.addEventListener("dragleave", () => path.classList.remove("dropReady"));
+        path.addEventListener("drop", (event) => {
+          event.preventDefault();
+          path.classList.remove("dropReady");
+          applyPayloadToSlot(slot.key, dragPayload);
+          dragPayload = null;
+        });
+        path.addEventListener("click", () => {
+          if(selectedPayload) applyPayloadToSlot(slot.key, selectedPayload);
+          else describeSlot(slot.key);
+        });
+        path.addEventListener("keydown", (event) => {
+          if(event.key === "Enter" || event.key === " "){
+            event.preventDefault();
+            if(selectedPayload) applyPayloadToSlot(slot.key, selectedPayload);
+            else describeSlot(slot.key);
+          }
+        });
+
+        slotLayer.appendChild(path);
+      });
+
+      for(let hour = 0; hour < 24; hour += 1){
+        const a = angleFromHour(hour);
+        const outer = polar(260, 260, 221, a);
+        const inner = polar(260, 260, hour % 3 === 0 ? 201 : 210, a);
+        const tick = document.createElementNS(svgNS, "line");
+        tick.setAttribute("x1", outer.x.toFixed(2));
+        tick.setAttribute("y1", outer.y.toFixed(2));
+        tick.setAttribute("x2", inner.x.toFixed(2));
+        tick.setAttribute("y2", inner.y.toFixed(2));
+        tick.setAttribute("class", hour % 3 === 0 ? "majorTick" : "tick");
+        tickLayer.appendChild(tick);
+      }
+
+      [0,3,8,13,18,21].forEach(hour => {
+        const point = polar(260, 260, 52, angleFromHour(hour));
+        const text = document.createElementNS(svgNS, "text");
+        text.setAttribute("x", point.x.toFixed(2));
+        text.setAttribute("y", point.y.toFixed(2));
+        text.setAttribute("class", "hourText");
+        text.textContent = `${String(hour).padStart(2, "0")}:00`;
+        labelLayer.appendChild(text);
+      });
+
+      SLOTS.forEach(slot => {
+        const mid = (slot.startHour + slot.endHour) / 2;
+        const point = polar(260, 260, 151, angleFromHour(mid));
+        const text = document.createElementNS(svgNS, "text");
+        text.setAttribute("x", point.x.toFixed(2));
+        text.setAttribute("y", (point.y - 9).toFixed(2));
+        text.setAttribute("class", "zoneText");
+        text.textContent = slot.label.length > 14 ? slot.label.split(" έως ")[0] : slot.label;
+        labelLayer.appendChild(text);
+
+        const sub = document.createElementNS(svgNS, "text");
+        sub.setAttribute("x", point.x.toFixed(2));
+        sub.setAttribute("y", (point.y + 10).toFixed(2));
+        sub.setAttribute("class", "zoneSubText");
+        sub.textContent = slot.label.includes(" έως ") ? `έως ${slot.label.split(" έως ")[1]}` : `${slot.start} - ${slot.end}`;
+        labelLayer.appendChild(sub);
+      });
+    }
+
+    function buildPalette(containerId, items, type){
+      const container = $(containerId);
+      container.innerHTML = "";
+      items.forEach(item => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "token";
+        button.draggable = true;
+        button.dataset.type = type;
+        button.dataset.key = item.key;
+        button.setAttribute("aria-label", `${type === "emotion" ? item.name + ", " + item.emotion : item.label}`);
+        const swatchStyle = type === "emotion" ? `background:${item.color};` : "";
+        const swatchText = type === "emotion" ? "" : String(item.value);
+        const title = type === "emotion" ? item.name : item.label;
+        const sub = type === "emotion" ? item.emotion : (type === "intensity" ? "ένταση" : "συχνότητα");
+        button.innerHTML = `
+          <span class="swatch" style="${swatchStyle}">${swatchText}</span>
+          <span class="tokenText">
+            <span class="tokenTitle">${title}</span>
+            <span class="tokenSub">${sub}</span>
+          </span>
+        `;
+
+        button.addEventListener("dragstart", (event) => {
+          dragPayload = {type, key:item.key};
+          event.dataTransfer.effectAllowed = "copy";
+          event.dataTransfer.setData("text/plain", JSON.stringify(dragPayload));
+          selectToken(button, dragPayload);
+        });
+        button.addEventListener("dragend", () => {
+          dragPayload = null;
+          document.querySelectorAll(".slotPath").forEach(path => path.classList.remove("dropReady"));
+        });
+        button.addEventListener("click", () => {
+          if(button.classList.contains("disabled")) return;
+          selectToken(button, {type, key:item.key});
+          applyPayloadToSlot(currentSlot().key, {type, key:item.key});
+        });
+        container.appendChild(button);
+      });
+    }
+
+    function selectToken(button, payload){
+      selectedPayload = payload;
+      clearTokenSelection();
+      button.classList.add("selected");
+    }
+
+    function clearTokenSelection(){
+      document.querySelectorAll(".token.selected").forEach(item => item.classList.remove("selected"));
+    }
+
+    function describeSlot(slotKey){
+      const slot = SLOTS.find(item => item.key === slotKey);
+      const record = state.slots[slotKey];
+      const emotion = itemByKey(EMOTIONS, record.emotionKey);
+      const intensity = itemByKey(INTENSITIES, record.intensityKey);
+      const frequency = itemByKey(FREQUENCIES, record.frequencyKey);
+      const parts = [
+        `${slot.start} - ${slot.end}`,
+        emotion ? emotion.emotion : "χωρίς χρώμα",
+        intensity ? intensity.label : "χωρίς ένταση",
+        frequency ? frequency.label : "χωρίς συχνότητα"
+      ];
+      announce(parts.join(" | "));
+    }
+
+    function setStep(step){
+      if(step === "intensity" && !currentRecord().emotionKey) return;
+      if(step === "frequency" && !currentRecord().intensityKey) return;
+      state.step = step;
+      state.finished = false;
+      selectedPayload = null;
+      clearTokenSelection();
+      saveState();
+      render();
+    }
+
+    function autoAdvanceStep(){
+      if(!slotComplete(currentSlot().key)) return;
+      if(state.slotIdx < SLOTS.length - 1){
+        state.slotIdx += 1;
+        state.step = "emotion";
+        state.finished = false;
+        selectedPayload = null;
+        clearTokenSelection();
+        saveState();
+        render();
+        const slot = currentSlot();
+        announce(`Ζώνη ${slot.start} - ${slot.end}: διάλεξε συναίσθημα.`);
+      }else {
+        state.finished = true;
+        state.completedAt = new Date().toISOString();
+        selectedPayload = null;
+        clearTokenSelection();
+        saveState();
+        render();
+        announce("Ο κύκλος ολοκληρώθηκε. Ενημέρωσε τον/την επαγγελματία για να συνεχίσετε.");
       }
     }
 
-    .pointer{
-      position:absolute; top:-12px; left:50%;
-      transform:translateX(-50%);
-      width:0;height:0;
-      border-left:16px solid transparent;
-      border-right:16px solid transparent;
-      border-bottom:26px solid rgba(255,255,255,.95);
-      filter: drop-shadow(0 8px 14px rgba(2,6,23,.20));
-      z-index:6;
+    function goBackStep(){
+      const currentIndex = STEPS.indexOf(state.step);
+      if(state.finished){
+        state.finished = false;
+        state.step = "frequency";
+        saveState();
+        render();
+        return;
+      }
+      if(currentIndex > 0) setStep(STEPS[currentIndex - 1]);
+      else if(state.slotIdx > 0){
+        state.slotIdx -= 1;
+        state.step = "frequency";
+        state.finished = false;
+        saveState();
+        render();
+      }
     }
 
-    .innerRing{
-      position:absolute;
-      inset: clamp(54px, 8vw, 86px);
-      border-radius:50%;
-      border:2px solid rgba(255,255,255,.55);
-      background:
-        conic-gradient(
-          var(--q1, rgba(255,255,255,.22)) 0deg 120deg,
-          var(--q2, rgba(255,255,255,.22)) 120deg 240deg,
-          var(--q3, rgba(255,255,255,.22)) 240deg 360deg
-        );
-      z-index:2;
-      box-shadow: inset 0 0 0 6px rgba(255,255,255,.28);
-    }
-    .innerRing::after{
-      content:"";
-      position:absolute; inset: 14px;
-      border-radius:50%;
-      background: rgba(255,255,255,.18);
-      border:1px solid rgba(16,36,58,.10);
+    function stepCompletion(step){
+      if(step === "emotion") return SLOTS.filter(slot => state.slots[slot.key].emotionKey).length;
+      if(step === "intensity") return SLOTS.filter(slot => state.slots[slot.key].emotionKey && state.slots[slot.key].intensityKey).length;
+      return SLOTS.filter(slot => state.slots[slot.key].emotionKey && state.slots[slot.key].intensityKey && state.slots[slot.key].frequencyKey).length;
     }
 
-    .intensityRing{
-      position:absolute;
-      inset: clamp(26px, 4vw, 42px);
-      border-radius:50%;
-      border:3px solid rgba(255,255,255,.65);
-      z-index:1;
-      pointer-events:none;
-      opacity:.95;
-      background: conic-gradient(rgba(255,255,255,.00) 0deg 360deg);
+    function totalFilledFields(){
+      return SLOTS.reduce((sum, slot) => {
+        const record = state.slots[slot.key];
+        return sum + [record.emotionKey, record.intensityKey, record.frequencyKey].filter(Boolean).length;
+      }, 0);
     }
 
-    .center{
-      position:absolute; left:50%; top:50%;
-      transform:translate(-50%,-50%);
-      width: var(--center);
-      height: var(--center);
-      border-radius:50%;
-      background: rgba(255,255,255,.90);
-      border:2px solid rgba(16,36,58,.12);
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      justify-content:center;
-      text-align:center;
-      padding:14px;
-      z-index:5;
-    }
-    .centerTitle{font-size:14px;font-weight:1100;color: var(--muted);margin-bottom:6px;}
-    .centerMain{font-size:20px;font-weight:1200;line-height:1.1;}
-    .centerSub{
-      margin-top:8px;font-size:14px;font-weight:1000;color: var(--muted);line-height:1.25;
-      white-space:pre-line;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;
-      max-width:100%;
+    function completedSlotCount(){
+      return SLOTS.filter(slot => {
+        const record = state.slots[slot.key];
+        return record.emotionKey && record.intensityKey && record.frequencyKey;
+      }).length;
     }
 
-    .stepTitle{font-weight:1200;font-size:18px;margin:6px 0 6px;}
-    .helper{font-size:14px;color: var(--muted);font-weight:900;line-height:1.35;margin-bottom:10px;}
-
-    .choices{display:grid;grid-template-columns: repeat(2, minmax(0,1fr));gap:10px;}
-    @media (max-width: 520px){ .choices{grid-template-columns:1fr;} }
-
-    .choice{
-      border:2px solid rgba(16,36,58,.14);
-      border-radius:20px;
-      background: rgba(255,255,255,.70);
-      padding:12px;
-      cursor:pointer;
-      transition:.15s transform,.15s background,.15s outline;
-      user-select:none;
-      display:flex;
-      gap:12px;
-      align-items:center;
-      min-height:76px;
-      overflow:hidden;
-    }
-    .choice:hover{transform:translateY(-2px); background: rgba(255,255,255,.92);}
-    .choice.active{outline:3px solid rgba(90,120,255,.40);}
-    .swatch{
-      width:54px;height:54px;border-radius:18px;border:2px solid rgba(0,0,0,.10);
-      flex:0 0 auto;
-    }
-    .choiceBig{font-size:18px;font-weight:1200;line-height:1.05;}
-    .choiceSmall{
-      font-size:14px;font-weight:1000;color: var(--muted);
-      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-    }
-
-    .row1{display:grid;grid-template-columns:repeat(4, minmax(0,1fr));gap:10px}
-    @media (max-width: 520px){ .row1{grid-template-columns:repeat(2,1fr)} }
-    .emojiBtn{
-      border:2px solid rgba(16,36,58,.14);
-      background: rgba(255,255,255,.70);
-      border-radius:20px;
-      padding:14px 10px;
-      cursor:pointer;
-      text-align:center;
-      font-weight:1200;
-      transition:.15s transform,.15s background,.15s outline;
-      user-select:none;
-      min-height:72px;
-    }
-    .emojiBtn:hover{transform:translateY(-2px); background: rgba(255,255,255,.92);}
-    .emojiBtn.active{outline:3px solid rgba(90,120,255,.40);}
-    .emojiBig{font-size:28px;display:block;margin-bottom:6px}
-    .emojiText{font-size:14px}
-
-    .btnRow{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:12px;}
-    .btn{
-      border:1px solid var(--border);
-      background: rgba(255,255,255,.78);
-      color: inherit;
-      padding:12px 14px;
-      border-radius:18px;
-      cursor:pointer;
-      font-weight:1200;
-      font-size:16px;
-      box-shadow: 0 10px 22px rgba(2,6,23,.10);
-      transition:.15s transform,.15s background;
-    }
-    .btn:hover{transform:translateY(-1px); background: rgba(255,255,255,.95);}
-    .btn.primary{background: rgba(90,120,255,.20); border-color: rgba(90,120,255,.30);}
-    .btn:disabled{opacity:.55; cursor:not-allowed; transform:none;}
-
-    .progress{margin-top:10px;font-size:14px;font-weight:1100;color: var(--muted);}
-    .okline{margin-top:10px;font-size:14px;font-weight:1200;color: var(--good);}
-    .warnline{margin-top:10px;font-size:14px;font-weight:1200;color: var(--warn);}
-  </style>
-</head>
-
-<body>
-<div class="wrap">
-  <header>
-    <div class="brand">
-      <div class="logo" aria-hidden="true"></div>
-      <div>
-        <h1 id="zoneTitle">Ζώνη: Πρωί ☀️</h1>
-        <div class="small muted" id="zoneSubtitle">Βήμα 1/4 — Διάλεξε χρώμα, πόσο και απάντησε 3 ερωτήσεις.</div>
-      </div>
-    </div>
-
-    <details class="menu">
-      <summary>⚙️ Μενού (για επαγγελματία)</summary>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">
-        <button class="btn" id="btnExportJSON">⬇ JSON</button>
-        <button class="btn" id="btnExportCSV">⬇ CSV</button>
-        <button class="btn" id="btnReset">🧹 Reset</button>
-      </div>
-      <div class="small muted" style="margin-top:10px">
-        Το παιδί δεν χρειάζεται αυτό το μενού.
-      </div>
-    </details>
-  </header>
-
-  <section class="card">
-    <div class="hd">
-      <div class="topline">
-        <span class="pill" id="pillZone">☀️ Πρωί</span>
-        <span class="pill" id="pillStep">1/4</span>
-      </div>
-      <div class="small muted" id="saveStatus">● αποθηκεύτηκε</div>
-    </div>
-
-    <div class="bd grid">
-      <!-- LEFT: PIE -->
-      <div class="pieWrap">
-        <div class="pie" id="pie" role="button" aria-label="Πίτα χρωμάτων">
-          <div class="pointer" aria-hidden="true"></div>
-          <div class="intensityRing" id="intensityRing" aria-hidden="true"></div>
-          <div class="innerRing" id="innerRing" aria-hidden="true"></div>
-
-          <div class="center" id="center">
-            <div class="centerTitle">Διάλεξες:</div>
-            <div class="centerMain" id="centerMain">—</div>
-            <div class="centerSub" id="centerSub">Πάτα ένα χρώμα στην πίτα</div>
-          </div>
-        </div>
-
-        <div class="progress" id="progressText">Χρώμα: ○  •  Πόσο: ○  •  Ερωτήσεις: ○○○</div>
-        <div id="statusLine" class="warnline">Πρώτα διάλεξε χρώμα 🙂</div>
-      </div>
-
-      <!-- RIGHT: CONTROLS -->
-      <div>
-        <div class="stepTitle">1) Χρώμα</div>
-        <div class="helper">Πάτα πάνω στην πίτα (αριστερά) για να διαλέξεις χρώμα.</div>
-
-        <div class="stepTitle">2) Πόσο το νιώθεις;</div>
-        <div class="helper">Διάλεξε ένα από τα 4 κουμπιά.</div>
-        <div class="row1" id="intensityRow"></div>
-
-        <div class="stepTitle">3) Οι 3 ερωτήσεις</div>
-        <div class="helper">Πάτα μια απάντηση σε κάθε ερώτηση.</div>
-
-        <div class="stepTitle" style="font-size:16px;margin-top:10px">3α) Πόσο συχνά συμβαίνει;</div>
-        <div class="choices" id="qFreq"></div>
-
-        <div class="stepTitle" style="font-size:16px;margin-top:10px">3β) Πότε ξεκίνησε;</div>
-        <div class="choices" id="qStart"></div>
-
-        <div class="stepTitle" style="font-size:16px;margin-top:10px">3γ) Τι το προκάλεσε;</div>
-        <div class="choices" id="qTrig"></div>
-
-        <div class="btnRow">
-          <button class="btn" id="btnPrev">⬅️ Πίσω</button>
-          <button class="btn primary" id="btnNext">➡️ Επόμενο</button>
-        </div>
-      </div>
-    </div>
-  </section>
-</div>
-
-<script>
-  const STORAGE_KEY = "chronosynaisthima24_zonewizard_v1";
-
-  const ZONES = [
-    {key:"morning",   icon:"☀️", title:"Πρωί",     bodyClass:"zone-morning"},
-    {key:"noon",      icon:"🌤️", title:"Μεσημέρι", bodyClass:"zone-noon"},
-    {key:"afternoon", icon:"🌇", title:"Απόγευμα", bodyClass:"zone-afternoon"},
-    {key:"night",     icon:"🌙", title:"Βράδυ",    bodyClass:"zone-night"},
-  ];
-
-  const COLORS = [
-    {key:"red",    color:"#EF4444", name:"Κόκκινο", emotions:"Θυμός / Ένταση"},
-    {key:"blue",   color:"#1F3B88", name:"Μπλε",    emotions:"Λύπη / Μοναξιά"},
-    {key:"yellow", color:"#FFD400", name:"Κίτρινο", emotions:"Χαρά / Ελπίδα"},
-    {key:"green",  color:"#22C55E", name:"Πράσινο", emotions:"Ηρεμία / Ασφάλεια"},
-    {key:"black",  color:"#111827", name:"Μαύρο",   emotions:"Φόβος"},
-    {key:"white",  color:"#FFFFFF", name:"Άσπρο",   emotions:"Κενό / Μούδιασμα"},
-    {key:"purple", color:"#7C3AED", name:"Μωβ",     emotions:"Σύγχυση"},
-    {key:"brown",  color:"#A16207", name:"Καφέ",    emotions:"Ανασφάλεια"},
-  ];
-
-  const INTENSITIES = [
-    {key:"λίγο",      emoji:"🙂", label:"Λίγο",      fill: 90},
-    {key:"αρκετά",    emoji:"😀", label:"Αρκετά",    fill: 180},
-    {key:"πολύ",      emoji:"😟", label:"Πολύ",      fill: 270},
-    {key:"πάρα πολύ", emoji:"😱", label:"Πάρα πολύ", fill: 360},
-  ];
-
-  const DEFAULT_ZONE_ENTRY = () => ({
-    colorKey: null,
-    intensityKey: null,
-    freqKey: null,
-    startKey: null,
-    trigKey: null
-  });
-
-  let state = {
-    idx: 0,
-    zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE_ENTRY()])),
-  };
-
-  const $ = (id) => document.getElementById(id);
-
-  function setSaved(flag){
-    const el = $("saveStatus");
-    el.textContent = flag ? "● αποθηκεύτηκε" : "● αποθήκευση…";
-    el.style.color = flag ? "var(--muted)" : "var(--warn)";
-  }
-  function autosave(){
-    setSaved(false);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-    setTimeout(()=>setSaved(true), 120);
-  }
-  function load(){
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(!raw) return;
-    try{
-      const s = JSON.parse(raw);
-      if(s && s.zones) state = s;
-    }catch(e){}
-  }
-
-  function currentZone(){ return ZONES[state.idx]; }
-  function entry(){ return state.zones[currentZone().key]; }
-  function colorByKey(k){ return COLORS.find(c=>c.key===k) || null; }
-  function intensityByKey(k){ return INTENSITIES.find(i=>i.key===k) || null; }
-
-  function applyZoneTheme(){
-    document.body.className = currentZone().bodyClass;
-    $("zoneTitle").textContent = `Ζώνη: ${currentZone().title} ${currentZone().icon}`;
-    $("zoneSubtitle").textContent = `Βήμα ${state.idx+1}/4 — Διάλεξε χρώμα, πόσο και απάντησε 3 ερωτήσεις.`;
-    $("pillZone").textContent = `${currentZone().icon} ${currentZone().title}`;
-    $("pillStep").textContent = `${state.idx+1}/4`;
-  }
-
-  function pickColorFromPieClick(ev){
-    const pie = ev.currentTarget;
-    const rect = pie.getBoundingClientRect();
-    const cx = rect.left + rect.width/2;
-    const cy = rect.top + rect.height/2;
-    const x = ev.clientX - cx;
-    const y = ev.clientY - cy;
-
-    let angle = Math.atan2(y, x) * (180/Math.PI);
-    angle = (angle + 360 + 90) % 360;
-    const idx = Math.floor(angle / 45) % 8;
-
-    const map = ["red","blue","yellow","green","black","white","purple","brown"];
-    entry().colorKey = map[idx];
-    autosave();
-    renderAllToPie();
-  }
-
-  function buildIntensity(){
-    const wrap = $("intensityRow");
-    wrap.innerHTML = "";
-    INTENSITIES.forEach(i=>{
-      const b = document.createElement("div");
-      b.className = "emojiBtn";
-      b.dataset.k = i.key;
-      b.innerHTML = `<span class="emojiBig">${i.emoji}</span><span class="emojiText">${i.label}</span>`;
-      b.addEventListener("click", ()=>{
-        if(!entry().colorKey){
-          $("statusLine").className = "warnline";
-          $("statusLine").textContent = "Διάλεξε πρώτα χρώμα στην πίτα 🙂";
-          return;
+    function riskScore(){
+      let points = 0;
+      let max = 0;
+      SLOTS.forEach(slot => {
+        const record = state.slots[slot.key];
+        const emotion = itemByKey(EMOTIONS, record.emotionKey);
+        const intensity = itemByKey(INTENSITIES, record.intensityKey);
+        const frequency = itemByKey(FREQUENCIES, record.frequencyKey);
+        if(emotion && intensity && frequency){
+          points += emotion.risk * intensity.value * frequency.value;
         }
-        entry().intensityKey = i.key;
-        autosave();
-        renderAllToPie();
+        max += 4 * 4 * 4;
       });
-      wrap.appendChild(b);
-    });
-  }
-
-  function buildChoices(containerId, items, keyName){
-    const wrap = $(containerId);
-    wrap.innerHTML = "";
-    items.forEach(item=>{
-      const d = document.createElement("div");
-      d.className = "choice";
-      d.dataset.k = item.k;
-      d.innerHTML = `
-        <div class="swatch" style="background: rgba(255,255,255,.45); display:flex;align-items:center;justify-content:center;font-size:26px;">
-          ${item.e}
-        </div>
-        <div>
-          <div class="choiceBig">${item.t}</div>
-          <div class="choiceSmall">πάτησέ το</div>
-        </div>
-      `;
-      d.addEventListener("click", ()=>{
-        if(!entry().colorKey){
-          $("statusLine").className = "warnline";
-          $("statusLine").textContent = "Διάλεξε πρώτα χρώμα στην πίτα 🙂";
-          return;
-        }
-        entry()[keyName] = item.k;
-        autosave();
-        renderAllToPie();
-      });
-      wrap.appendChild(d);
-    });
-  }
-
-  function highlightSelections(){
-    document.querySelectorAll("#intensityRow .emojiBtn").forEach(btn=>{
-      btn.classList.toggle("active", btn.dataset.k === entry().intensityKey);
-    });
-    document.querySelectorAll("#qFreq .choice").forEach(c=>{
-      c.classList.toggle("active", c.dataset.k === entry().freqKey);
-    });
-    document.querySelectorAll("#qStart .choice").forEach(c=>{
-      c.classList.toggle("active", c.dataset.k === entry().startKey);
-    });
-    document.querySelectorAll("#qTrig .choice").forEach(c=>{
-      c.classList.toggle("active", c.dataset.k === entry().trigKey);
-    });
-  }
-
-  function setQuestionRing(){
-    const on = "rgba(34,197,94,.85)";
-    const off = "rgba(255,255,255,.22)";
-    const e = entry();
-    $("innerRing").style.setProperty("--q1", e.freqKey ? on : off);
-    $("innerRing").style.setProperty("--q2", e.startKey ? on : off);
-    $("innerRing").style.setProperty("--q3", e.trigKey ? on : off);
-  }
-
-  function setIntensityRing(){
-    const e = entry();
-    const i = intensityByKey(e.intensityKey);
-    const fill = i ? i.fill : 0;
-    const a = "rgba(90,120,255,.55)";
-    $("intensityRing").style.background =
-      `conic-gradient(${a} 0deg ${fill}deg, rgba(255,255,255,.00) ${fill}deg 360deg)`;
-  }
-
-  function renderCenterText(){
-    const e = entry();
-    const c = colorByKey(e.colorKey);
-
-    if(!c){
-      $("centerMain").textContent = "—";
-      $("centerSub").textContent = "Πάτα ένα χρώμα στην πίτα";
-      return;
+      return Math.round((points / max) * 100);
     }
 
-    const intensity = e.intensityKey ? `Πόσο: ${e.intensityKey}` : "Πόσο: (διάλεξε)";
-    const q1 = e.freqKey ? `Συχνά: ${e.freqKey}` : "Συχνά: —";
-    const q2 = e.startKey ? `Ξεκίνησε: ${e.startKey}` : "Ξεκίνησε: —";
-    const q3 = e.trigKey ? `Αιτία: ${e.trigKey}` : "Αιτία: —";
-
-    $("centerMain").textContent = `${c.name}`;
-    $("centerSub").textContent =
-      `Συναίσθημα: ${c.emotions}\n${intensity}\n${q1}\n${q2}\n${q3}`;
-  }
-
-  function renderProgressLine(){
-    const e = entry();
-    const colorOk = !!e.colorKey;
-    const intOk = !!e.intensityKey;
-    const qCount = [e.freqKey, e.startKey, e.trigKey].filter(Boolean).length;
-
-    $("progressText").textContent =
-      `Χρώμα: ${colorOk ? "●" : "○"}  •  Πόσο: ${intOk ? "●" : "○"}  •  Ερωτήσεις: ${"●".repeat(qCount)}${"○".repeat(3-qCount)}`;
-
-    const allOk = colorOk && intOk && qCount === 3;
-    if(allOk){
-      $("statusLine").className = "okline";
-      $("statusLine").textContent = "✅ Τέλεια! Πάτα «Επόμενο» για την επόμενη ζώνη.";
-    }else{
-      $("statusLine").className = "warnline";
-      if(!colorOk) $("statusLine").textContent = "Πρώτα διάλεξε χρώμα στην πίτα 🙂";
-      else if(!intOk) $("statusLine").textContent = "Τώρα διάλεξε «πόσο» 🙂";
-      else $("statusLine").textContent = "Μένουν λίγες ερωτήσεις ακόμα 🙂";
+    function recordToExport(){
+      const generated = dateTimeParts();
+      const started = dateTimeParts(state.startedAt);
+      const completed = state.completedAt ? dateTimeParts(state.completedAt) : null;
+      return {
+        tool:"Κύκλος Ρολογιού 24ώρου",
+        cycle:state.cycle,
+        version:"clock-cycle-v2",
+        beneficiaryId:state.beneficiaryId || "",
+        outputGeneratedAt:generated.iso,
+        outputDate:generated.date,
+        outputTime:generated.time,
+        timezone:generated.timezone,
+        assessmentStartedAt:started.iso,
+        assessmentStartedDate:started.date,
+        assessmentStartedTime:started.time,
+        assessmentCompletedAt:completed ? completed.iso : "",
+        assessmentCompletedDate:completed ? completed.date : "",
+        assessmentCompletedTime:completed ? completed.time : "",
+        updatedAt:state.updatedAt,
+        temporaryRiskIndex:riskScore(),
+        slots:SLOTS.map(slot => {
+          const record = state.slots[slot.key];
+          const emotion = itemByKey(EMOTIONS, record.emotionKey);
+          const intensity = itemByKey(INTENSITIES, record.intensityKey);
+          const frequency = itemByKey(FREQUENCIES, record.frequencyKey);
+          return {
+            slotKey:slot.key,
+            from:slot.start,
+            to:slot.end,
+            label:slot.label,
+            emotionColor:emotion ? emotion.name : "",
+            emotionHex:emotion ? emotion.color : "",
+            emotion:emotion ? emotion.emotion : "",
+            intensity:intensity ? intensity.label : "",
+            intensityValue:intensity ? intensity.value : "",
+            frequency:frequency ? frequency.label : "",
+            frequencyValue:frequency ? frequency.value : ""
+          };
+        })
+      };
     }
 
-    $("btnNext").disabled = !allOk;
-  }
-
-  function renderAllToPie(){
-    setQuestionRing();
-    setIntensityRing();
-    renderCenterText();
-    highlightSelections();
-    renderProgressLine();
-  }
-
-  function goNext(){
-    if(state.idx < ZONES.length-1){
-      state.idx += 1;
-      autosave();
-      renderZonePage();
-    }else{
-      alert("Μπράβο! Τελείωσες όλες τις ζώνες 🎉");
-    }
-  }
-  function goPrev(){
-    if(state.idx > 0){
-      state.idx -= 1;
-      autosave();
-      renderZonePage();
-    }
-  }
-
-  function buildExportObject(){
-    return {
-      εργαλείο: "ΧρονοΣυναίσθημα 24",
-      έκδοση: "zone-wizard-1.0",
-      ζώνες: ZONES.map(z=>{
-        const e = state.zones[z.key];
-        const c = colorByKey(e.colorKey);
-        return {
-          ζώνη: z.title,
-          χρώμα: c ? c.name : "",
-          χρώμα_hex: c ? c.color : "",
-          συναίσθημα_έννοια: c ? c.emotions : "",
-          πόσο: e.intensityKey || "",
-          συχνότητα: e.freqKey || "",
-          έναρξη: e.startKey || "",
-          αιτία: e.trigKey || ""
-        };
-      })
-    };
-  }
-
-  function csvEscape(v){
-    const s = (v ?? "").toString();
-    if(/[",\n]/.test(s)) return `"${s.replaceAll('"','""')}"`;
-    return s;
-  }
-  function buildCSV(){
-    const header = ["ζώνη","χρώμα","χρώμα_hex","συναίσθημα_έννοια","πόσο","συχνότητα","έναρξη","αιτία"].join(",");
-    const rows = ZONES.map(z=>{
-      const e = state.zones[z.key];
-      const c = colorByKey(e.colorKey);
+    function buildCSV(){
+      const output = recordToExport();
+      const rows = output.slots;
+      const header = ["cycle","beneficiaryId","outputDate","outputTime","timezone","from","to","label","emotionColor","emotionHex","emotion","intensity","intensityValue","frequency","frequencyValue"];
+      const escape = (value) => {
+        const text = String(value ?? "");
+        if(/[",\n]/.test(text)) return `"${text.replaceAll('"', '""')}"`;
+        return text;
+      };
       return [
-        z.title,
-        c ? c.name : "",
-        c ? c.color : "",
-        c ? c.emotions : "",
-        e.intensityKey || "",
-        e.freqKey || "",
-        e.startKey || "",
-        e.trigKey || "",
-      ].map(csvEscape).join(",");
-    });
-    return [header, ...rows].join("\n");
-  }
+        header.join(","),
+        ...rows.map(row => [
+          state.cycle,
+          output.beneficiaryId,
+          output.outputDate,
+          output.outputTime,
+          output.timezone,
+          row.from,
+          row.to,
+          row.label,
+          row.emotionColor,
+          row.emotionHex,
+          row.emotion,
+          row.intensity,
+          row.intensityValue,
+          row.frequency,
+          row.frequencyValue
+        ].map(escape).join(","))
+      ].join("\n");
+    }
 
-  function downloadFile(filename, content, mime){
-    const blob = new Blob([content], {type:mime});
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = filename;
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(()=>URL.revokeObjectURL(a.href), 800);
-  }
+    function download(filename, content, mime){
+      const blob = new Blob([content], {type:mime});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.setTimeout(() => URL.revokeObjectURL(url), 600);
+    }
 
-  function resetAll(){
-    if(!confirm("Σίγουρα reset;")) return;
-    localStorage.removeItem(STORAGE_KEY);
-    state = {
-      idx: 0,
-      zones: Object.fromEntries(ZONES.map(z => [z.key, DEFAULT_ZONE_ENTRY()])),
-    };
-    autosave();
-    renderZonePage();
-  }
+    function resetAll(){
+      if(!confirm("Να καθαριστούν όλα τα στοιχεία του κύκλου;")) return;
+      localStorage.removeItem(STORAGE_KEY);
+      state = defaultState();
+      selectedPayload = null;
+      render();
+      saveState();
+    }
 
-  function renderZonePage(){
-    applyZoneTheme();
-    renderAllToPie();
-    $("btnPrev").disabled = (state.idx === 0);
-  }
+    function renderClockState(){
+      document.querySelectorAll(".slotPath").forEach(path => {
+        const slotKey = path.dataset.slot;
+        const record = state.slots[slotKey];
+        const emotion = itemByKey(EMOTIONS, record.emotionKey);
+        const intensity = itemByKey(INTENSITIES, record.intensityKey);
+        const opacity = intensity ? 0.2 + intensity.value * 0.18 : 0.18;
+        path.style.fill = emotion ? hexToRgba(emotion.color, opacity) : "#ffffff";
+        path.classList.toggle("hasEmotion", Boolean(emotion));
+        path.classList.toggle("currentSlot", !state.finished && slotKey === currentSlot().key);
+        path.classList.toggle("blocked", false);
+      });
+    }
 
-  function init(){
-    load();
-    applyZoneTheme();
+    function hexToRgba(hex, alpha){
+      const normalized = hex.replace("#", "");
+      const value = parseInt(normalized, 16);
+      const r = (value >> 16) & 255;
+      const g = (value >> 8) & 255;
+      const b = value & 255;
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    }
 
-    buildIntensity();
+    function renderBadges(){
+      const host = $("slotBadges");
+      host.innerHTML = "";
+      SLOTS.forEach(slot => {
+        const record = state.slots[slot.key];
+        const emotion = itemByKey(EMOTIONS, record.emotionKey);
+        if(!emotion) return;
+        const intensity = itemByKey(INTENSITIES, record.intensityKey);
+        const frequency = itemByKey(FREQUENCIES, record.frequencyKey);
+        const mid = (slot.startHour + slot.endHour) / 2;
+        const pos = polar(50, 50, 30, angleFromHour(mid));
+        const badge = document.createElement("div");
+        badge.className = "slotBadge";
+        badge.style.left = `${pos.x}%`;
+        badge.style.top = `${pos.y}%`;
+        badge.innerHTML = `
+          <div class="badgeTop"><span class="badgeColor" style="background:${emotion.color}"></span><span>${emotion.emotion.split(",")[0]}</span></div>
+          <div class="badgeMeta">
+            ${intensity ? `<span>${intensity.short}</span>` : ""}
+            ${frequency ? `<span>${frequency.short}</span>` : ""}
+          </div>
+        `;
+        host.appendChild(badge);
+      });
+    }
 
-    buildChoices("qFreq", [
-      {k:"κάθε μέρα", e:"📅", t:"Κάθε μέρα"},
-      {k:"συχνά", e:"🔁", t:"Συχνά"},
-      {k:"μερικές φορές", e:"🙂", t:"Μερικές φορές"},
-      {k:"σπάνια", e:"🫧", t:"Σπάνια"},
-    ], "freqKey");
+    function renderSteps(){
+      document.querySelectorAll(".step").forEach((button, index) => {
+        const step = button.dataset.step;
+        const record = currentRecord();
+        const done = step === "emotion"
+          ? Boolean(record.emotionKey)
+          : step === "intensity"
+          ? Boolean(record.intensityKey)
+          : Boolean(record.frequencyKey);
+        const disabled = state.finished
+          || (step === "intensity" && !record.emotionKey)
+          || (step === "frequency" && !record.intensityKey);
+        button.classList.toggle("active", step === state.step);
+        button.classList.toggle("done", done);
+        button.disabled = disabled;
+      });
+    }
 
-    buildChoices("qStart", [
-      {k:"πριν λίγες μέρες", e:"🕒", t:"Πριν λίγες μέρες"},
-      {k:"πριν 1 μήνα", e:"🗓️", t:"Πριν 1 μήνα"},
-      {k:"πριν μήνες", e:"📆", t:"Πριν μήνες"},
-      {k:"πριν 1 χρόνο+", e:"⏳", t:"Πριν 1 χρόνο+"},
-    ], "startKey");
+    function renderPalettes(){
+      document.querySelectorAll(".token").forEach(token => {
+        const disabled = state.finished || token.dataset.type !== state.step;
+        token.classList.toggle("disabled", disabled);
+        token.draggable = !disabled;
+        token.setAttribute("aria-disabled", String(disabled));
+      });
 
-    buildChoices("qTrig", [
-      {k:"φωνές", e:"📢", t:"Φωνές"},
-      {k:"τσακωμός", e:"💥", t:"Τσακωμός"},
-      {k:"μόνος/η", e:"🙁", t:"Μόνος/η"},
-      {k:"μαζί/αγκαλιά", e:"🤗", t:"Μαζί / Αγκαλιά"},
-    ], "trigKey");
+      $("emotionPanel").style.display = !state.finished && state.step === "emotion" ? "block" : "none";
+      $("intensityPanel").style.display = !state.finished && state.step === "intensity" ? "block" : "none";
+      $("frequencyPanel").style.display = !state.finished && state.step === "frequency" ? "block" : "none";
+      $("completionPanel").hidden = !state.finished;
+    }
 
-    $("pie").addEventListener("click", pickColorFromPieClick);
-    $("btnNext").addEventListener("click", goNext);
-    $("btnPrev").addEventListener("click", goPrev);
+    function renderProgress(){
+      const filled = totalFilledFields();
+      const total = SLOTS.length * 3;
+      $("progressBar").style.width = `${Math.round((filled / total) * 100)}%`;
+      $("progressText").textContent = `Ζώνη ${state.slotIdx + 1}/${SLOTS.length} · ${filled} από ${total} πεδία`;
+      $("completedSlots").textContent = `${completedSlotCount()}/${SLOTS.length}`;
+      $("riskPreview").textContent = String(riskScore());
+      $("updatedAt").textContent = formatClockTime(state.updatedAt);
+      $("btnPrev").disabled = !state.finished && state.slotIdx === 0 && state.step === "emotion";
+      $("btnNext").disabled = state.finished || !slotComplete(currentSlot().key);
+      $("btnNext").textContent = state.slotIdx === SLOTS.length - 1 ? "Ολοκλήρωση" : "Επόμενη ζώνη";
+      if(state.finished) $("progressText").textContent = "Η αξιολόγηση ολοκληρώθηκε";
+    }
 
-    $("btnExportJSON").addEventListener("click", ()=>{
-      downloadFile("chronosynaisthima24.json", JSON.stringify(buildExportObject(), null, 2), "application/json");
-    });
-    $("btnExportCSV").addEventListener("click", ()=>{
-      downloadFile("chronosynaisthima24.csv", buildCSV(), "text/csv;charset=utf-8");
-    });
-    $("btnReset").addEventListener("click", resetAll);
+    function renderDatabasePreview(){
+      $("databasePreview").textContent = JSON.stringify(recordToExport(), null, 2);
+    }
 
-    setSaved(true);
-    renderZonePage();
-  }
-  init();
-</script>
+    function renderLegend(){
+      $("timeLegend").innerHTML = SLOTS.map(slot => `<div>${slot.start} - ${slot.end} — ${slot.label}</div>`).join("");
+    }
+
+    function renderZonePrompt(){
+      const slot = currentSlot();
+      const record = currentRecord();
+      const emotion = itemByKey(EMOTIONS, record.emotionKey);
+      const intensity = itemByKey(INTENSITIES, record.intensityKey);
+      const bits = [
+        `Ζώνη ${state.slotIdx + 1}/${SLOTS.length}: ${slot.start} - ${slot.end}`,
+        slot.label
+      ];
+      if(emotion) bits.push(`Συναίσθημα: ${emotion.emotion}`);
+      if(intensity) bits.push(`Ένταση: ${intensity.label}`);
+      $("zonePrompt").hidden = state.finished;
+      $("zonePrompt").textContent = bits.join(" · ");
+    }
+
+    function renderIdentity(){
+      if($("beneficiaryId") !== document.activeElement){
+        $("beneficiaryId").value = state.beneficiaryId || "";
+      }
+    }
+
+    function renderInstruction(){
+      const current = {
+        emotion:"Διάλεξε συναίσθημα για την τρέχουσα ζώνη.",
+        intensity:"Διάλεξε ένταση για την ίδια ζώνη.",
+        frequency:"Διάλεξε συχνότητα για την ίδια ζώνη."
+      };
+      $("activeInstruction").textContent = state.finished
+        ? "Η αξιολόγηση ολοκληρώθηκε."
+        : current[state.step];
+    }
+
+    function render(){
+      renderSteps();
+      renderClockState();
+      renderBadges();
+      renderZonePrompt();
+      renderIdentity();
+      renderPalettes();
+      renderProgress();
+      renderDatabasePreview();
+      renderInstruction();
+    }
+
+    function bindControls(){
+      $("beneficiaryId").addEventListener("input", (event) => {
+        const cleaned = event.target.value.replace(/\D/g, "").slice(0, 4);
+        event.target.value = cleaned;
+        state.beneficiaryId = cleaned;
+        saveState();
+        renderDatabasePreview();
+      });
+      document.querySelectorAll(".step").forEach(button => {
+        button.addEventListener("click", () => {
+          if(!button.disabled) setStep(button.dataset.step);
+        });
+      });
+      $("btnNext").addEventListener("click", autoAdvanceStep);
+      $("btnPrev").addEventListener("click", goBackStep);
+      $("btnReview").addEventListener("click", () => {
+        state.finished = false;
+        state.step = "frequency";
+        saveState();
+        render();
+        announce("Μπορείς να ελέγξεις ή να αλλάξεις τις απαντήσεις σου.");
+      });
+      $("btnExportJSON").addEventListener("click", () => {
+        download("chronosynaisthima_cycle1.json", JSON.stringify(recordToExport(), null, 2), "application/json;charset=utf-8");
+      });
+      $("btnExportCSV").addEventListener("click", () => {
+        download("chronosynaisthima_cycle1.csv", buildCSV(), "text/csv;charset=utf-8");
+      });
+      $("btnReset").addEventListener("click", resetAll);
+    }
+
+    function init(){
+      loadState();
+      buildClock();
+      buildPalette("emotionPalette", EMOTIONS, "emotion");
+      buildPalette("intensityPalette", INTENSITIES, "intensity");
+      buildPalette("frequencyPalette", FREQUENCIES, "frequency");
+      renderLegend();
+      bindControls();
+      render();
+    }
+
+    init();
+  </script>
 </body>
 </html>
